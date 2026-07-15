@@ -1,0 +1,78 @@
+[
+  {
+    "comparison": "TabTransformer vs Decision Tree",
+    "p_value_raw": 0.0614,
+    "cohen_h": 0.1433,
+    "acc_tabtransformer": 0.9467,
+    "acc_baseline": 0.91,
+    "contingency_table": [
+      [
+        264,
+        20
+      ],
+      [
+        9,
+        7
+      ]
+    ],
+    "p_value_bh_corrected": 0.1229,
+    "significant_after_fdr": false
+  },
+  {
+    "comparison": "TabTransformer vs XGBoost",
+    "p_value_raw": 0.424,
+    "cohen_h": 0.0634,
+    "acc_tabtransformer": 0.9467,
+    "acc_baseline": 0.96,
+    "contingency_table": [
+      [
+        279,
+        5
+      ],
+      [
+        9,
+        7
+      ]
+    ],
+    "p_value_bh_corrected": 0.424,
+    "significant_after_fdr": false
+  },
+  {
+    "comparison": "TabTransformer vs Default XGBoost",
+    "p_value_raw": 0.3018,
+    "cohen_h": 0.0807,
+    "acc_tabtransformer": 0.9467,
+    "acc_baseline": 0.9633,
+    "contingency_table": [
+      [
+        279,
+        5
+      ],
+      [
+        10,
+        6
+      ]
+    ],
+    "p_value_bh_corrected": 0.4023,
+    "significant_after_fdr": false
+  },
+  {
+    "comparison": "TabTransformer vs Threshold Rule",
+    "p_value_raw": 0.0,
+    "cohen_h": 0.55,
+    "acc_tabtransformer": 0.9467,
+    "acc_baseline": 0.7633,
+    "contingency_table": [
+      [
+        219,
+        65
+      ],
+      [
+        10,
+        6
+      ]
+    ],
+    "p_value_bh_corrected": 0.0,
+    "significant_after_fdr": true
+  }
+]

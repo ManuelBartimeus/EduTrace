@@ -1,0 +1,3 @@
+Attention weights not extractable from this library version.
+SHAP KernelExplainer (Cell 5.1) serves as the primary XAI mechanism.
+Total high-risk students at threshold 0.62: 9

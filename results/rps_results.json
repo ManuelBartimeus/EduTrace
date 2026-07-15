@@ -1,0 +1,10 @@
+{
+  "rps_at_1": 1.0,
+  "rps_at_2": 1.0,
+  "n_evaluated": 5,
+  "threshold_used": 0.6200000000000001,
+  "char_min": 109,
+  "char_max": 131,
+  "char_mean": 113.4,
+  "all_within_limit": true
+}

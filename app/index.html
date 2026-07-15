@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrace — Student Dropout Risk Predictor</title>
+  <meta name="description" content="EduTrace is an explainable AI early warning system for predicting student dropout risk in rural Ghanaian schools, powered by XGBoost and SHAP attribution." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --bg:          #0a0d14;
+      --bg-card:     #111520;
+      --bg-input:    #161b28;
+      --bg-elevated: #1a2133;
+      --border:      #1e2d47;
+      --border-glow: #2a4a7f;
+      --text:        #e8edf5;
+      --text-muted:  #7a8ba8;
+      --text-faint:  #3d5070;
+      --accent:      #3b82f6;
+      --accent-glow: rgba(59,130,246,0.18);
+      --green:       #22c55e;
+      --orange:      #f59e0b;
+      --red:         #ef4444;
+      --radius:      14px;
+      --radius-sm:   8px;
+      --shadow:      0 8px 32px rgba(0,0,0,0.5);
+      --transition:  0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Background mesh ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% 0%, rgba(59,130,246,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 100%, rgba(139,92,246,0.05) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,13,20,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #e8edf5, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-glow);
+      border: 1px solid rgba(59,130,246,0.3);
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.7; transform: scale(1.15); }
+    }
+
+    .status-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Main layout ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #e8edf5 30%, #60a5fa 70%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      transition: border-color var(--transition);
+    }
+
+    .card:hover { border-color: var(--border-glow); }
+
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ── Form ── */
+    .form-section {
+      margin-bottom: 1.4rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 0.75rem;
+    }
+
+    .form-row {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+    .form-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .field input,
+    .field select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      padding: 0.6rem 0.85rem;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      -webkit-appearance: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .field input::placeholder { color: var(--text-faint); }
+
+    .field select option { background: var(--bg-card); }
+
+    /* slider */
+    .slider-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+
+    .slider-label-row span:first-child { color: var(--text-muted); font-weight: 500; }
+    .slider-label-row .slider-val {
+      color: var(--accent);
+      font-weight: 600;
+      min-width: 36px;
+      text-align: right;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(59,130,246,0.6);
+      cursor: pointer;
+      transition: transform var(--transition);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    /* ── Submit button ── */
+    .btn-predict {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 0.9rem 1.5rem;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-predict::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+    }
+
+    .btn-predict:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(59,130,246,0.35);
+    }
+
+    .btn-predict:active { transform: translateY(0); }
+    .btn-predict:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Results panel ── */
+    .results-panel { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    /* placeholder */
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      gap: 1rem;
+      color: var(--text-faint);
+    }
+
+    .placeholder-icon { font-size: 3rem; opacity: 0.4; }
+    .placeholder p { font-size: 0.875rem; max-width: 240px; line-height: 1.5; }
+
+    /* ── Risk gauge ── */
+    .gauge-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gauge-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+
+    .gauge-card.risk-low::before   { background: var(--green); }
+    .gauge-card.risk-medium::before { background: var(--orange); }
+    .gauge-card.risk-high::before  { background: var(--red); }
+
+    .gauge-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .gauge-svg-wrap {
+      position: relative;
+      display: inline-block;
+      width: 180px;
+      height: 100px;
+      margin: 0 auto 1rem;
+    }
+
+    .gauge-svg-wrap svg { width: 100%; height: auto; }
+
+    #gauge-fill { transition: stroke-dashoffset 0.9s cubic-bezier(0.4,0,0.2,1); }
+
+    .gauge-value {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
+
+    .risk-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-top: 0.25rem;
+    }
+
+    .risk-badge.low    { color: var(--green);  background: rgba(34,197,94,0.12);  border: 1px solid rgba(34,197,94,0.25); }
+    .risk-badge.medium { color: var(--orange); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.25); }
+    .risk-badge.high   { color: var(--red);    background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.25); }
+
+    /* ── Feature bars ── */
+    .features-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .feat-item {
+      margin-bottom: 0.9rem;
+    }
+
+    .feat-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .feat-name { color: var(--text-muted); font-weight: 500; }
+    .feat-val  { color: var(--text); font-weight: 600; font-size: 0.78rem; }
+
+    .feat-bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-input);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .feat-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .feat-bar-fill.positive { background: linear-gradient(90deg, var(--red), #f97316); }
+    .feat-bar-fill.negative { background: linear-gradient(90deg, var(--green), #10b981); }
+    .feat-bar-fill.neutral  { background: var(--border-glow); }
+
+    /* ── SMS preview ── */
+    .sms-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .sms-body {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.2rem;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-top: 0.75rem;
+      font-family: 'Space Mono', monospace;
+      position: relative;
+    }
+
+    .sms-char-count {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+      text-align: right;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+
+    .stat-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .stat-box .stat-val {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-box .stat-lbl {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-faint);
+      font-size: 0.78rem;
+      border-top: 1px solid var(--border);
+    }
+
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* ── Error toast ── */
+    #error-toast {
+      display: none;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(239,68,68,0.15);
+      border: 1px solid rgba(239,68,68,0.4);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1.25rem;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      max-width: 320px;
+      z-index: 999;
+      backdrop-filter: blur(8px);
+      animation: slide-up 0.3s ease;
+    }
+
+    @keyframes slide-up {
+      from { transform: translateY(12px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.2rem 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .form-row.cols-2,
+      .form-row.cols-3 { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── Loading shimmer ── */
+    .shimmer {
+      background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--border) 50%, var(--bg-elevated) 75%);
+      background-size: 200% 100%;
+      animation: shimmer-anim 1.2s infinite;
+      border-radius: var(--radius-sm);
+      min-height: 20px;
+    }
+
+    @keyframes shimmer-anim {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Mode toggle ── */
+    .mode-toggle {
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: #fff;
+      box-shadow: 0 2px 12px rgba(59,130,246,0.3);
+    }
+
+    /* ── CSV drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--border-glow);
+      border-radius: var(--radius);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition);
+      background: var(--bg-input);
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over {
+      background: rgba(59,130,246,0.06);
+      border-color: var(--accent);
+    }
+
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .drop-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--text); margin-bottom: 0.25rem; }
+    .drop-sub   { font-size: 0.78rem; color: var(--text-muted); }
+    .drop-fname { font-size: 0.78rem; color: var(--accent); margin-top: 0.5rem; font-weight: 600; }
+
+    /* ── CSV template hint ── */
+    .csv-hint {
+      margin-top: 1rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .csv-hint code {
+      font-family: 'Space Mono', monospace;
+      color: var(--accent);
+      font-size: 0.72rem;
+      background: rgba(59,130,246,0.08);
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    .csv-dl-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      padding: 0;
+    }
+
+    /* ── Paste area ── */
+    .bulk-textarea {
+      width: 100%;
+      min-height: 120px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.76rem;
+      padding: 0.75rem;
+      resize: vertical;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      margin-top: 1rem;
+    }
+
+    .bulk-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .bulk-row-count {
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+      text-align: right;
+    }
+
+    /* ── Bulk results table ── */
+    .bulk-results-wrap {
+      display: none;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .bulk-results-wrap.visible { display: flex; }
+
+    .bulk-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .bulk-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bulk-stats-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .b-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .b-badge.high   { color: var(--red);    background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3); }
+    .b-badge.moderate { color: var(--orange); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.3); }
+    .b-badge.low    { color: var(--green);  background: rgba(34,197,94,0.12);  border: 1px solid rgba(34,197,94,0.3); }
+
+    .btn-dl-csv {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.5rem 1rem;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.3);
+      border-radius: var(--radius-sm);
+      color: var(--green);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .btn-dl-csv:hover { background: rgba(34,197,94,0.18); }
+
+    .bulk-table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .bulk-table-scroll { overflow-x: auto; }
+
+    .bulk-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+
+    .bulk-table th {
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .bulk-table th:hover { color: var(--text); }
+    .bulk-table th .sort-icon { margin-left: 4px; opacity: 0.4; font-size: 0.65rem; }
+    .bulk-table th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+
+    .bulk-table td {
+      padding: 0.7rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .bulk-table tr:last-child td { border-bottom: none; }
+
+    .bulk-table tbody tr {
+      transition: background var(--transition);
+    }
+
+    .bulk-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+    .tbl-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .tbl-badge.high     { color: var(--red);    background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.25); }
+    .tbl-badge.moderate { color: var(--orange); background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.25); }
+    .tbl-badge.low      { color: var(--green);  background: rgba(34,197,94,0.12);  border: 1px solid rgba(34,197,94,0.25); }
+
+    .prob-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 110px;
+    }
+
+    .prob-bar-track {
+      flex: 1;
+      height: 5px;
+      background: var(--bg-input);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .prob-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+    }
+
+    .prob-bar-fill.high     { background: linear-gradient(90deg, #ef4444, #f97316); }
+    .prob-bar-fill.moderate { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .prob-bar-fill.low      { background: linear-gradient(90deg, #22c55e, #10b981); }
+
+    .prob-pct { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.82rem; min-width: 36px; }
+
+    .bulk-progress-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #2563eb, #7c3aed);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .bulk-progress-wrap {
+      background: var(--bg-input);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+    }
+
+    .bulk-processing-msg {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🎓</div>
+      <span class="logo-text">EduTrace</span>
+      <span class="badge">XGBoost · SHAP</span>
+    </a>
+    <div class="header-meta">
+      <div class="status-dot"></div>
+      <span class="status-label">Model Online</span>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ── -->
+<main>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-tag">
+      <span>🏫</span> Rural Ghana Early Warning System
+    </div>
+    <h1>Student Dropout<br/>Risk Predictor</h1>
+    <p>Enter student data individually or upload a CSV to assess dropout risk using our explainable XGBoost model with SHAP feature attributions.</p>
+  </div>
+
+  <!-- Two-column grid -->
+  <div class="grid">
+
+    <div>
+      <div class="card">
+        <!-- Mode toggle -->
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="mode-individual" onclick="setMode('individual')">
+            👤 Individual
+          </button>
+          <button class="mode-btn" id="mode-bulk" onclick="setMode('bulk')">
+            📊 Bulk / CSV
+          </button>
+        </div>
+
+        <!-- ── INDIVIDUAL MODE ── -->
+        <div id="panel-individual">
+          <div class="card-title">
+            <div class="icon" style="background:rgba(59,130,246,0.15);">📋</div>
+            Student Information
+          </div>
+
+          <form id="predict-form" autocomplete="off">
+
+            <!-- Student identity -->
+            <div class="form-section">
+              <div class="section-label">Identity</div>
+              <div class="form-row cols-2">
+                <div class="field">
+                  <label for="student_name">Student Name</label>
+                  <input type="text" id="student_name" name="student_name" placeholder="e.g. Kwame Asante" />
+                </div>
+                <div class="field">
+                  <label for="student_id">Student ID (optional)</label>
+                  <input type="text" id="student_id" name="student_id" placeholder="e.g. JHS-2024-001" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Academic -->
+            <div class="form-section">
+              <div class="section-label">Academic Record</div>
+
+              <div class="form-row" style="margin-bottom:0.85rem;">
+                <div class="slider-wrapper">
+                  <div class="slider-label-row">
+                    <span>Attendance Rate (%)</span>
+                    <span class="slider-val" id="att-val">70%</span>
+                  </div>
+                  <input type="range" id="attendance_rate" name="attendance_rate"
+                         min="0" max="100" step="1" value="70"
+                         oninput="syncSlider('att-val', this.value, '%')" />
+                </div>
+              </div>
+
+              <div class="form-row" style="margin-bottom:0.85rem;">
+                <div class="slider-wrapper">
+                  <div class="slider-label-row">
+                    <span>End-of-Term Exam Score</span>
+                    <span class="slider-val" id="score-val">55</span>
+                  </div>
+                  <input type="range" id="exam_score" name="exam_score"
+                         min="0" max="100" step="1" value="55"
+                         oninput="syncSlider('score-val', this.value, '')" />
+                </div>
+              </div>
+
+              <div class="form-row cols-3">
+                <div class="field">
+                  <label for="grade_level">Grade Level</label>
+                  <select id="grade_level" name="grade_level">
+                    <option value="Grade 7">Grade 7</option>
+                    <option value="Grade 8">Grade 8</option>
+                    <option value="Grade 9">Grade 9</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="term">Academic Term</label>
+                  <select id="term" name="term">
+                    <option value="0">Term 1</option>
+                    <option value="1">Term 2</option>
+                    <option value="2">Term 3</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="observation_week">Observation Week</label>
+                  <select id="observation_week" name="observation_week">
+                    <option value="1">Week 1</option>
+                    <option value="2">Week 2</option>
+                    <option value="3">Week 3</option>
+                    <option value="4">Week 4</option>
+                    <option value="5" selected>Week 5</option>
+                    <option value="6">Week 6</option>
+                    <option value="7">Week 7</option>
+                    <option value="8">Week 8</option>
+                    <option value="9">Week 9</option>
+                    <option value="10">Week 10</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Socioeconomic -->
+            <div class="form-section">
+              <div class="section-label">Socioeconomic Factors</div>
+              <div class="form-row cols-2">
+                <div class="field">
+                  <label for="fee_payment_status">Fee Payment Status</label>
+                  <select id="fee_payment_status" name="fee_payment_status">
+                    <option value="Fully Paid">Fully Paid</option>
+                    <option value="Partially Paid">Partially Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="fee_arrears_terms">Fee Arrears (Terms)</label>
+                  <select id="fee_arrears_terms" name="fee_arrears_terms">
+                    <option value="0">0 terms</option>
+                    <option value="1">1 term</option>
+                    <option value="2">2 terms</option>
+                    <option value="3">3 terms</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row" style="margin-top:0.85rem;">
+                <div class="slider-wrapper">
+                  <div class="slider-label-row">
+                    <span>Distance from School (km)</span>
+                    <span class="slider-val" id="dist-val">5 km</span>
+                  </div>
+                  <input type="range" id="distance_km" name="distance_km"
+                         min="0" max="50" step="0.5" value="5"
+                         oninput="syncSlider('dist-val', this.value, ' km')" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Behavioral -->
+            <div class="form-section">
+              <div class="section-label">Behavioral &amp; Demographics</div>
+              <div class="form-row cols-3">
+                <div class="field">
+                  <label for="gender">Gender</label>
+                  <select id="gender" name="gender">
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="behavioral_flag">Behavioral Flag</label>
+                  <select id="behavioral_flag" name="behavioral_flag">
+                    <option value="0">None</option>
+                    <option value="1">Minor</option>
+                    <option value="2">Serious</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="prior_year_absent_days">Prior Year Absences</label>
+                  <select id="prior_year_absent_days" name="prior_year_absent_days">
+                    <option value="0">0 days</option>
+                    <option value="5">5 days</option>
+                    <option value="10" selected>10 days</option>
+                    <option value="20">20 days</option>
+                    <option value="30">30 days</option>
+                    <option value="45">45 days</option>
+                    <option value="60">60 days</option>
+                    <option value="90">90 days</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn-predict" id="predict-btn">
+              <div class="btn-spinner" id="spinner"></div>
+              <span id="btn-label">⚡ Run Risk Assessment</span>
+            </button>
+
+          </form>
+        </div>
+
+        <!-- ── BULK MODE ── -->
+        <div id="panel-bulk" style="display:none;">
+          <div class="card-title">
+            <div class="icon" style="background:rgba(139,92,246,0.15);">📊</div>
+            Bulk Student Analysis
+          </div>
+
+          <!-- Drop zone -->
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="csv-file-input" accept=".csv,.txt" />
+            <div class="drop-icon">📂</div>
+            <div class="drop-title">Drop a CSV file here</div>
+            <div class="drop-sub">or click to browse</div>
+            <div class="drop-fname" id="drop-fname"></div>
+          </div>
+
+          <!-- Template hint -->
+          <div class="csv-hint">
+            <strong style="color:var(--text);display:block;margin-bottom:4px;">Required CSV columns (in order):</strong>
+            <code>student_name, attendance_rate, exam_score, grade_level, fee_payment_status, distance_km, gender</code>
+            <br/><span style="font-size:0.7rem;">grade_level: Grade 7 / Grade 8 / Grade 9 &nbsp;|&nbsp; fee_payment_status: Fully Paid / Partially Paid / Unpaid &nbsp;|&nbsp; gender: Male / Female</span>
+            <br/>
+            <button class="csv-dl-link" onclick="downloadTemplate()">⬇ Download template CSV</button>
+          </div>
+
+          <!-- OR divider -->
+          <div style="display:flex;align-items:center;gap:0.75rem;margin:1rem 0;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <span style="font-size:0.75rem;color:var(--text-faint);font-weight:600;">OR PASTE DATA</span>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+
+          <!-- Paste textarea -->
+          <textarea class="bulk-textarea" id="bulk-paste"
+            placeholder="Paste rows here (one per line, comma-separated, no header)&#10;e.g. Kwame Asante,75,62,0,1,5,0,0,3.5,1,0,10"></textarea>
+          <div class="bulk-row-count" id="bulk-row-count">0 rows detected</div>
+
+          <!-- Progress -->
+          <div class="bulk-progress-wrap" id="bulk-progress-wrap" style="display:none;">
+            <div class="bulk-progress-bar" id="bulk-progress-bar"></div>
+          </div>
+          <div class="bulk-processing-msg" id="bulk-processing-msg"></div>
+
+          <!-- Run button -->
+          <button class="btn-predict" id="bulk-run-btn" onclick="runBulkPrediction()" style="margin-top:1rem;">
+            <div class="btn-spinner" id="bulk-spinner"></div>
+            <span id="bulk-btn-label">⚡ Run Bulk Assessment</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ── Right: Results ── -->
+    <div class="results-panel" id="results-panel">
+
+      <!-- Placeholder -->
+      <div class="card" id="placeholder-card">
+        <div class="placeholder">
+          <div class="placeholder-icon">📊</div>
+          <p>Fill in the student data on the left and run the assessment to see the dropout risk analysis.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Bulk Results Table (full width below grid) ── -->
+  <div class="bulk-results-wrap" id="bulk-results-wrap">
+    <div class="bulk-header-row">
+      <div class="bulk-title">📋 Bulk Results <span id="bulk-count-badge" style="font-size:0.8rem;color:var(--text-muted);font-weight:400;"></span></div>
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+        <div class="bulk-stats-badges" id="bulk-stats-badges"></div>
+        <button class="btn-dl-csv" onclick="downloadResultsCSV()">⬇ Export Results CSV</button>
+      </div>
+    </div>
+    <div class="bulk-table-card">
+      <div class="bulk-table-scroll">
+        <table class="bulk-table" id="bulk-table">
+          <thead>
+            <tr>
+              <th onclick="sortTable(0)">#<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(1)">Student Name<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(2)">Risk Level<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(3)">Dropout Prob.<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(4)">Classification<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(5)">Attendance<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(6)">Exam Score<span class="sort-icon">↕</span></th>
+              <th onclick="sortTable(7)">Fee Status<span class="sort-icon">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="bulk-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>
+    EduTrace · KNUST Supervised Research Programme 2025–2026 ·
+    <a href="https://github.com/AJ-280/SHAPtoSMS-EduTrace" target="_blank" rel="noopener">GitHub</a>
+    · Powered by XGBoost + SHAP
+  </p>
+</footer>
+
+<!-- Error toast -->
+<div id="error-toast"></div>
+
+<script>
+  // ── Slider sync ──────────────────────────────────────
+  function syncSlider(id, val, suffix) {
+    document.getElementById(id).textContent = val + suffix;
+  }
+
+  // ── Mode toggle ──────────────────────────────────────
+  function setMode(mode) {
+    const isInd = mode === 'individual';
+    document.getElementById('panel-individual').style.display = isInd ? '' : 'none';
+    document.getElementById('panel-bulk').style.display       = isInd ? 'none' : '';
+    document.getElementById('mode-individual').classList.toggle('active', isInd);
+    document.getElementById('mode-bulk').classList.toggle('active', !isInd);
+    // Hide bulk results when switching back to individual
+    if (isInd) document.getElementById('bulk-results-wrap').classList.remove('visible');
+    // Hide individual results panel when switching to bulk
+    const ph = document.getElementById('placeholder-card');
+    if (!isInd && ph) { /* leave placeholder */ }
+  }
+
+  // ── CSV field definitions ─────────────────────────────
+  // Only the fields the backend actually uses
+  const CSV_FIELDS = [
+    'student_name','attendance_rate','exam_score','grade_level',
+    'fee_payment_status','distance_km','gender'
+  ];
+
+  // ── Template download ─────────────────────────────────
+  function downloadTemplate() {
+    const header = CSV_FIELDS.join(',');
+    const ex = 'Kwame Asante,75,62,Grade 7,Fully Paid,3.5,Male';
+    const blob = new Blob([header + '\n' + ex], { type: 'text/csv' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'edutrace_template.csv'; a.click();
+  }
+
+  // ── CSV file input ────────────────────────────────────
+  const csvInput  = document.getElementById('csv-file-input');
+  const dropZone  = document.getElementById('drop-zone');
+  const dropFname = document.getElementById('drop-fname');
+  const bulkPaste = document.getElementById('bulk-paste');
+
+  csvInput.addEventListener('change', () => {
+    const file = csvInput.files[0];
+    if (!file) return;
+    dropFname.textContent = '📄 ' + file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const lines = e.target.result.split('\n').map(l => l.trim()).filter(Boolean);
+      // Strip header if present
+      const first = lines[0].toLowerCase();
+      const hasHeader = CSV_FIELDS.some(f => first.includes(f));
+      const dataLines = hasHeader ? lines.slice(1) : lines;
+      bulkPaste.value = dataLines.join('\n');
+      updateRowCount();
+    };
+    reader.readAsText(file);
+  });
+
+  // Drag & drop
+  dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    dropFname.textContent = '📄 ' + file.name;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const lines = ev.target.result.split('\n').map(l => l.trim()).filter(Boolean);
+      const first = lines[0].toLowerCase();
+      const hasHeader = CSV_FIELDS.some(f => first.includes(f));
+      bulkPaste.value = (hasHeader ? lines.slice(1) : lines).join('\n');
+      updateRowCount();
+    };
+    reader.readAsText(file);
+  });
+
+  bulkPaste.addEventListener('input', updateRowCount);
+
+  function updateRowCount() {
+    const rows = parsePasteRows();
+    document.getElementById('bulk-row-count').textContent =
+      rows.length === 0 ? '0 rows detected' : `${rows.length} student${rows.length > 1 ? 's' : ''} detected`;
+  }
+
+  function parsePasteRows() {
+    return bulkPaste.value.split('\n')
+      .map(l => l.trim()).filter(Boolean)
+      .map(line => {
+        const parts = line.split(',').map(v => v.trim());
+        if (parts.length < CSV_FIELDS.length) return null;
+        const obj = {};
+        CSV_FIELDS.forEach((f, i) => obj[f] = parts[i]);
+        return obj;
+      }).filter(Boolean);
+  }
+
+  // ── Bulk prediction ───────────────────────────────────
+  let bulkResultsData = [];
+  let sortCol = -1, sortAsc = true;
+
+  async function runBulkPrediction() {
+    const rows = parsePasteRows();
+    if (rows.length === 0) { showError('No valid rows found. Please upload a CSV or paste data.'); return; }
+
+    const btn    = document.getElementById('bulk-run-btn');
+    const spin   = document.getElementById('bulk-spinner');
+    const label  = document.getElementById('bulk-btn-label');
+    const progWrap = document.getElementById('bulk-progress-wrap');
+    const progBar  = document.getElementById('bulk-progress-bar');
+    const progMsg  = document.getElementById('bulk-processing-msg');
+
+    btn.disabled = true; spin.style.display = 'block'; label.textContent = 'Processing…';
+    progWrap.style.display = 'block'; progBar.style.width = '0%'; progMsg.textContent = '';
+
+    bulkResultsData = [];
+    const results = [];
+    const BATCH = 5;
+
+    for (let i = 0; i < rows.length; i += BATCH) {
+      const chunk = rows.slice(i, i + BATCH);
+      const chunkResults = await Promise.all(chunk.map(r => fetchPredict(r)));
+      results.push(...chunkResults);
+      const pct = Math.round(((i + chunk.length) / rows.length) * 100);
+      progBar.style.width = pct + '%';
+      progMsg.textContent = `Analysed ${Math.min(i + BATCH, rows.length)} / ${rows.length} students…`;
+    }
+
+    bulkResultsData = results;
+    progMsg.textContent = `✅ Done — ${results.length} students analysed.`;
+    btn.disabled = false; spin.style.display = 'none'; label.textContent = '⚡ Run Bulk Assessment';
+
+    renderBulkTable(results, rows);
+  }
+
+  async function fetchPredict(data) {
+    try {
+      // Send only numeric types for numeric fields
+      const payload = {
+        student_name:       data.student_name || '',
+        attendance_rate:    parseFloat(data.attendance_rate),
+        exam_score:         parseFloat(data.exam_score),
+        grade_level:        data.grade_level,
+        fee_payment_status: data.fee_payment_status,
+        distance_km:        parseFloat(data.distance_km),
+        gender:             data.gender,
+      };
+      const res = await fetch('https://edutrace-backend-4mvu.onrender.com/explain', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const json = await res.json();
+      if (!res.ok) return { _ok: false, error: json.error || json.detail || `Error ${res.status}`, _input: data };
+      // Normalise
+      const prob      = json.probabilities ? json.probabilities.dropout_risk : (json.probability || 0);
+      const riskLevel = prob >= 0.66 ? 'High' : prob >= 0.33 ? 'Moderate' : 'Low';
+      return { _ok: true, prediction: json.prediction, probability: prob, risk_level: riskLevel, shap_ranked: json.shap_ranked, _input: data };
+    } catch (e) {
+      return { _ok: false, error: 'Network error', _input: data };
+    }
+  }
+
+  function renderBulkTable(results, inputRows) {
+    const wrap = document.getElementById('bulk-results-wrap');
+    const tbody = document.getElementById('bulk-table-body');
+    tbody.innerHTML = '';
+    sortCol = -1;
+
+    const counts = { High: 0, Moderate: 0, Low: 0, Error: 0 };
+    results.forEach(r => {
+      if (!r._ok) counts.Error++;
+      else counts[r.risk_level] = (counts[r.risk_level] || 0) + 1;
+    });
+
+    document.getElementById('bulk-count-badge').textContent = `— ${results.length} students`;
+    const badgesEl = document.getElementById('bulk-stats-badges');
+    badgesEl.innerHTML = '';
+    if (counts.High)     badgesEl.innerHTML += `<span class="b-badge high">🚨 ${counts.High} High</span>`;
+    if (counts.Moderate) badgesEl.innerHTML += `<span class="b-badge moderate">⚠️ ${counts.Moderate} Moderate</span>`;
+    if (counts.Low)      badgesEl.innerHTML += `<span class="b-badge low">✅ ${counts.Low} Low</span>`;
+
+    results.forEach((r, i) => {
+      const inp = r._input || {};
+      const row = document.createElement('tr');
+      if (!r._ok) {
+        row.innerHTML = `<td>${i+1}</td><td>${escHtml(inp.student_name||'—')}</td><td colspan="6" style="color:var(--red);font-size:0.8rem;">⚠ ${escHtml(r.error||'Failed')}</td>`;
+      } else {
+        const lvl   = r.risk_level.toLowerCase();
+        const pct   = Math.round(r.probability * 100);
+        const att   = Math.round(parseFloat(inp.attendance_rate||0));
+        const score = Math.round(parseFloat(inp.exam_score||0));
+        const feeS  = inp.fee_payment_status || '—';
+        row.innerHTML = `
+          <td style="color:var(--text-muted);">${i+1}</td>
+          <td style="font-weight:600;">${escHtml(inp.student_name||'Student '+(i+1))}</td>
+          <td><span class="tbl-badge ${lvl}">${lvl==='low'?'✅':lvl==='moderate'?'⚠️':'🚨'} ${r.risk_level}</span></td>
+          <td>
+            <div class="prob-bar-wrap">
+              <div class="prob-bar-track"><div class="prob-bar-fill ${lvl}" style="width:${pct}%"></div></div>
+              <span class="prob-pct" style="color:${lvl==='high'?'var(--red)':lvl==='moderate'?'var(--orange)':'var(--green)'}">${pct}%</span>
+            </div>
+          </td>
+          <td style="color:${r.prediction===1?'var(--red)':'var(--green)'}; font-weight:600;">${r.prediction===1?'At Risk':'Safe'}</td>
+          <td>${att}%</td>
+          <td>${score}/100</td>
+          <td>${escHtml(feeS)}</td>
+        `;
+      }
+      tbody.appendChild(row);
+    });
+
+    wrap.classList.add('visible');
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Table sort ────────────────────────────────────────
+  function sortTable(col) {
+    if (sortCol === col) sortAsc = !sortAsc; else { sortCol = col; sortAsc = true; }
+    document.querySelectorAll('.bulk-table th').forEach((th, i) => th.classList.toggle('sorted', i === col));
+
+    const tbody = document.getElementById('bulk-table-body');
+    const rows  = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+      const va = a.cells[col]?.textContent.trim() || '';
+      const vb = b.cells[col]?.textContent.trim() || '';
+      const na = parseFloat(va), nb = parseFloat(vb);
+      const cmp = isNaN(na) || isNaN(nb) ? va.localeCompare(vb) : na - nb;
+      return sortAsc ? cmp : -cmp;
+    });
+    rows.forEach(r => tbody.appendChild(r));
+  }
+
+  // ── Export results CSV ────────────────────────────────
+  function downloadResultsCSV() {
+    if (!bulkResultsData.length) return;
+    const header = 'student_name,risk_level,dropout_probability,classification,attendance_rate,exam_score,fee_payment_status,gender,grade_level';
+    const lines = bulkResultsData.map((r, i) => {
+      const inp = r._input || {};
+      if (!r._ok) return `${inp.student_name||'Student '+(i+1)},ERROR,,,,,,,`;
+      const pct = (r.probability * 100).toFixed(1);
+      return [
+        inp.student_name||'Student '+(i+1),
+        r.risk_level, pct+'%',
+        r.prediction===1?'At Risk':'Safe',
+        inp.attendance_rate, inp.exam_score,
+        inp.fee_payment_status, inp.gender, inp.grade_level
+      ].join(',');
+    });
+    const blob = new Blob([header + '\n' + lines.join('\n')], { type: 'text/csv' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'edutrace_results.csv'; a.click();
+  }
+
+  // ── Form submit ──────────────────────────────────────
+  document.getElementById('predict-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await runPrediction();
+  });
+
+  async function runPrediction() {
+    const btn     = document.getElementById('predict-btn');
+    const spinner = document.getElementById('spinner');
+    const label   = document.getElementById('btn-label');
+
+    btn.disabled = true;
+    spinner.style.display = 'block';
+    label.textContent = 'Analysing…';
+
+    try {
+      const form = document.getElementById('predict-form');
+      const raw = {};
+      new FormData(form).forEach((v, k) => { raw[k] = v; });
+
+      // Send only the fields the backend uses; convert numeric sliders to numbers
+      const data = {
+        student_name:       raw.student_name || '',
+        attendance_rate:    parseFloat(raw.attendance_rate),
+        exam_score:         parseFloat(raw.exam_score),
+        grade_level:        raw.grade_level,
+        fee_payment_status: raw.fee_payment_status,
+        distance_km:        parseFloat(raw.distance_km),
+        gender:             raw.gender,
+      };
+
+      const res = await fetch('https://edutrace-backend-4mvu.onrender.com/explain', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => ({}));
+        showError(errJson.error || errJson.detail || `Server error (${res.status})`);
+        return;
+      }
+
+      const json = await res.json();
+      const prob      = json.probabilities ? json.probabilities.dropout_risk : (json.probability || 0);
+      const riskLevel = prob >= 0.66 ? 'High' : prob >= 0.33 ? 'Moderate' : 'Low';
+      const normalised = {
+        prediction:  json.prediction,
+        probability: prob,
+        risk_level:  riskLevel,
+        shap_ranked: json.shap_ranked,
+        _inputData:  data,
+      };
+
+      renderResults(normalised, data.student_name || 'Student');
+
+    } catch (err) {
+      showError('Could not reach the prediction server. Please try again shortly.');
+    } finally {
+      btn.disabled = false;
+      spinner.style.display = 'none';
+      label.textContent = '⚡ Run Risk Assessment';
+    }
+  }
+
+  // ── Render results ────────────────────────────────────
+  function renderResults(data, name) {
+    const panel = document.getElementById('results-panel');
+
+    // Remove placeholder
+    const ph = document.getElementById('placeholder-card');
+    if (ph) ph.remove();
+
+    panel.innerHTML = '';
+
+    // 1. Risk Gauge
+    panel.appendChild(buildGauge(data));
+
+    // 2. Feature Contributions (SHAP)
+    if (data.shap_ranked) panel.appendChild(buildFeatureBars(data.shap_ranked));
+
+    // 3. Input summary card
+    if (data._inputData) panel.appendChild(buildInputSummary(data._inputData));
+
+    // 4. SMS Action Card (only if High/Moderate risk)
+    if (data.risk_level === 'High' || data.risk_level === 'Moderate') {
+        panel.appendChild(buildSMSAction(data._inputData));
+    }
+
+    // Scroll into view on mobile
+    if (window.innerWidth < 900) {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // ── Gauge card ───────────────────────────────────────
+  function buildGauge(data) {
+    const pct   = Math.round(data.probability * 100);
+    const level = data.risk_level.toLowerCase();
+    const colorMap = { low: '#22c55e', moderate: '#f59e0b', high: '#ef4444' };
+    const col  = colorMap[level] || '#3b82f6';
+
+    const R     = 80;
+    const total = Math.PI * R;
+    const fill  = total * (pct / 100);
+    const offset = total - fill;
+
+    const div = document.createElement('div');
+    div.className = `gauge-card risk-${level}`;
+    div.id = 'gauge-card';
+    div.innerHTML = `
+      <div class="gauge-title">Dropout Risk Score</div>
+      <div class="gauge-svg-wrap">
+        <svg viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="#1e2d47" stroke-width="12" stroke-linecap="round" />
+          <path id="gauge-fill" d="M 20 90 A 80 80 0 0 1 180 90" fill="none" stroke="${col}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${total}" stroke-dashoffset="${total}" style="transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1)" />
+        </svg>
+        <div class="gauge-value" style="color:${col}" id="gauge-num">0%</div>
+      </div>
+      <div><span class="risk-badge ${level}"><span>${level === 'low' ? '✅' : level === 'moderate' ? '⚠️' : '🚨'}</span>${data.risk_level} Risk</span></div>
+      <div class="divider" style="margin-top:1.2rem;"></div>
+      <div class="stats-row" style="margin-top:0.75rem;">
+        <div class="stat-box"><div class="stat-val">${pct}%</div><div class="stat-lbl">Dropout Prob.</div></div>
+        <div class="stat-box"><div class="stat-val">${data.prediction === 1 ? 'At Risk' : 'Safe'}</div><div class="stat-lbl">Classification</div></div>
+      </div>
+    `;
+
+    setTimeout(() => {
+      const arc = div.querySelector('#gauge-fill');
+      const num = div.querySelector('#gauge-num');
+      if (arc) arc.style.strokeDashoffset = offset;
+      if (num) animateNum(num, 0, pct, 900, '%');
+    }, 80);
+
+    return div;
+  }
+
+  function animateNum(el, from, to, dur, suffix) {
+    const start = performance.now();
+    function step(ts) {
+      const t = Math.min((ts - start) / dur, 1);
+      el.textContent = Math.round(from + (to - from) * easeOut(t)) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+  // ── Input summary card ──────────────────────────────
+  function buildInputSummary(inp) {
+    const div = document.createElement('div');
+    div.className = 'features-card';
+    const rows = [
+      ['Attendance Rate',    inp.attendance_rate + '%'],
+      ['Exam Score',         inp.exam_score + ' / 100'],
+      ['Grade Level',        inp.grade_level],
+      ['Fee Payment Status', inp.fee_payment_status],
+      ['Distance from School', inp.distance_km + ' km'],
+      ['Gender',             inp.gender],
+    ];
+    div.innerHTML = `
+      <div class="card-title">
+        <div class="icon" style="background:rgba(139,92,246,0.15);">📊</div>
+        Input Summary
+      </div>
+      ${rows.map(([label, val]) => `
+        <div class="feat-item">
+          <div class="feat-header">
+            <span class="feat-name">${label}</span>
+            <span class="feat-val">${val}</span>
+          </div>
+        </div>
+      `).join('')}
+    `;
+    return div;
+  }
+
+  // ── SHAP Feature bars ─────────────────────────────────
+  function buildFeatureBars(shap) {
+    const div = document.createElement('div');
+    div.className = 'features-card';
+    const bars = shap.slice(0, 5).map(([feat, val]) => {
+      const isPushing = val < 0; 
+      const color = isPushing ? 'var(--red)' : 'var(--green)';
+      const width = Math.min(Math.abs(val) * 30, 100);
+      return `
+        <div class="feat-item">
+          <div class="feat-header">
+            <span class="feat-name">${escHtml(feat.replace(/_/g, ' '))}</span>
+            <span class="feat-val" style="color:${color}">${isPushing ? '+ Risk' : '- Risk'}</span>
+          </div>
+          <div class="prob-bar-track">
+            <div class="prob-bar-fill" style="width:${width}%; background:${color}; margin-${isPushing ? 'left' : 'right'}:auto;"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    div.innerHTML = `
+      <div class="card-title">
+        <div class="icon" style="background:rgba(59,130,246,0.15);">🔍</div>
+        Top Risk Factors
+      </div>
+      ${bars}
+    `;
+    return div;
+  }
+
+  // ── SMS Action Card ───────────────────────────────────
+  function buildSMSAction(inputData) {
+    const div = document.createElement('div');
+    div.className = 'sms-card';
+    div.innerHTML = `
+      <div class="card-title">
+        <div class="icon" style="background:rgba(34,197,94,0.15);">📱</div>
+        Send SMS Alert to Guardian
+      </div>
+      <div class="sms-body" style="font-size:0.95rem; margin-bottom:1rem; color:var(--text-muted);">
+        This student is flagged as at risk. You can automatically send an SMS alert to their guardian (via the teacher) containing a summary of the risk factors.
+      </div>
+      <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
+        <input type="text" id="teacher-phone" placeholder="233xxxxxxxxx" style="flex:1; padding:0.5rem; border:1px solid var(--border); border-radius:4px; background:var(--bg); color:var(--text);" />
+        <button id="send-sms-btn" class="btn" style="padding:0.5rem 1rem;">Send SMS</button>
+      </div>
+      <div id="sms-status" style="font-size:0.85rem; font-weight:500; margin-top:0.5rem;"></div>
+    `;
+
+    const btn = div.querySelector('#send-sms-btn');
+    btn.onclick = async () => {
+      const phone = div.querySelector('#teacher-phone').value.trim();
+      const status = div.querySelector('#sms-status');
+      if (!phone) { status.textContent = 'Please enter a phone number.'; status.style.color = 'var(--red)'; return; }
+      
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      status.textContent = '';
+      
+      try {
+        const payload = { ...inputData, teacher_phone: phone };
+        const res = await fetch('https://edutrace-backend-4mvu.onrender.com/alert', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        
+        if (json.alert_triggered || json.message) {
+          status.textContent = '✅ SMS Drafted: ' + json.message + (json.sms_response && json.sms_response.error ? ' (API Error: '+json.sms_response.error+')' : '');
+          status.style.color = json.sms_response && json.sms_response.error ? 'var(--orange)' : 'var(--green)';
+        } else if (json.error) {
+          status.textContent = '❌ ' + json.error;
+          status.style.color = 'var(--red)';
+        } else {
+          status.textContent = '❌ Failed to send SMS. Risk may not meet threshold.';
+          status.style.color = 'var(--red)';
+        }
+      } catch(e) {
+        status.textContent = '❌ Network error.';
+        status.style.color = 'var(--red)';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send SMS';
+      }
+    };
+    return div;
+  }
+
+  // ── Helpers ──────────────────────────────────────────
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function showError(msg) {
+    const t = document.getElementById('error-toast');
+    t.textContent = '⚠️  ' + msg;
+    t.style.display = 'block';
+    setTimeout(() => { t.style.display = 'none'; }, 5000);
+  }
+</script>
+</body>
+</html>
