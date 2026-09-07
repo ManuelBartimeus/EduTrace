@@ -1,0 +1,122 @@
+[
+  {
+    "document": "Methods",
+    "item": "NF-1",
+    "change": "M10 rewritten: guard named and located, run-log line quoted, pooled-frame construction explained, negative control cited, real-only re-scoring restored rather than retired"
+  },
+  {
+    "document": "Methods",
+    "item": "Q10",
+    "change": "M20 Baseline-currency defence: blanket parity sentence deleted, replaced with the corrected M11/M13 statement naming the three tuned and two untuned arms"
+  },
+  {
+    "document": "Methods",
+    "item": "C4",
+    "change": "M13: threshold-grid size stated and the per-arm tuning-budget table cited as a committed artefact"
+  },
+  {
+    "document": "Methods",
+    "item": "C1",
+    "change": "M14: ten-seed stability arm declared with its seed list, and its role separated from the five-seed reporting basis"
+  },
+  {
+    "document": "Methods",
+    "item": "C3",
+    "change": "M16: paired minimum-detectable-effect protocol declared, with the commitment to report the required n rather than claim absence"
+  },
+  {
+    "document": "Methods",
+    "item": "Q4",
+    "change": "M19 rewritten: both named reproduction files exist, versions pinned by ==, relative paths only, linear notebook execution, no module shadowing"
+  },
+  {
+    "document": "Methods",
+    "item": "Q4 / E17",
+    "change": "M21: artefact-by-artefact availability list and an explicit slot for the release tag and commit hash"
+  },
+  {
+    "document": "Methods",
+    "item": "Q2",
+    "change": "Countersignature block added naming the three declaration sentences (M9, R8, M18) with a dated signature line for Dr Osei"
+  },
+  {
+    "document": "Results",
+    "item": "NF-1",
+    "change": "R1 rewritten: guard run-log line quoted, falsifiability and negative control stated, and the restored real-only re-score reported with its computed figures"
+  },
+  {
+    "document": "Results",
+    "item": "E32",
+    "change": "R2: the two reference frames labelled in R2's own sentences, so the opposite signs are explained where the reader first meets them"
+  },
+  {
+    "document": "Results",
+    "item": "C1 / C2",
+    "change": "R3: ten-seed sign-stability result (2 sign changes) and the leave-one-out finding that the real records carry the result and the synthetic supplement is not additive"
+  },
+  {
+    "document": "Results",
+    "item": "C3",
+    "change": "R4: paired minimum-detectable-effect reported with the required discordant-pair count (786 against 69 available), and the seed-42 versus five-seed reference frames labelled"
+  },
+  {
+    "document": "Results",
+    "item": "Q21",
+    "change": "R5: the standalone contribution-evidence artefact cited by name, so the four anchor figures are readable off one committed file"
+  },
+  {
+    "document": "Results",
+    "item": "E31",
+    "change": "R11: Table 7 given its caption"
+  },
+  {
+    "document": "Results",
+    "item": "C1-C6 / Q24",
+    "change": "New R12 added: the C1-C6 certificate, the null-state move from 2 to 5, and the layer-by-layer remediation rollback, placed after R11 so R10 is left untouched"
+  },
+  {
+    "document": "Methods",
+    "item": "Q2",
+    "change": "M3: site count recovered \u2014 4 named sites replace the UNRECORDED declaration, with the recovery route, the non-feature status of the identifier, and the site-size and base-rate spread"
+  },
+  {
+    "document": "Methods",
+    "item": "Q2",
+    "change": "Table 1b: N-of-sites row replaced with the four named sites; a Site composition row added carrying per-site counts and the confounding and recoverability diagnostics"
+  },
+  {
+    "document": "Methods",
+    "item": "Q2",
+    "change": "Table 2b: the gender row records the site confound, so its attribution is not read as a behavioural property"
+  },
+  {
+    "document": "Methods",
+    "item": "Q2 / M18",
+    "change": "M18: leave-one-site-out is reported as available and partially computable; the Tier-2 ingredient list is updated and a third, newly visible requirement (test-period events per site) is named"
+  },
+  {
+    "document": "Methods",
+    "item": "Q2",
+    "change": "Countersignature block narrowed: the site count is recovered and is no longer part of the not-computable declaration, which now covers the student-disjoint re-score alone"
+  },
+  {
+    "document": "Results",
+    "item": "Q2",
+    "change": "R1: the evaluation partition's composition across the four sites, and the two sites with no test-period event"
+  },
+  {
+    "document": "Results",
+    "item": "Q2",
+    "change": "R6: the gender attribution is qualified as partly a site effect, with the confounding statistic"
+  },
+  {
+    "document": "Results",
+    "item": "Q2 / M18",
+    "change": "R8: the leave-one-site-out result reported in full, including the two folds that are not computable and why, the seed spread, and the site-recoverability diagnostic"
+  },
+  {
+    "document": "Results",
+    "item": "Q2",
+    "change": "R12: records the site count's change of status and what it does and does not close"
+  }
+]

@@ -1,0 +1,259 @@
+
+==============================================================================
+PREFLIGHT — VERSION GUARD
+==============================================================================
+  python               3.11.15
+  numpy                2.4.4
+  pandas               3.0.2
+  scikit-learn         1.8.0
+  xgboost              3.2.0
+  imbalanced-learn     0.14.2
+  scipy                1.17.1
+  statsmodels          0.15.0
+  shap                 0.51.0
+NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) — PASS
+
+  pool n=530 pos=62 | test n=248 pos=7
+  comparator (attendance ranker) AUC-PR on the test partition: 0.1284
+
+==============================================================================
+BLOCK V1a — TEN-SEED STABILITY   (C1)
+==============================================================================
+  ARM UNDER TEST: engineered XGBoost — the PROPOSED model (M11).
+  The close-out script budgeted TabTransformer fits here; in this
+  manuscript TabTransformer is a comparator, not the proposed arm.
+
+    seed     42: AUC-PR=0.1033  delta=-0.0251  thr=0.34  train 450->476  spw=7.49
+    seed    123: AUC-PR=0.0748  delta=-0.0536  thr=0.16  train 450->476  spw=7.49
+    seed    777: AUC-PR=0.0870  delta=-0.0414  thr=0.34  train 450->476  spw=7.49
+    seed   2024: AUC-PR=0.2006  delta=+0.0722  thr=0.50  train 450->476  spw=7.49
+    seed   9999: AUC-PR=0.1178  delta=-0.0106  thr=0.18  train 450->476  spw=7.49
+    seed      1: AUC-PR=0.1275  delta=-0.0008  thr=0.51  train 450->476  spw=7.49
+    seed      7: AUC-PR=0.0994  delta=-0.0290  thr=0.21  train 450->476  spw=7.49
+    seed     13: AUC-PR=0.0992  delta=-0.0292  thr=0.28  train 450->476  spw=7.49
+    seed  31337: AUC-PR=0.1266  delta=-0.0018  thr=0.19  train 450->476  spw=7.49
+    seed    555: AUC-PR=0.2004  delta=+0.0720  thr=0.50  train 450->476  spw=7.49
+
+  delta mean +- SD : -0.0047 +- 0.0437  over 10 seeds
+  sign             : 2 positive / 8 negative -> flips = 2
+    NOTE: The sign flips across seeds. That is instability at this n, not an absence of effect. No stability wording is available.
+  C1 SIGN STABLE ACROSS >=10 SEEDS: FAIL
+
+==============================================================================
+BLOCK V1b — LEAVE-ONE-OUT   (C2)
+==============================================================================
+    fold 1 held out of training: AUC-PR=0.1415  delta=+0.0131
+    fold 2 held out of training: AUC-PR=0.0913  delta=-0.0371
+    fold 3 held out of training: AUC-PR=0.0935  delta=-0.0349
+    fold 4 held out of training: AUC-PR=0.1122  delta=-0.0162
+    fold 5 held out of training: AUC-PR=0.0992  delta=-0.0292
+    fold spread: min=0.0913 max=0.1415 range=0.0502
+    drop 'real' from training: n 530 -> 350
+      AUC-PR without 'real': 0.0213  (delta vs comparator -0.1071)
+    drop 'synthetic' from training: n 530 -> 180
+      AUC-PR without 'synthetic': 0.1447  (delta vs comparator +0.0163)
+  C2 SURVIVES LEAVE-ONE-OUT: FAIL
+
+==============================================================================
+BLOCK V1c — MINIMUM DETECTABLE EFFECT, PAIRED   (C3)
+==============================================================================
+  Paired design: both arms score the same rows, so the test is on
+  discordant pairs. An independent-sample solver would overstate this n.
+    discordant pairs: b=31  c=38  n_discordant=69  of n_test=248
+    MDE at 80% power, alpha=0.05: discordant split 0.680 = an accuracy gap of 0.1002 on 248 rows
+    observed discordant split: 0.551
+    NOTE: This design could not have detected an effect of the observed size. That is a statement about the testbed, not about dropout. Discordant pairs required at the observed split: 786 (have 69).
+  C3 MDE AT THIS n < CLAIMED EFFECT: FAIL — the wording is INCONCLUSIVE at this n
+
+==============================================================================
+BLOCK V1d — BASE RATE, PER-CLASS RECALL, CONFUSION   [FORK]   (C5)
+==============================================================================
+  as-coded  = the partition the pipeline evaluates (academic_year >= 2025)
+  as-scored = the real-only subset (NF-1's restored re-scoring)
+    as-coded   n= 248  positives=  7  base_rate=0.0282  recall=0.2857  precision=0.0351  AUC-PR=0.1033
+               TN=186 FP=55 FN=5 TP=2  flagged=57
+    as-scored  n= 248  positives=  7  base_rate=0.0282  recall=0.2857  precision=0.0351  AUC-PR=0.1033
+               TN=186 FP=55 FN=5 TP=2  flagged=57
+    gap (as-coded minus as-scored) on AUC-PR: +0.0000
+    The two rows are IDENTICAL because the test partition is 100% real.
+    That identity is the restored NF-1 re-scoring, computed rather than asserted.
+  C5 BASE RATE BESIDE EVERY HEADLINE NUMBER: PASS
+
+==============================================================================
+BLOCK V1e — STATIC LEAK SCAN
+==============================================================================
+    fits located: 21
+      EduTrace_Revised_Pipeline.py:178  [AFTER split] ci = SimpleImputer(strategy='median').fit(tv[feats_cont])
+      EduTrace_Revised_Pipeline.py:179  [AFTER split] mi = SimpleImputer(strategy='most_frequent').fit(tv[CAT])
+      EduTrace_Revised_Pipeline.py:187  [AFTER split] sc = MinMaxScaler().fit(tv[feats_cont])
+      EduTrace_Revised_Pipeline.py:293  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
+      EduTrace_Revised_Pipeline.py:326  [AFTER split] smt = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, rando
+      EduTrace_Revised_Pipeline.py:407  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=strat, random_state=se
+      EduTrace_Revised_Pipeline.py:437  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
+      EduTrace_Revised_Pipeline.py:708  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
+      closeout.py   :142  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY,
+      closeout.py   :182  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY, ra
+      closeout.py   :203  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY, ra
+      closeout.py   :489  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=float(smote_level),
+      closeout.py   :562  [AFTER split] sm = SMOTE(k_neighbors=cfg['k'], sampling_strategy=cfg['strat'], random_
+      gen_synth.py  :104  [BEFORE split] a[CONT] = imp.fit_transform(a[CONT]); b[CONT] = imp.transform(b[CONT])
+      gen_synth.py  :121  [BEFORE split] rn[CONT] = imp.fit_transform(rn[CONT]); sn[CONT] = imp.transform(sn[CONT
+      loso_validation.py:132  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY,
+      school_structure.py:141  [BEFORE split] X[P.CONT] = SimpleImputer(strategy='median').fit_transform(X[P.CONT])
+      school_structure.py:142  [BEFORE split] X[P.CAT] = SimpleImputer(strategy='most_frequent').fit_transform(X[P.CAT
+      school_structure.py:144  [BEFORE split] X[P.CONT] = MinMaxScaler().fit_transform(X[P.CONT])
+      smote_nnaa.py :37   [BEFORE split] sm = SMOTE(k_neighbors=k, sampling_strategy=strategy, random_state=seed)
+      smote_nnaa.py :68   [AFTER split] sm = SMOTE(k_neighbors=k, sampling_strategy=SMOTE_STRATEGY, random_state
+    fits located before the split line: 6
+    NOTE: Confirm each pre-split fit at its call site.
+
+==============================================================================
+BLOCK V1f — TUNING TRIAL COUNTS PER ARM   (C4)
+==============================================================================
+ARM                              THRESHOLD TUNED  THRESHOLD TRIALS   HP SEARCH
+Proposed XGBoost (engineered)    True             91                 none (fixed config)
+Default XGBoost                  True             91                 none (library defaults)
+TabTransformer                   True             91                 none (fixed config)
+Decision Tree                    False            0                  none (fixed max_depth=5)
+Attendance rule (binary)         False            0                  not applicable (fixed cut 0.70)
+
+    tunable arms sharing an identical budget : Proposed XGBoost (engineered), Default XGBoost, TabTransformer
+    arms with no tunable threshold           : Decision Tree, Attendance rule (binary)
+    hyperparameter search on any arm         : False
+  C4 BASELINE GOT THE SAME TUNING BUDGET, AND IT IS STATED: PASS — parity table written and budgets equal among the tunable arms
+    NOTE: C4 is ticked by this table PLUS the M13 parity statement. Counts alone do not tick it.
+
+==============================================================================
+BLOCK V2 — TEST-PARTITION PROVENANCE   (NF-1, Q9)
+==============================================================================
+    cut in the pipeline                 : 2025
+    test partition                      : n=248 (248 real, 0 synthetic)
+    synthesiser year range              : [2024]
+    synthetic rows in a test-period year: 0
+    QUOTED test n in the report         : 248  ->  computed here: 248
+    positives in test                   : 7
+
+    STUDENT-LEVEL DISJOINTNESS
+      test rows whose student also appears in training: 248 of 248
+      student-disjoint test rows: 0
+
+    ARE THE GENERATED ROWS SEPARABLE FROM THE REAL ONES?
+      attendance_rate    KS=0.097  p=0.208  distinct real=89 synth=245
+      exam_score         KS=0.248  p=7.81e-07  distinct real=138 synth=273
+      distance_km        KS=0.221  p=1.38e-05  distinct real=4 synth=28
+
+    THE ASSERTION NF-1 ASKS FOR, RUN NOW:
+      PASS — no synthetic row is scored as a school record
+      assertion present in the pipeline source: True  EduTrace_Revised_Pipeline.py:116, closeout.py:408, closeout.py:409, gen_synth.py:76
+
+==============================================================================
+BLOCK V3 — RPS ARTEFACT PROVENANCE   (Q21)
+==============================================================================
+    artefact: results/rps_results.json
+
+    QUOTED (verification report)   vs   COMMITTED (this run)
+      RPS@1                     1.0   vs            1.0   MATCH
+      RPS@2                  0.8596   vs         0.8596   MATCH
+      n evaluated                57   vs             57   MATCH
+      threshold                0.34   vs           0.34   MATCH
+      naive RPS@1             0.193   vs          0.193   MATCH
+      naive RPS@2            0.0351   vs         0.0351   MATCH
+      cross-model n              40   vs             40   MATCH
+      DAS under own name     required   vs           True   MATCH
+
+    DAS@1=0.7368 DAS@2=0.9825 (naive 0.0877 / 0.0877) — reported separately from RPS (M17)
+
+    Every quoted figure reproduces from this run. Nothing was targeted:
+    the ablation was re-run and these are the values it returned.
+
+==============================================================================
+BLOCK V4 — IMBALANCE ISOLATION GRID   (Q23)
+==============================================================================
+    SMOTE levels     : ['removed', 0.2, 0.4, 0.5]   (k_neighbors=3)
+    scale_pos_weight : [1.0, 7.49 (computed at runtime)]
+    QUOTED scale_pos_weight in the report: 7.49
+    thresholds       : ['F2_selected', 0.5]
+    inner split: train n=450 (pos 53) | val n=80 (pos 9)
+    Every cell prints. No cell is selected.
+
+     smote      spw        thresh    n_tr   AUC-PR   recall     prec       F2  flagged
+   removed     1.00   F2_selected     450   0.0871   0.2857   0.1000   0.2083       20
+   removed     1.00          0.50     450   0.0871   0.1429   0.1429   0.1429        7
+   removed     7.49   F2_selected     450   0.0760   0.1429   0.0909   0.1282       11
+   removed     7.49          0.50     450   0.0760   0.2857   0.0833   0.1923       24
+       0.2     1.00   F2_selected     476   0.1233   0.2857   0.1000   0.2083       20
+       0.2     1.00          0.50     476   0.1233   0.2857   0.2000   0.2632       10
+       0.2     7.49   F2_selected     476   0.1033   0.2857   0.0351   0.1176       57
+       0.2     7.49          0.50     476   0.1033   0.2857   0.0714   0.1786       28
+       0.4     1.00   F2_selected     555   0.1520   0.5714   0.0444   0.1695       90
+       0.4     1.00          0.50     555   0.1520   0.2857   0.1667   0.2500       12
+       0.4     7.49   F2_selected     555   0.1043   0.4286   0.0395   0.1442       76
+       0.4     7.49          0.50     555   0.1043   0.2857   0.0357   0.1190       56
+       0.5     1.00   F2_selected     595   0.1534   0.5714   0.0381   0.1504      105
+       0.5     1.00          0.50     595   0.1534   0.2857   0.1429   0.2381       14
+       0.5     7.49   F2_selected     595   0.0939   0.5714   0.0367   0.1460      109
+       0.5     7.49          0.50     595   0.0939   0.2857   0.0357   0.1190       56
+
+    grid cells written: 16 -> results/q23_imbalance_grid.csv
+    AUC-PR across the grid: min=0.0760 max=0.1534 range=0.0774
+    The spread is what is reported. The best cell is not.
+
+==============================================================================
+BLOCK V5 — TEMPORAL INTEGRITY AND ROLLBACK   (Q24)
+==============================================================================
+   cut  train_val    test  test_real  test_synth  test_pos  base_rate
+  2025        530     248        248           0         7     0.0282
+  2026        627     151        151           0         3     0.0199
+
+    ROLLBACK COMPARISON — one layer reverted at a time, seed 42
+ARM                                      AUC-PR  AUC-ROC   recall     prec       F2
+as-submitted (all fixes)                 0.1033   0.5969   0.2857   0.0351   0.1176
+rollback SMOTE k 3 -> 5                  0.1044   0.6271   0.7143   0.0376   0.1553
+rollback threshold F2 -> fixed 0.62      0.1033   0.5969   0.2857   0.1000   0.2083
+rollback scale_pos_weight -> 1.0         0.1233   0.6212   0.2857   0.1000   0.2083
+rollback SMOTE removed                   0.0760   0.6669   0.1429   0.0909   0.1282
+
+    lag / shift / diff constructions found in source: 21
+
+==============================================================================
+BLOCK V6 — REPRODUCTION PATH   (Q4)
+==============================================================================
+    named file present: EduTrace_Revised_Pipeline.py -> True
+    named file present: gen_synth.py       -> True
+    named file present: shaptosms.py       -> True
+    named file present: make_figures.py    -> True
+    named file present: closeout.py        -> True
+    named file present: selftest_nf1.py    -> True
+    named file present: verify.py          -> True
+    requirements.txt: 11 requirements, 0 unpinned
+    no local module shadowing an installed package: True
+    committed data reachable from the repository root: True
+    notebook code cells: 9, executed 9, monotonic: True
+
+==============================================================================
+VERDICT TABLE — GROUP 3 — RUN-GROUP_3-RESUBMIT
+==============================================================================
+ITEM      CHECK                                 OBSERVED        EXPECTED  VERDICT
+NF-1      assert in pipeline + passes   inpipe=True syn=inpipe=True syn=  CLOSED
+Q9        synthesiser bounded to train    maxyr=2024 n=0  maxyr<2025 n=0  CLOSED
+Q21       RPS artefact traces to run        7 of 7 match          7 of 7  CLOSED
+Q23       full isolation grid computed          16 cells        16 cells  CLOSED
+Q24       lag + rollback + perturbation   lag=21 rb=True   lag>0 rb=True  CLOSED
+Q4        reproduction path from clone     11 of 11 pass        11 of 11  CLOSED
+
+CLOSED: 6   STILL OPEN: 0
+
+CLEARANCE CONDITIONS
+  C1  sign stable across >=10 seeds              FAIL
+  C2  survives leave-one-out                     FAIL
+  C3  MDE at this n < claimed effect             FAIL — the wording is INCONCLUSIVE at this n
+  C4  baseline got the same tuning budget        PASS — parity table written and budgets equal among the tunable arms
+  C5  base rate beside every headline            PASS
+  C6  test scored once after a committed freeze  PENDING — decided by commit history, not by this script
+
+NULL STATE: 5 | EVIDENCE: MDE at n=248 on 69 discordant pairs exceeds the observed separation
+  1 no evidence | 2 a defect | 3 under repair | 4 certified | 5 underpowered
+  Only state 4 is a result. Nothing is written from 1, 2, 3 or 5.
+
+written: results/closeout_verdict.json
+wall clock: 6.8s

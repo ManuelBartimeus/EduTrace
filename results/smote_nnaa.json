@@ -1,0 +1,170 @@
+{
+  "ceiling": 0.6,
+  "strategy": 0.2,
+  "seeds": [
+    42,
+    123,
+    777,
+    2024,
+    9999
+  ],
+  "per_seed": {
+    "42": {
+      "SMOTE k=5": {
+        "nnaa": 0.9181,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=3": {
+        "nnaa": 0.9118,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=1": {
+        "nnaa": 0.8991,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "DP-SMOTE k=1 (epsilon=1.0)": {
+        "nnaa": 0.9706,
+        "rows_added": 26,
+        "passes_ceiling": false,
+        "dp_sigma": 4.844805
+      }
+    },
+    "123": {
+      "SMOTE k=5": {
+        "nnaa": 0.9076,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=3": {
+        "nnaa": 0.8928,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=1": {
+        "nnaa": 0.8991,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "DP-SMOTE k=1 (epsilon=1.0)": {
+        "nnaa": 0.9748,
+        "rows_added": 26,
+        "passes_ceiling": false,
+        "dp_sigma": 4.844805
+      }
+    },
+    "777": {
+      "SMOTE k=5": {
+        "nnaa": 0.895,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=3": {
+        "nnaa": 0.9076,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=1": {
+        "nnaa": 0.895,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "DP-SMOTE k=1 (epsilon=1.0)": {
+        "nnaa": 0.9895,
+        "rows_added": 26,
+        "passes_ceiling": false,
+        "dp_sigma": 4.844805
+      }
+    },
+    "2024": {
+      "SMOTE k=5": {
+        "nnaa": 0.9055,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=3": {
+        "nnaa": 0.8929,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=1": {
+        "nnaa": 0.918,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "DP-SMOTE k=1 (epsilon=1.0)": {
+        "nnaa": 0.9685,
+        "rows_added": 26,
+        "passes_ceiling": false,
+        "dp_sigma": 4.844805
+      }
+    },
+    "9999": {
+      "SMOTE k=5": {
+        "nnaa": 0.8844,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=3": {
+        "nnaa": 0.8928,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "SMOTE k=1": {
+        "nnaa": 0.9054,
+        "rows_added": 26,
+        "passes_ceiling": false
+      },
+      "DP-SMOTE k=1 (epsilon=1.0)": {
+        "nnaa": 0.9811,
+        "rows_added": 26,
+        "passes_ceiling": false,
+        "dp_sigma": 4.844805
+      }
+    }
+  },
+  "summary": {
+    "SMOTE k=5": {
+      "seed42": 0.9181,
+      "mean": 0.9021,
+      "std": 0.0115,
+      "min": 0.8844,
+      "max": 0.9181,
+      "rows_added_seed42": 26,
+      "any_passes_ceiling": false
+    },
+    "SMOTE k=3": {
+      "seed42": 0.9118,
+      "mean": 0.8996,
+      "std": 0.0084,
+      "min": 0.8928,
+      "max": 0.9118,
+      "rows_added_seed42": 26,
+      "any_passes_ceiling": false
+    },
+    "SMOTE k=1": {
+      "seed42": 0.8991,
+      "mean": 0.9033,
+      "std": 0.0081,
+      "min": 0.895,
+      "max": 0.918,
+      "rows_added_seed42": 26,
+      "any_passes_ceiling": false
+    },
+    "DP-SMOTE k=1 (epsilon=1.0)": {
+      "seed42": 0.9706,
+      "mean": 0.9769,
+      "std": 0.0076,
+      "min": 0.9685,
+      "max": 0.9895,
+      "rows_added_seed42": 26,
+      "any_passes_ceiling": false
+    }
+  },
+  "configured_k": 3,
+  "lowest_nnaa_rung_at_seed42": "SMOTE k=1",
+  "all_rungs_breach_ceiling": true,
+  "note": "NNAA computed on the locked pool, post 85/15 split, exactly as Cell 2.1 does. A value of 1.0 means a 1-NN adversary separates every synthesised row from the real rows; 0.60 is the ceiling adopted in M4."
+}

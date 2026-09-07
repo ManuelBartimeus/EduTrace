@@ -1,0 +1,5 @@
+# Locked run: MANIFEST.sha256 lists a byte-exact sha256 for every file.
+# Disable all line-ending conversion so that a clone checks out the exact
+# bytes the manifest lists, on every platform including Windows, where
+# core.autocrlf would otherwise rewrite LF to CRLF on checkout.
+* -text

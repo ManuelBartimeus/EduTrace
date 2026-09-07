@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.venv/
+results/_nf1_contaminated_tmp.csv
+verify_run/

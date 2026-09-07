@@ -1,0 +1,35 @@
+#    Class  Status         Item
+----------------------------------------------------------------------------------------------------
+1    C      SATISFIED      Determine Attendance Rule score vector from code
+2    B      SATISFIED      Split Table 3 into binary rule + continuous ranker rows
+3    C      SATISFIED      Re-run SHAPtoSMS ablation on proposed model's own records
+4    B      SATISFIED      Update R5, R10, Figure 8; state population in M16 and R5
+5    T      SATISFIED      Correct R2 recall sentence
+6    T      SATISFIED      Direction column in Table 4 + sentence in R4
+7    B      SATISFIED      Print seed-42 AUC-PR in Table 3; single reference frame
+8    T      SATISFIED      Reword R6 "packs first" to match measurement
+9    T      SATISFIED      Build number reconciliation table
+10   C      SATISFIED      Ablate SMOTE in isolation
+11   C      SATISFIED      Ablate Layer 2 (scale_pos_weight vs F2 threshold)
+12   C      SATISFIED      Flag SMOTE NNAA in R10 alongside CTGAN
+13   T      SATISFIED      Recover exact school count, or state unrecorded with reason
+14   T      SATISFIED      Sampling and generalisability-threats table
+15   C      SATISFIED      Student-disjoint sensitivity re-score
+16   T      SATISFIED      Construct-to-feature-to-metric table; demote SDT to lens
+17   T      SATISFIED      Metric-to-construct translation table in R6
+18   C      SATISFIED      Signed SHAP for top three features
+19   T      SATISFIED      Resolve Objective 3 (Path A)
+20   C      SATISFIED      Engineer year-on-year lag features
+21   T      SATISFIED      Resolution-boundary sentence in R8
+22   C      SATISFIED      Error analysis on consistently-missed cases across five seeds
+23   C      SATISFIED      Re-run perturbation after lag features
+A    C      SATISFIED      Attendance Rule diagnosis (checklist doc, Finding A)
+B    C      SATISFIED      Isotonic AUC-ROC arithmetic (checklist doc, Finding B)
+C    T      SATISFIED      Seed-42 disclosure (checklist doc, Finding C)
+X1   C      SATISFIED      Synthetic supplement was not CTGAN and not reproducible
+X2   C      SATISFIED      Pool composition was misreported
+X3   C      SATISFIED      SHAPtoSMS had no implementation
+X4   C      SATISFIED      grade_level perfectly confounded with academic_year
+X5   C      SATISFIED      RPS measured something other than what M17 described
+
+31/31 checks pass programmatically.

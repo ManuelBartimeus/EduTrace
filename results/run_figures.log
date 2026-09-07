@@ -1,0 +1,4 @@
+rebuilding seed-42 artefacts ...
+NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) — PASS
+figures written to figs -> ['figure4.png', 'figure5.png', 'figure6.png', 'figure7.png', 'figure8.png', 'figureS1.png', 'figureS2.png', 'figureS3.png', 'figureS4.png']
+local cases: {'S2': {'student_id': 'S10_2025', 'p': 0.3314, 'true_label': 1}, 'S3': {'student_id': 'S08_2025', 'p': 0.9718, 'true_label': 0}}

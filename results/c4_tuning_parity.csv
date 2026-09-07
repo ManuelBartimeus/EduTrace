@@ -1,0 +1,6 @@
+arm,threshold_tuned,threshold_trials,hyperparameter_search,hyperparameter_trials
+Proposed XGBoost (engineered),True,91,none (fixed config),0
+Default XGBoost,True,91,none (library defaults),0
+TabTransformer,True,91,none (fixed config),0
+Decision Tree,False,0,none (fixed max_depth=5),0
+Attendance rule (binary),False,0,not applicable (fixed cut 0.70),0
