@@ -30,6 +30,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 R = json.load(open('results/results.json'))
 V = json.load(open('results/closeout_verdict.json'))
 RPS = json.load(open('results/rps_results.json'))
+MA = json.load(open('results/model_artefacts.json'))
 
 M_IN = os.path.join('docs_in', 'Group 3_Methods Section.docx')
 R_IN = os.path.join('docs_in', 'Group 3_Results and Analysis Section.docx')
@@ -227,10 +228,14 @@ m19_new = (
     'committed with a linear execution_count over its %d code cells, so a reader who runs it '
     'top to bottom sees the stored outputs. No module in the tree shadows an installed '
     'package. Formal wall-clock training time was not benchmarked; as a low-connectivity '
-    'deployability proxy, each TabTransformer seed checkpoint serialises to approximately '
-    '1.25 MB and the calibrated proposed-XGBoost model to approximately 0.29 MB, both within '
-    'the sub-10 MB target for offline transfer.'
-    % (V['versions']['python'], 9))
+    'deployability proxy, the serialised checkpoints exported from this run '
+    '(results/model_artefacts.json) measure %.2f MB for the TabTransformer comparator and '
+    '%.2f MB for the proposed XGBoost, both within the sub-10 MB target for offline transfer. '
+    'These are measured on the artefacts in models/, which are exported from the locked run by '
+    'export_models.py rather than carried over, so the demonstrator in app/ serves the model '
+    'this manuscript reports.'
+    % (V['versions']['python'], 9, MA['tabtransformer_checkpoint_mb'],
+       MA['xgboost_checkpoint_mb']))
 set_text(m19, m19_new)
 log('Methods', 'Q4', 'M19 rewritten: both named reproduction files exist, versions pinned by '
                      '==, relative paths only, linear notebook execution, no module shadowing')
@@ -353,68 +358,119 @@ log('Results', 'E32', 'R2: the two reference frames labelled in R2\'s own senten
 # ---- C1 / C2: R3 stability --------------------------------------------------
 _, r3 = find(rd, 'Five-fold stratified cross-validation on the train+validation pool')
 seed_txt = ', '.join('%d: %+.4f' % (r['seed'], r['delta_vs_comparator']) for r in SEED_DELTAS)
-r3_add = (
+
+# The narrative must follow whatever the run returned, not a remembered verdict.
+# These sentences are selected from the artefacts, so a change of outcome cannot
+# leave a stale conclusion standing in the prose.
+if S['sign_flips'] > 0:
+    SIGN_SENTENCE = (
+        'The difference between the proposed model and the univariate attendance ranker '
+        'therefore does not hold a stable sign at this sample size. This is reported as '
+        'instability at this n and not as an absence of difference, and no claim of stable '
+        'performance relative to the attendance baseline is made anywhere in this manuscript.')
+else:
+    _dir = 'above' if S['delta_mean'] > 0 else 'below'
+    SIGN_SENTENCE = (
+        'The sign is therefore stable across all ten seeds, with the proposed model %s the '
+        'univariate attendance ranker at every one. Stability of sign is not the same as a '
+        'material difference: the mean delta remains %+.4f with a standard deviation of %.4f, '
+        'and whether that separation is larger than this design could have detected is settled '
+        'in R4, not here.' % (_dir, S['delta_mean'], S['delta_sd']))
+
+_full_pool_ap = RB['as-submitted (all fixes)']['auc_pr']
+if LOO['synthetic']['auc_pr'] > _full_pool_ap:
+    AUGMENT_SENTENCE = (
+        'This runs against the study\'s own augmentation design: the real records alone score '
+        'higher than the augmented pool, so the %d real records are carrying the result and the '
+        'synthetic supplement is not additive on the primary metric on this evaluation '
+        'partition.' % 180)
+else:
+    AUGMENT_SENTENCE = (
+        'The augmented pool scores at or above the real records alone, so the supplement is not '
+        'working against the primary metric on this evaluation partition; it is reported as '
+        'measured either way, on %d real records.' % 180)
+
+r3_tmpl = (
     'Ten-seed sign stability. The five-seed spread above describes variance; it cannot '
     'establish that a difference keeps its sign. The stability arm declared in Methods M14 '
     'therefore refit the proposed model on ten seeds and, at each seed, took its held-out '
     'AUC-PR against the continuous attendance ranker scored on the same partition (comparator '
     'AUC-PR %.4f). The per-seed deltas were %s. The mean delta was %+.4f with a standard '
     'deviation of %.4f, and the sign was negative at %d of the ten seeds and positive at %d, '
-    'giving %d sign changes across the set. The difference between the proposed model and the '
-    'univariate attendance ranker therefore does not hold a stable sign at this sample size. '
-    'This is reported as instability at this n and not as an absence of difference, and no '
-    'claim of stable performance relative to the attendance baseline is made anywhere in this '
-    'manuscript.\n\n'
+    'giving %d sign changes across the set. ' + SIGN_SENTENCE + '\n\n'
     'Leave-one-out over data sources. Dropping each contributing source from the training pool '
-    'in turn and refitting at seed 42 produced a result that runs against the study\'s own '
-    'augmentation design. Training on the real records alone — that is, dropping all %d '
-    'synthetic rows — gave held-out AUC-PR %.4f, above the %.4f obtained with the full '
-    'augmented pool; training on the synthetic supplement alone gave %.4f, far below the '
-    'attendance comparator. The %d real records are carrying the result, and the synthetic '
-    'supplement is not additive on the primary metric on this evaluation partition. Per-fold '
+    'in turn and refitting at seed 42 gave the following. Training on the real records alone — '
+    'that is, dropping all %d synthetic rows — gave held-out AUC-PR %.4f against the %.4f '
+    'obtained with the full augmented pool; training on the synthetic supplement alone gave '
+    '%.4f. ' + AUGMENT_SENTENCE + ' Per-fold '
     'AUC-PR under five-fold leave-one-fold-out training was {%s}. The augmentation is retained '
     'because it is the declared design and removing it would change the reported run, but its '
     'contribution is reported here as measured rather than assumed.'
-    % (S['comparator_auc_pr'], seed_txt, S['delta_mean'], S['delta_sd'],
-       S['n_negative'], S['n_positive'], S['sign_flips'],
-       350, LOO['synthetic']['auc_pr'], RB['as-submitted (all fixes)']['auc_pr'],
-       LOO['real']['auc_pr'], 180,
-       ', '.join('%.4f' % f for f in V['v1b_folds'])))
+)
+r3_add = r3_tmpl % (
+    S['comparator_auc_pr'], seed_txt, S['delta_mean'], S['delta_sd'],
+    S['n_negative'], S['n_positive'], S['sign_flips'],
+    350, LOO['synthetic']['auc_pr'], RB['as-submitted (all fixes)']['auc_pr'],
+    LOO['real']['auc_pr'],
+    ', '.join('%.4f' % f for f in V['v1b_folds']))
 insert_after(r3, r3_add)
-log('Results', 'C1 / C2', 'R3: ten-seed sign-stability result (2 sign changes) and the '
-                          'leave-one-out finding that the real records carry the result and '
-                          'the synthetic supplement is not additive')
+log('Results', 'C1 / C2', 'R3: ten-seed sign-stability result (%d sign changes) and the '
+                          'leave-one-out result over data sources, both written from the '
+                          'regenerated run' % S['sign_flips'])
 
 # ---- C3: R4 power -----------------------------------------------------------
 _, r4 = find(rd, 'McNemar’s exact test for correlated proportions')
-r4_add = (
+
+# Selected from the artefact, so a change in power cannot leave a stale verdict.
+MDE_SPLIT_TXT = ('not computable at this n' if C3['mde_split'] is None
+                 else '%.3f' % C3['mde_split'])
+MDE_GAP_TXT = ('not computable' if C3.get('mde_accuracy_gap') is None
+               else '%.4f' % C3['mde_accuracy_gap'])
+if C3['mde_split'] is None:
+    POWER_SENTENCE = (
+        'The minimum detectable effect is not computable at this number of discordant pairs, '
+        'so the comparison is INCONCLUSIVE at this sample size: it licenses neither a claim of '
+        'equal performance nor a claim that either arm is superior.')
+elif C3['observed_split'] < C3['mde_split']:
+    POWER_SENTENCE = (
+        'The observed split is narrower than that threshold, so this comparison is '
+        'INCONCLUSIVE at this sample size: it does not license the statement that the two arms '
+        'perform equally, and it does not license the statement that either is superior. '
+        'Detecting a difference of the size actually observed would have required approximately '
+        '%d discordant pairs, against the %d available.'
+        % (C3['discordant_pairs_required'], C3['n_discordant']))
+else:
+    POWER_SENTENCE = (
+        'The observed split of %.3f is at or above that threshold, so this particular '
+        'comparison is adequately powered at this n and its outcome can be read at face value. '
+        'That does not extend to the other comparisons in Table 4, each of which carries its '
+        'own discordant-pair count, and it does not convert a retained null into evidence of '
+        'equivalence.' % C3['observed_split'])
+
+r4_tmpl = (
     'What this design could have detected. The comparisons above are paired, so their power is '
     'governed by the number of discordant pairs and not by the %d test records (Methods M16). '
     'Against the binary attendance rule at the seed-42 operating point there were %d '
     'discordant pairs (b = %d, c = %d), an observed discordant split of %.3f. At 80%% power '
     'and alpha = 0.05 an exact paired test on %d discordant pairs can only detect a split of '
-    '%.3f or wider, which corresponds to an accuracy gap of about %.4f across the %d records. '
-    'The observed split is narrower than that threshold, so this comparison is INCONCLUSIVE at '
-    'this sample size: it does not license the statement that the two arms perform equally, '
-    'and it does not license the statement that either is superior. Detecting a difference of '
-    'the size actually observed would have required approximately %d discordant pairs, against '
-    'the %d available — roughly an order of magnitude more disagreement between the two arms '
-    'than this partition produces. This is a statement about the testbed, not about dropout. '
+    '%s or wider, which corresponds to an accuracy gap of about %s across the %d records. '
+    + POWER_SENTENCE +
+    ' This is a statement about the testbed, not about dropout. '
     'Two further reference-frame notes belong here: the recall values quoted in this '
     'subsection (%.4f for both arms) are seed-42 single-run values at the seed-42 operating '
     'points, whereas the recall values in R2 and Table 3 (%.4f ± %.4f for the proposed model) '
-    'are five-seed means, and the Cohen\'s h of 0.0000 follows from the two seed-42 values '
-    'being equal.'
-    % (R['test']['n'], C3['n_discordant'], C3['b'], C3['c'], C3['observed_split'],
-       C3['n_discordant'], C3['mde_split'], C3['mde_accuracy_gap'], R['test']['n'],
-       C3['discordant_pairs_required'], C3['n_discordant'],
-       FULL['recall'], R['table3']['xgb_engineered']['recall']['mean'],
-       R['table3']['xgb_engineered']['recall']['std']))
+    'are five-seed means.'
+)
+r4_add = r4_tmpl % (
+    R['test']['n'], C3['n_discordant'], C3['b'], C3['c'], C3['observed_split'],
+    C3['n_discordant'], MDE_SPLIT_TXT, MDE_GAP_TXT, R['test']['n'],
+    FULL['recall'], R['table3']['xgb_engineered']['recall']['mean'],
+    R['table3']['xgb_engineered']['recall']['std'])
 insert_after(r4, r4_add)
-log('Results', 'C3', 'R4: paired minimum-detectable-effect reported with the required '
-                     'discordant-pair count (%d against %d available), and the seed-42 versus '
-                     'five-seed reference frames labelled'
-                     % (C3['discordant_pairs_required'], C3['n_discordant']))
+log('Results', 'C3', 'R4: paired minimum-detectable-effect reported (%d discordant pairs, '
+                     'observed split %.3f against a detectable %s), written from the '
+                     'regenerated run, with the reference frames labelled'
+                     % (C3['n_discordant'], C3['observed_split'], C3['mde_split']))
 
 # ---- Q21: R5 artefact pointer ----------------------------------------------
 replace_sub(rd, 'The engineered contribution (SHAPtoSMS) was isolated by the ablation',
@@ -440,18 +496,62 @@ log('Results', 'E31', 'R11: Table 7 given its caption')
 r12_head = rd.add_paragraph('R12. Clearance Certificate and Remediation Ledger',
                             style='Heading 2')
 cl = V['clearance']
-r12_body = (
+# Each condition's REASON is derived from the run, so a changed verdict cannot
+# leave the explanation behind it asserting the opposite.
+if S['sign_flips'] > 0:
+    C1_REASON = ('The proposed-versus-attendance-ranker delta changed sign %d times across the '
+                 'ten seeds (R3), so no stability wording is available.' % S['sign_flips'])
+else:
+    C1_REASON = ('The delta held its sign at all ten seeds (mean %+.4f, SD %.4f; R3). Sign '
+                 'stability is not by itself a claim of material difference — see C3.'
+                 % (S['delta_mean'], S['delta_sd']))
+
+_full_ap = RB['as-submitted (all fixes)']['auc_pr']
+if LOO['synthetic']['auc_pr'] > _full_ap:
+    C2_REASON = ('Dropping the synthetic supplement raises the primary metric and dropping the '
+                 'real records collapses it (R3), so the result does not survive the '
+                 'leave-one-out check in the direction the design assumes.')
+else:
+    C2_REASON = ('Neither contributor drop reverses the direction of the result (R3): removing '
+                 'the supplement gives AUC-PR %.4f against %.4f for the full pool.'
+                 % (LOO['synthetic']['auc_pr'], _full_ap))
+
+if C3['mde_split'] is None or C3['observed_split'] < C3['mde_split']:
+    C3_REASON = ('%d discordant pairs are available and approximately %s would be required '
+                 '(R4).' % (C3['n_discordant'],
+                            C3['discordant_pairs_required'] or 'many more'))
+else:
+    C3_REASON = ('The observed discordant split of %.3f meets the %.3f detectable at 80%%%% '
+                 'power on %d pairs (R4).'
+                 % (C3['observed_split'], C3['mde_split'], C3['n_discordant']))
+
+_NULL_LABEL = {1: 'NO EVIDENCE', 2: 'A CONFIRMED DEFECT', 3: 'UNDER REPAIR',
+               4: 'CERTIFIED', 5: 'UNDERPOWERED'}.get(V['null_state'], 'UNSPECIFIED')
+NULL_REASON = (
+    'The certificate places this study at null state %d — %s — on the evidence that %s. This '
+    'is a change from the state recorded at the previous verification, which was state 2, a '
+    'confirmed defect arising from synthetic records in the evaluation partition; that defect '
+    'is not present in this run, and the guard in Methods M10 now makes its absence checkable '
+    'on every execution. '
+    % (V['null_state'], _NULL_LABEL, V['null_evidence']))
+if V['null_state'] == 4:
+    NULL_REASON += ('State 4 is the only state that licenses a positive finding. The claims '
+                    'made in this manuscript remain bounded by the Tier 1 ceiling declared in '
+                    'M18 regardless.')
+else:
+    NULL_REASON += ('State %d is not a licence for a positive finding. Accordingly no claim of '
+                    'superiority over any comparator is made in this manuscript, and equally '
+                    'no claim of equivalence or of absent effect is made, because a comparison '
+                    'that cannot resolve a difference supports neither.' % V['null_state'])
+
+r12_tmpl = (
     'This subsection reports the verification conditions C1-C6 and the remediation rollback. '
     'It is placed after R11 so that R10\'s account of the non-confirmatory results stands '
     'unaltered; nothing here revises R10, and the results below are additional measurements '
     'rather than reinterpretations of it.\n\n'
-    'C1 — sign stability across ten seeds: %s. The proposed-versus-attendance-ranker delta '
-    'changed sign %d times across the ten seeds (R3), so no stability wording is available.\n'
-    'C2 — survives leave-one-out: %s. Dropping the synthetic supplement raises the primary '
-    'metric and dropping the real records collapses it (R3), so the result does not survive '
-    'the leave-one-out check in the direction the design assumes.\n'
-    'C3 — minimum detectable effect below the observed effect: %s. %d discordant pairs are '
-    'available and approximately %d would be required (R4).\n'
+    'C1 — sign stability across ten seeds: %s. ' + C1_REASON + '\n'
+    'C2 — survives leave-one-out: %s. ' + C2_REASON + '\n'
+    'C3 — minimum detectable effect below the observed effect: %s. ' + C3_REASON + '\n'
     'C4 — equal tuning budget, stated: %s. The three tunable arms each swept the same %d-point '
     'threshold grid and no arm received a hyperparameter search; the per-arm budget is '
     'tabulated in results/c4_tuning_parity.csv and stated in Methods M13 and M20.\n'
@@ -459,15 +559,7 @@ r12_body = (
     'beside every level reported in this section.\n'
     'C6 — the test partition scored once after a committed freeze: %s. This is settled by the '
     'repository history of the tagged release named in Methods M21, not by any script.\n\n'
-    'Null state. The certificate places this study at null state 5 — UNDERPOWERED — on the '
-    'evidence that the minimum detectable effect at %d discordant pairs exceeds the observed '
-    'separation. This is a change from the state recorded at the previous verification, which '
-    'was state 2, a confirmed defect arising from synthetic records in the evaluation '
-    'partition; that defect is not present in this run, and the guard in Methods M10 now makes '
-    'its absence checkable on every execution. State 5 is not a licence for a positive '
-    'finding. Accordingly no claim of superiority over any comparator is made in this '
-    'manuscript, and equally no claim of equivalence or of absent effect is made, because an '
-    'underpowered comparison supports neither.\n\n'
+    'Null state. ' + NULL_REASON + '\n\n'
     'Remediation rollback. Each remediation layer was reverted to its pre-remediation setting '
     'in turn, at the declared 2025 cut and at seed 42, with every arm reported. As submitted '
     '(SMOTE k = 3, sampling_strategy 0.20, scale_pos_weight %.2f, F2-selected threshold '
@@ -483,11 +575,13 @@ r12_body = (
     'this section exists to avoid; the full %d-cell imbalance grid is committed as '
     'results/q23_imbalance_grid.csv, spanning AUC-PR %.4f to %.4f, and the spread rather than '
     'its best cell is what is reported.'
-    % (cl['C1'], S['sign_flips'], cl['C2'],
-       cl['C3'].split(' — ')[0], C3['n_discordant'], C3['discordant_pairs_required'],
+)
+r12_body = r12_tmpl % (
+cl['C1'], cl['C2'],
+       cl['C3'].split(' — ')[0],
        cl['C4'].split(' — ')[0], N_THRESH,
        cl['C5'], R['test']['pct_pos'] / 100.0,
-       cl['C6'].split(' — ')[0], C3['n_discordant'],
+       cl['C6'].split(' — ')[0],
        R['scale_pos_weight_seed42'], RB['as-submitted (all fixes)']['threshold'],
        RB['as-submitted (all fixes)']['auc_pr'], RB['as-submitted (all fixes)']['recall'],
        RB['as-submitted (all fixes)']['precision'], RB['as-submitted (all fixes)']['f2'],
@@ -501,7 +595,7 @@ r12_body = (
        RB['rollback scale_pos_weight -> 1.0']['f2'],
        RB['rollback SMOTE removed']['auc_pr'], RB['rollback SMOTE removed']['recall'],
        RB['rollback SMOTE removed']['f2'],
-       len(V['v4_grid']), min(GRID_APS), max(GRID_APS)))
+       len(V['v4_grid']), min(GRID_APS), max(GRID_APS))
 rd.add_paragraph(r12_body, style='Normal')
 log('Results', 'C1-C6 / Q24', 'New R12 added: the C1-C6 certificate, the null-state move from '
                               '2 to 5, and the layer-by-layer remediation rollback, placed '

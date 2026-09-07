@@ -1,0 +1,29 @@
+==============================================================================
+EXPORT FITTED ARTEFACTS FROM THE LOCKED RUN   (O3, M19)
+==============================================================================
+NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) — PASS
+  seed 42 | train 450 -> 476 after SMOTE | scale_pos_weight 7.49
+
+  syncing app/ so the demonstrator serves the reported model (O3)
+    app/xgboost.pkl            <- models/xgboost.pkl
+    app/minmax_scaler.pkl      <- models/minmax_scaler.pkl
+    app/cont_imputer.pkl       <- models/cont_imputer.pkl
+    app/cat_imputer.pkl        <- models/cat_imputer.pkl
+    app/label_encoders.pkl     <- models/label_encoders.pkl
+
+ARTEFACT                                           SIZE
+models/cat_imputer.pkl                           0.5 KB
+models/cont_imputer.pkl                          0.6 KB
+models/decision_tree.pkl                         4.5 KB
+models/label_encoders.pkl                        0.7 KB
+models/minmax_scaler.pkl                         0.7 KB
+models/tabtransformer_seed42.pt               1222.6 KB
+models/xgboost.pkl                             277.6 KB
+models/xgboost_default.pkl                     153.5 KB
+
+  M19 deployability proxy, measured on this run:
+    proposed XGBoost checkpoint : 0.27 MB
+    TabTransformer checkpoint   : 1.19 MB
+    both within the sub-10 MB offline-transfer target: True
+
+written: results/model_artefacts.json

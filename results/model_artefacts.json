@@ -1,0 +1,24 @@
+{
+  "seed": 42,
+  "scale_pos_weight": 7.49,
+  "artefact_sizes_kb": {
+    "cat_imputer.pkl": 0.5,
+    "cont_imputer.pkl": 0.6,
+    "decision_tree.pkl": 4.5,
+    "label_encoders.pkl": 0.7,
+    "minmax_scaler.pkl": 0.7,
+    "tabtransformer_seed42.pt": 1222.6,
+    "xgboost.pkl": 277.6,
+    "xgboost_default.pkl": 153.5
+  },
+  "xgboost_checkpoint_mb": 0.27,
+  "tabtransformer_checkpoint_mb": 1.19,
+  "app_synced": [
+    "xgboost.pkl",
+    "minmax_scaler.pkl",
+    "cont_imputer.pkl",
+    "cat_imputer.pkl",
+    "label_encoders.pkl"
+  ],
+  "note": "Fitted from the locked run under the pinned deterministic settings, so these artefacts correspond to the reported figures by construction. Closes O3."
+}

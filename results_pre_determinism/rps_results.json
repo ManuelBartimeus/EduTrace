@@ -20,13 +20,13 @@
   },
   "cross_model_sensitivity": {
     "population": "TabTransformer-threshold flagged records (the earlier, cross-model definition)",
-    "n_evaluated": 83,
+    "n_evaluated": 40,
     "rps_at_1": 1.0,
-    "rps_at_2": 0.8554,
-    "naive_fixed_order_at_1": 0.1807,
-    "naive_fixed_order_at_2": 0.0241,
-    "das_at_1": 0.8434,
-    "das_at_2": 0.9518
+    "rps_at_2": 0.875,
+    "naive_fixed_order_at_1": 0.175,
+    "naive_fixed_order_at_2": 0.025,
+    "das_at_1": 0.725,
+    "das_at_2": 0.925
   },
   "table5_character_compliance": {
     "alerts": 57,

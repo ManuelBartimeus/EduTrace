@@ -12,14 +12,17 @@ pip install -r requirements.txt
 
 python add_school_identifier.py         # attach the school identifier (~5 s)
 python selftest_nf1.py                  # NF-1 guard self-test         (~10 s)
-python EduTrace_Revised_Pipeline.py     # the locked run               (~25 min CPU)
+python selftest_determinism.py          # thread-count independence    (~6 min)
+python EduTrace_Revised_Pipeline.py     # the locked run               (~40 min CPU)
 python closeout.py                      # C1-C6 certificate + verdict  (~1 min)
 python school_structure.py              # sampling frame + confounding (~10 s)
 python loso_validation.py               # leave-one-site-out           (~1 min)
 python make_figures.py                  # Figures 4-8, S1-S4           (~3 min)
 python smote_nnaa.py                    # SMOTE NNAA privacy ladder    (~1 min)
+python export_models.py                 # fitted artefacts -> models/, app/ (~5 min)
 python verify.py                        # checklist audit
 python consistency_pass.py              # manuscript <-> artefact check
+python ledger_generator.py              # corrections ledger (needs results_pre_determinism/)
 ```
 
 All entry points default to `data/` and write to `results/`. No path needs editing,
@@ -66,6 +69,10 @@ confirming the guard raises.
 | `school_structure.py` | Sampling frame by site, site/variable confounding, site recoverability |
 | `loso_validation.py` | Leave-one-site-out validation (Q2, M18) |
 | `consistency_pass.py` | Checks every manuscript number against the artefact it comes from |
+| `selftest_determinism.py` | Proves the run does not depend on thread count — **run this on your own machine** |
+| `export_models.py` | Exports the locked run's fitted artefacts to `models/` and syncs `app/` (O3) |
+| `ledger_generator.py` | Builds the corrections ledger from the artefacts |
+| `cleanup_superseded.py` | Removed the pre-remediation artefacts that contradicted the locked run |
 | `selftest_nf1.py` | NF-1 self-test: clean path, Q9 bound, and the negative control |
 | `closeout.py` | V1a–V6, the C1–C6 clearance certificate, the verdict table and the null state |
 | `shaptosms.py` | Algorithm 1 (M12); RPS and DAS defined and reported separately |
@@ -87,8 +94,20 @@ confirming the guard raises.
 | `results/nf1_guard_log.txt` | The guard's run-log line for this run |
 | `results/school_structure.json` | Per-site sampling frame, confounding statistics, recoverability |
 | `results/loso_validation.json` | Leave-one-site-out, including the folds that are not computable |
+| `results/corrections_ledger.md/.json` | Section F ledger and the complete leaf-level diff |
+| `results/superseded_artefacts.json` | What was removed in the cleanup, why, and where to find it |
+| `results/model_artefacts.json` | Exported checkpoint sizes, feeding M19's deployability proxy |
+| `results_pre_determinism/` | The artefacts as they stood before the determinism repair, so the ledger can be recomputed |
 | `notebooks/EduTrace_Main_3.ipynb` | The same run as a notebook, executed linearly. Named in M19. |
 | `figs/` | The nine regenerated manuscript figures |
+
+## Determinism
+
+The reported run is pinned to a single thread on every estimator. That is not a performance
+choice: before it was pinned, changing only `OMP_NUM_THREADS` moved 329 of 858 result leaves and
+flipped two clearance conditions, so the numbers depended on the core count of the machine that
+produced them. `REPRODUCIBILITY.md` documents the defect, the repair and exactly what moved.
+`selftest_determinism.py` verifies the property — run it before relying on any figure.
 
 ## Known limitations, stated rather than worked around
 

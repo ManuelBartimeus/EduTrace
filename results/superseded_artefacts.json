@@ -1,0 +1,117 @@
+{
+  "removed": [
+    {
+      "path": "data/synthetic_student_data.csv",
+      "sha256": "ab327c1bff29e1b8341b98079140919b87ae7c44a48147c29aab3d19319c900c",
+      "bytes": 33279,
+      "reason": "THE Q9 DEFECT. academic_year drawn from [2022, 2023, 2024, 2025], placing 52 synthetic rows in a test-period year. Superseded by data/synth_ctgan_s42.csv, which is bounded to the training period.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/attention_heatmap_note.txt",
+      "sha256": "3a05d8c0c38fa3ba1b84ab9fdf0a53f1fec256bc7f306421b689697e4a305982",
+      "bytes": 176,
+      "reason": "Note on a diagnostic M17 states was not produced. The deviation is stated in M17 itself; a loose note in results/ implies an artefact that does not exist.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/experiment_reproducibility_report.json",
+      "sha256": "f4984ce29da73ca989476eb312e6954630b5afea482fbd2475bcea0687c1f8f8",
+      "bytes": 2361,
+      "reason": "Asserts the pre-remediation configuration (SMOTE k=5, scale_pos_weight 13.48, threshold 0.62) that Q23 required be corrected. Contradicts results/results.json and results/closeout_verdict.json.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/master_results_table.csv",
+      "sha256": "45c7f7ed4cdd74407024ff7e6b5b0b9fea03b77a8edc1bd8d316007b72246c4d",
+      "bytes": 450,
+      "reason": "The results table CELL 4.4 mutated in place before CELL 8.1 wrote it (Q4). Superseded by results/results.json; contradicts Table 3.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/mcnemar_results.json",
+      "sha256": "c73d7a975e768ff1be076dc49b409fcdac6194d6ab880c37ee8804dada598287",
+      "bytes": 1412,
+      "reason": "Pre-remediation McNemar output. Superseded by results.json -> stats; contradicts Table 4.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/roc_pr_curves.png",
+      "sha256": "15f68c1018f4fe2187e5a273c3f467d66863bd48560c2a7d79f4dafc22359af8",
+      "bytes": 262934,
+      "reason": "Named in the report as an image file that does NOT correspond to the current run. Superseded by figs/figure4.png.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/shap_summary_beeswarm.png",
+      "sha256": "bc43747e610eb4005f1e4d38391cde48f3154865d56d45a85a6e751c695aed93",
+      "bytes": 45377,
+      "reason": "Named in the report as not corresponding to the current run. Superseded by figs/figure6.png and figs/figureS1.png.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/shap_values_test_subset.npy",
+      "sha256": "bb581525fe27939329c4c3f8b27a13b3e3b322589788970007c2e82757fc84ca",
+      "bytes": 4928,
+      "reason": "SHAP values from the pre-remediation run, computed on a subsample rather than the full 248-row partition M17 specifies.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/shap_values_xgboost_default.npy",
+      "sha256": "4f1f6db539057041e705bdc97156115249ac5f5e5c3fab816b89c1a2a6c14b64",
+      "bytes": 13328,
+      "reason": "SHAP values from the pre-remediation run. Superseded by results.json -> shap_sms.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/shap_values_xgboost_engineered.npy",
+      "sha256": "d68d233b33e20e35cec48a886b8a37dc5f4d7dee38677b6c110eda3e4e4ae564",
+      "bytes": 13328,
+      "reason": "SHAP values from the pre-remediation run. Superseded by results.json -> shap_sms.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/shap_waterfall_false_negative_missed_dropout.png",
+      "sha256": "042a0bd6b4b041c847ecd22b78577b998ed7f128047088b51271248d2e7cff5f",
+      "bytes": 50318,
+      "reason": "Named in the report as not corresponding to the current run. Superseded by figs/figureS2.png.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/shap_waterfall_false_positive_incorrectly_flagged_student.png",
+      "sha256": "3c3e1473be2766e4ec1f42b644a79a376307c0878a5cdfdc11d041a258c1d800",
+      "bytes": 52920,
+      "reason": "Named in the report as not corresponding to the current run. Superseded by figs/figureS3.png.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/tabtransformer_summary_default_threshold.json",
+      "sha256": "79207c73ed8494fecfc71107aba8a0437a73fca2c0106a903ded6375892ea81e",
+      "bytes": 36742,
+      "reason": "Pre-remediation TabTransformer summary. Superseded by results.json -> table3.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/tabtransformer_summary_optimal_threshold.json",
+      "sha256": "d17e6ad4c755e7f252ae74ce4b3a69e710a0268050aa099ab831a1329bdc2c12",
+      "bytes": 36826,
+      "reason": "Pre-remediation TabTransformer summary. Superseded by results.json -> table3.",
+      "retrievable_at": "17f18abdbb82"
+    },
+    {
+      "path": "results/threshold_optimisation_curve.png",
+      "sha256": "da771246e21f127129f348dd1dc227907b9adeb23d20e7ed2fc56aba16997109",
+      "bytes": 65707,
+      "reason": "Threshold curve from the pre-remediation run at threshold 0.62. The reported operating point is 0.34.",
+      "retrievable_at": "17f18abdbb82"
+    }
+  ],
+  "already_absent": [],
+  "kept": {
+    "data/real_student_data.csv": "The register as collected, before cleaning. Retained as provenance for data/real_student_data_CLEANED.csv. No entry point reads it.",
+    "app/": "The demonstrator. Its model artefacts are regenerated from the locked run by export_models.py rather than deleted, so the interface serves the model the manuscript reports (O3).",
+    "models/": "Regenerated from the locked run by export_models.py."
+  },
+  "retrievable_at_commit": "17f18abdbb82",
+  "rationale": "The repository carried two mutually contradictory runs. Checklist item 27 requires every reported number to trace to one locked run, and observation O2 applied to the whole results directory. These files are superseded, not suppressed: they remain in git history at the commit the verification report examined."
+}

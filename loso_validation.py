@@ -134,7 +134,7 @@ def main():
                 Xi, yi = sm.fit_resample(Xi, yi)
             spw = float((yi == 0).sum()) / max(float((yi == 1).sum()), 1.0)
             P.set_all_seeds(seed)
-            m = xgb.XGBClassifier(n_estimators=200, max_depth=4, learning_rate=0.05,
+            m = xgb.XGBClassifier(n_jobs=1, n_estimators=200, max_depth=4, learning_rate=0.05,
                                   scale_pos_weight=spw, subsample=0.8,
                                   colsample_bytree=0.8, random_state=seed,
                                   eval_metric='aucpr', verbosity=0).fit(Xi, yi)

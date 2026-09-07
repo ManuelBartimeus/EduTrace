@@ -143,9 +143,9 @@ def main():
     X = pd.get_dummies(X, columns=P.CAT)
     X[P.CONT] = MinMaxScaler().fit_transform(X[P.CONT])
     y = df['school_id'].values
-    clf = RandomForestClassifier(n_estimators=300, random_state=42)
+    clf = RandomForestClassifier(n_estimators=300, random_state=42, n_jobs=1)
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-    acc = cross_val_score(clf, X.values, y, cv=cv, scoring='accuracy')
+    acc = cross_val_score(clf, X.values, y, cv=cv, scoring='accuracy', n_jobs=1)
     majority = float(pd.Series(y).value_counts(normalize=True).max())
     print('    5-fold accuracy predicting school_id: %.4f ± %.4f' % (acc.mean(), acc.std()))
     print('    majority-class baseline             : %.4f' % majority)

@@ -1,0 +1,260 @@
+{
+  "design": "train on academic_year < 2025 of the other sites, real records only; test on academic_year >= 2025 of the held-out site",
+  "synthetic_excluded_reason": "the CTGAN supplement was fitted on the whole training-period pool, including the held-out site, so training on it would leak the held-out site",
+  "seeds": [
+    42,
+    123,
+    777,
+    2024,
+    9999
+  ],
+  "sites": 4,
+  "folds": [
+    {
+      "held_out_site": "SCH01",
+      "school": "Al Huda Islamic and JHS",
+      "train_n": 100,
+      "train_positives": 12,
+      "test_n": 145,
+      "test_positives": 5,
+      "test_base_rate": 0.0345,
+      "computable": true,
+      "per_seed": [
+        {
+          "seed": 42,
+          "threshold": 0.07,
+          "auc_pr": 0.08563736351137927,
+          "auc_roc": 0.505,
+          "recall": 0.4,
+          "precision": 0.11764705882352941,
+          "f2": 0.2702702702702703,
+          "flagged": 17,
+          "tp": 2,
+          "fp": 15,
+          "fn": 3,
+          "tn": 125
+        },
+        {
+          "seed": 123,
+          "threshold": 0.07,
+          "auc_pr": 0.12165639445300462,
+          "auc_roc": 0.7185714285714285,
+          "recall": 0.4,
+          "precision": 0.1111111111111111,
+          "f2": 0.2631578947368421,
+          "flagged": 18,
+          "tp": 2,
+          "fp": 16,
+          "fn": 3,
+          "tn": 124
+        },
+        {
+          "seed": 777,
+          "threshold": 0.94,
+          "auc_pr": 0.11442492148374502,
+          "auc_roc": 0.5128571428571429,
+          "recall": 0.0,
+          "precision": 0.0,
+          "f2": 0.0,
+          "flagged": 1,
+          "tp": 0,
+          "fp": 1,
+          "fn": 5,
+          "tn": 139
+        },
+        {
+          "seed": 2024,
+          "threshold": 0.12,
+          "auc_pr": 0.09625621148876964,
+          "auc_roc": 0.5492857142857143,
+          "recall": 0.4,
+          "precision": 0.16666666666666666,
+          "f2": 0.3125,
+          "flagged": 12,
+          "tp": 2,
+          "fp": 10,
+          "fn": 3,
+          "tn": 130
+        },
+        {
+          "seed": 9999,
+          "threshold": 0.2,
+          "auc_pr": 0.090032834459963,
+          "auc_roc": 0.4957142857142858,
+          "recall": 0.2,
+          "precision": 0.125,
+          "f2": 0.17857142857142858,
+          "flagged": 8,
+          "tp": 1,
+          "fp": 7,
+          "fn": 4,
+          "tn": 133
+        }
+      ],
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1016,
+          "std": 0.014
+        },
+        "auc_roc": {
+          "mean": 0.5563,
+          "std": 0.0832
+        },
+        "recall": {
+          "mean": 0.28,
+          "std": 0.16
+        },
+        "precision": {
+          "mean": 0.1041,
+          "std": 0.0555
+        },
+        "f2": {
+          "mean": 0.2049,
+          "std": 0.1113
+        }
+      },
+      "prevalence_floor": 0.0345,
+      "auc_pr_lift_over_prevalence": 2.95
+    },
+    {
+      "held_out_site": "SCH02",
+      "school": "Tawjeed Islamic and JHS",
+      "train_n": 130,
+      "train_positives": 11,
+      "test_n": 59,
+      "test_positives": 2,
+      "test_base_rate": 0.0339,
+      "computable": true,
+      "per_seed": [
+        {
+          "seed": 42,
+          "threshold": 0.53,
+          "auc_pr": 0.15625,
+          "auc_roc": 0.7105263157894737,
+          "recall": 0.5,
+          "precision": 0.2,
+          "f2": 0.38461538461538464,
+          "flagged": 5,
+          "tp": 1,
+          "fp": 4,
+          "fn": 1,
+          "tn": 53
+        },
+        {
+          "seed": 123,
+          "threshold": 0.41,
+          "auc_pr": 0.5625,
+          "auc_roc": 0.8771929824561404,
+          "recall": 0.5,
+          "precision": 0.125,
+          "f2": 0.3125,
+          "flagged": 8,
+          "tp": 1,
+          "fp": 7,
+          "fn": 1,
+          "tn": 50
+        },
+        {
+          "seed": 777,
+          "threshold": 0.43,
+          "auc_pr": 0.27702702702702703,
+          "auc_roc": 0.6842105263157895,
+          "recall": 0.5,
+          "precision": 0.08333333333333333,
+          "f2": 0.25,
+          "flagged": 12,
+          "tp": 1,
+          "fp": 11,
+          "fn": 1,
+          "tn": 46
+        },
+        {
+          "seed": 2024,
+          "threshold": 0.15,
+          "auc_pr": 0.5344827586206896,
+          "auc_roc": 0.7631578947368421,
+          "recall": 0.5,
+          "precision": 0.1111111111111111,
+          "f2": 0.29411764705882354,
+          "flagged": 9,
+          "tp": 1,
+          "fp": 8,
+          "fn": 1,
+          "tn": 49
+        },
+        {
+          "seed": 9999,
+          "threshold": 0.93,
+          "auc_pr": 0.5555555555555556,
+          "auc_roc": 0.8596491228070176,
+          "recall": 0.5,
+          "precision": 1.0,
+          "f2": 0.5555555555555556,
+          "flagged": 1,
+          "tp": 1,
+          "fp": 0,
+          "fn": 1,
+          "tn": 57
+        }
+      ],
+      "summary": {
+        "auc_pr": {
+          "mean": 0.4172,
+          "std": 0.1684
+        },
+        "auc_roc": {
+          "mean": 0.7789,
+          "std": 0.0776
+        },
+        "recall": {
+          "mean": 0.5,
+          "std": 0.0
+        },
+        "precision": {
+          "mean": 0.3039,
+          "std": 0.3502
+        },
+        "f2": {
+          "mean": 0.3594,
+          "std": 0.1073
+        }
+      },
+      "prevalence_floor": 0.0339,
+      "auc_pr_lift_over_prevalence": 12.31
+    },
+    {
+      "held_out_site": "SCH03",
+      "school": "Ayaarno M/A Primary and JHS",
+      "train_n": 160,
+      "train_positives": 15,
+      "test_n": 17,
+      "test_positives": 0,
+      "test_base_rate": 0.0,
+      "computable": false,
+      "reason": "the held-out site has 17 test-period records but 0 dropout events, so AUC-PR and AUC-ROC are undefined on it"
+    },
+    {
+      "held_out_site": "SCH04",
+      "school": "Buokrom Block A M/A Primary and JHS",
+      "train_n": 150,
+      "train_positives": 16,
+      "test_n": 27,
+      "test_positives": 0,
+      "test_base_rate": 0.0,
+      "computable": false,
+      "reason": "the held-out site has 27 test-period records but 0 dropout events, so AUC-PR and AUC-ROC are undefined on it"
+    }
+  ],
+  "n_computable": 2,
+  "n_not_computable": 2,
+  "computable_sites": [
+    "SCH01",
+    "SCH02"
+  ],
+  "not_computable_sites": [
+    "SCH03",
+    "SCH04"
+  ],
+  "total_test_positives": 7,
+  "verdict": "PARTIALLY COMPUTABLE. 2 of 4 sites can be held out; 2 cannot, because they carry no dropout event in the test period. The 2 computable folds rest on 7 dropout events between them, so the result is reported as a direction and not as an estimate of site-transfer performance."
+}

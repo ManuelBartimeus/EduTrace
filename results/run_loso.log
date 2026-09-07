@@ -1,0 +1,48 @@
+============================================================================================
+LEAVE-ONE-SITE-OUT VALIDATION   (Q2 / Methods M18)
+============================================================================================
+  sites: 4 — SCH01, SCH02, SCH03, SCH04
+  each fold: train on academic_year < 2025 of the other sites (real records only),
+             test on academic_year >= 2025 of the held-out site
+
+HELDOUT SCHOOL                                 TRAIN_N TRAIN_POS    TEST_N  TEST_POS      BASE
+SCH01   Al Huda Islamic and JHS                    100        12       145         5    0.0345
+SCH02   Tawjeed Islamic and JHS                    130        11        59         2    0.0339
+SCH03   Ayaarno M/A Primary and JHS                160        15        17         0    0.0000
+SCH04   Buokrom Block A M/A Primary and JHS        150        16        27         0    0.0000
+
+--- held out: SCH01 (Al Huda Islamic and JHS)
+    seed    42: AUC-PR=0.0856  AUC-ROC=0.5050  recall=0.4000  precision=0.1176  flagged=17  TP=2
+    seed   123: AUC-PR=0.1217  AUC-ROC=0.7186  recall=0.4000  precision=0.1111  flagged=18  TP=2
+    seed   777: AUC-PR=0.1144  AUC-ROC=0.5129  recall=0.0000  precision=0.0000  flagged=1  TP=0
+    seed  2024: AUC-PR=0.0963  AUC-ROC=0.5493  recall=0.4000  precision=0.1667  flagged=12  TP=2
+    seed  9999: AUC-PR=0.0900  AUC-ROC=0.4957  recall=0.2000  precision=0.1250  flagged=8  TP=1
+    ACROSS SEEDS: AUC-PR 0.1016 ± 0.0140  (prevalence floor 0.0345, lift 2.95x) | recall 0.2800 ± 0.1600
+
+--- held out: SCH02 (Tawjeed Islamic and JHS)
+    seed    42: AUC-PR=0.1562  AUC-ROC=0.7105  recall=0.5000  precision=0.2000  flagged=5  TP=1
+    seed   123: AUC-PR=0.5625  AUC-ROC=0.8772  recall=0.5000  precision=0.1250  flagged=8  TP=1
+    seed   777: AUC-PR=0.2770  AUC-ROC=0.6842  recall=0.5000  precision=0.0833  flagged=12  TP=1
+    seed  2024: AUC-PR=0.5345  AUC-ROC=0.7632  recall=0.5000  precision=0.1111  flagged=9  TP=1
+    seed  9999: AUC-PR=0.5556  AUC-ROC=0.8596  recall=0.5000  precision=1.0000  flagged=1  TP=1
+    ACROSS SEEDS: AUC-PR 0.4172 ± 0.1684  (prevalence floor 0.0339, lift 12.31x) | recall 0.5000 ± 0.0000
+
+--- held out: SCH03 (Ayaarno M/A Primary and JHS)
+    NOT COMPUTABLE — 17 test records, 0 dropout events; ranking metrics are undefined
+    Reported as not computable rather than filled with a floor value.
+--- held out: SCH04 (Buokrom Block A M/A Primary and JHS)
+    NOT COMPUTABLE — 27 test records, 0 dropout events; ranking metrics are undefined
+    Reported as not computable rather than filled with a floor value.
+============================================================================================
+SUMMARY
+============================================================================================
+  sites total                 : 4
+  folds computable            : 2 (SCH01, SCH02)
+  folds NOT computable        : 2 (SCH03, SCH04)
+  test-period dropout events across all held-out sites: 7
+  AUC-PR across the computable folds: 0.1016, 0.4172
+  range 0.1016 to 0.4172
+
+  VERDICT: PARTIALLY COMPUTABLE. 2 of 4 sites can be held out; 2 cannot, because they carry no dropout event in the test period. The 2 computable folds rest on 7 dropout events between them, so the result is reported as a direction and not as an estimate of site-transfer performance.
+
+written: results/loso_validation.json

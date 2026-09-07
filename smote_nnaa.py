@@ -28,8 +28,9 @@ def compute_nnaa(n_base, X_oversampled):
     """Verbatim from Cell 2.1: 1-NN adversary separating real from synthesised rows."""
     n_new = X_oversampled.shape[0] - n_base
     y_audit = np.array([0] * n_base + [1] * n_new)
-    return float(cross_val_score(KNeighborsClassifier(n_neighbors=1),
-                                 X_oversampled, y_audit, cv=3, scoring='accuracy').mean())
+    return float(cross_val_score(KNeighborsClassifier(n_neighbors=1, n_jobs=1),
+                                 X_oversampled, y_audit, cv=3, scoring='accuracy',
+                                 n_jobs=1).mean())
 
 
 def dp_smote(X, y, k, strategy, seed, epsilon=1.0):
