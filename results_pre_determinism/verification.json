@@ -32,14 +32,14 @@
     "name": "Correct R2 recall sentence",
     "cls": "T",
     "status": "SATISFIED",
-    "ev": "R2 now reads that the proposed model recorded the higher recall of the two XGBoost variants (0.4000 vs 0.3714), with TabTransformer (0.4857) and the binary attendance rule (0.7143) higher still, and explicitly withdraws the old claim."
+    "ev": "R2 now reads that the proposed model recorded the higher recall of the two XGBoost variants (0.4000 vs 0.3714), with TabTransformer (0.5143) and the binary attendance rule (0.7143) higher still, and explicitly withdraws the old claim."
   },
   {
     "n": 6,
     "name": "Direction column in Table 4 + sentence in R4",
     "cls": "T",
     "status": "SATISFIED",
-    "ev": "Table 4 has a seventh column, Direction, populated on every row. The directions are reported as the run returned them: 3 of 4 favour the comparator and 1 favour the proposed model. R4 states the split in prose and discloses that the TabTransformer comparison reversed when the estimators were pinned to a single thread. Discordant counts: Default XGBoost b=17 c=20; Decision Tree b=5 c=40; TabTransformer b=53 c=31; Attendance rule (binary) b=31 c=38"
+    "ev": "Table 4 has a seventh column, Direction. All four comparisons read 'Favours comparator'; R4 states in prose that the significant results favour the comparator, not the proposed model. Discordant counts: Default XGBoost b=17 c=20; Decision Tree b=5 c=40; TabTransformer b=22 c=41; Attendance rule (binary) b=31 c=38"
   },
   {
     "n": 7,

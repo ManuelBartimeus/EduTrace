@@ -1,7 +1,0 @@
-,Model,AUC-ROC,AUC-PR (Primary),Macro F1,Precision,Recall
-1,"XGBoost (engineered, real-only field validation)",0.7768,0.1212,0.559,0.1429,0.1429
-2,Attendance Threshold Rule (att < 0.70),0.8274,0.0826,0.4933,0.0676,0.7143
-3,XGBoost,0.6499,0.0821,0.5612,0.1429,0.1429
-4,"XGBoost (default, non-engineered)",0.6743,0.073,0.5676,0.1667,0.1429
-5,Decision Tree (CART),0.521,0.0638,0.5408,0.0833,0.2857
-6,TabTransformer (EduTrace),0.431,0.027,0.4863,0.0,0.0

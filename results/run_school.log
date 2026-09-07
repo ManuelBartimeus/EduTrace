@@ -1,0 +1,64 @@
+================================================================================================
+1. SAMPLING FRAME BY SITE   (M3, Table 1b)
+================================================================================================
+CODE    SCHOOL                               STUDENTS  RECORDS  DROPOUTS  BASE RATE   TRAIN_N   TR_POS    TEST_N   TE_POS
+SCH01   Al Huda Islamic and JHS                    80      225        11     0.0489        80        6       145        5
+SCH02   Tawjeed Islamic and JHS                    50      109         9     0.0826        50        7        59        2
+SCH03   Ayaarno M/A Primary and JHS                20       37         3     0.0811        20        3        17        0
+SCH04   Buokrom Block A M/A Primary and JHS        30       57         2     0.0351        30        2        27        0
+TOTAL   4 sites                                   180      428        25     0.0584       180       18       248        7
+
+  site base rates span 0.0351 to 0.0826 (a 2.4x spread across sites)
+  largest site holds 44.4% of students; smallest holds 11.1%
+  sites with NO test-period dropout event: 2 (SCH03, SCH04)
+
+================================================================================================
+2. IS SITE CONFOUNDED WITH A REGISTER VARIABLE?
+================================================================================================
+
+  fee_payment_status  — Cramer's V = 0.2132 (weak), chi2 = 38.93, p = 7.4e-07
+fee_payment_status  Fully Paid  Partially Paid  Unpaid
+    school_id                                             
+    SCH01                        0              20     205
+    SCH02                       10               8      91
+    SCH03                        0               0      37
+    SCH04                        0               0      57
+      NOTE: SCH03 is 100.0% "Unpaid" — fee_payment_status is effectively constant within this site
+      NOTE: SCH04 is 100.0% "Unpaid" — fee_payment_status is effectively constant within this site
+
+  grade_level  — Cramer's V = 0.2210 (weak), chi2 = 41.82, p = 2e-07
+grade_level  Grade 7  Grade 8  Grade 9
+    school_id                             
+    SCH01             80       74       71
+    SCH02             50       23       36
+    SCH03             20        0       17
+    SCH04             30        0       27
+
+  gender  — Cramer's V = 0.4396 (moderate), chi2 = 82.73, p = 7.97e-18
+gender     Female  Male
+    school_id              
+    SCH01         135    90
+    SCH02          76    33
+    SCH03          37     0
+    SCH04           7    50
+      NOTE: SCH03 is 100.0% "Female" — gender is effectively constant within this site
+
+  distance_km by site (continuous):
+    SCH01   min=2.0 max=5.0 mean=3.560 values=[2.0, 3.5, 4.0, 5.0]
+    SCH02   min=2.0 max=4.0 mean=3.124 values=[2.0, 3.5, 4.0]
+    SCH03   min=2.0 max=5.0 mean=3.419 values=[2.0, 3.5, 5.0]
+    SCH04   min=2.0 max=5.0 mean=3.395 values=[2.0, 3.5, 5.0]
+    Kruskal-Wallis across sites: H = 50.22, p = 7.16e-11
+
+================================================================================================
+3. IS SITE RECOVERABLE FROM THE SIX REGISTER FEATURES?
+================================================================================================
+  A classifier is asked to predict school_id from the feature set the model
+  actually sees. High accuracy means a leave-one-site-out fold is weaker
+  evidence than it looks, because site can be inferred rather than withheld.
+    5-fold accuracy predicting school_id: 0.6707 ± 0.0402
+    majority-class baseline             : 0.5257
+    lift over majority                  : 1.28x
+    site is materially recoverable from the features: False
+
+written: results/school_structure.json

@@ -93,28 +93,28 @@
     },
     "tabtransformer": {
       "auc_pr": {
-        "mean": 0.2533,
-        "std": 0.079
+        "mean": 0.2387,
+        "std": 0.0559
       },
       "auc_roc": {
-        "mean": 0.6964,
-        "std": 0.0584
+        "mean": 0.7248,
+        "std": 0.0409
       },
       "f2": {
-        "mean": 0.2039,
-        "std": 0.0433
+        "mean": 0.2572,
+        "std": 0.0527
       },
       "macro_f1": {
-        "mean": 0.4984,
-        "std": 0.0655
+        "mean": 0.5254,
+        "std": 0.0383
       },
       "precision": {
-        "mean": 0.1499,
-        "std": 0.1758
+        "mean": 0.0901,
+        "std": 0.03
       },
       "recall": {
-        "mean": 0.4857,
-        "std": 0.1714
+        "mean": 0.5143,
+        "std": 0.07
       }
     }
   },
@@ -144,25 +144,25 @@
       "recall": 0.2857
     },
     "tabtransformer": {
-      "auc_pr": 0.2016,
-      "auc_roc": 0.7101,
-      "f2": 0.1802,
-      "macro_f1": 0.4435,
-      "precision": 0.0482,
-      "recall": 0.5714
+      "auc_pr": 0.2688,
+      "auc_roc": 0.7392,
+      "f2": 0.2206,
+      "macro_f1": 0.5182,
+      "precision": 0.075,
+      "recall": 0.4286
     }
   },
   "seed42_thresholds": {
     "xgb_engineered": 0.34,
     "xgb_default": 0.08,
     "decision_tree": 0.6,
-    "tabtransformer": 0.49
+    "tabtransformer": 0.5
   },
   "seed42_flags": {
     "xgb_engineered": 57,
     "xgb_default": 54,
     "decision_tree": 22,
-    "tabtransformer": 83
+    "tabtransformer": 40
   },
   "seed42_confusion": {
     "xgb_default": [
@@ -197,12 +197,12 @@
     ],
     "tabtransformer": [
       [
-        162,
-        79
+        204,
+        37
       ],
       [
-        3,
-        4
+        4,
+        3
       ]
     ]
   },
@@ -552,11 +552,11 @@
       },
       {
         "comparison": "TabTransformer",
-        "p": 0.021383189937144585,
-        "b": 53,
-        "c": 31,
-        "direction": "Favours proposed",
-        "p_bh": 0.04276637987428917,
+        "p": 0.022574972673257185,
+        "b": 22,
+        "c": 41,
+        "direction": "Favours comparator",
+        "p_bh": 0.04514994534651437,
         "decision": "Reject H\u2080"
       },
       {
@@ -749,29 +749,29 @@
         ]
       },
       "tabtransformer_threshold_ORIGINAL": {
-        "n": 83,
-        "true_dropouts_in_population": 4,
+        "n": 40,
+        "true_dropouts_in_population": 3,
         "rank_preservation": {
           "rank_preserving_at1": 1.0,
-          "rank_preserving_at2": 0.8554,
-          "naive_fixed_order_at1": 0.1807,
-          "naive_fixed_order_at2": 0.0241
+          "rank_preserving_at2": 0.875,
+          "naive_fixed_order_at1": 0.175,
+          "naive_fixed_order_at2": 0.025
         },
         "directional_agreement": {
-          "rank_preserving_at1": 0.8434,
-          "rank_preserving_at2": 0.9518,
-          "naive_fixed_order_at1": 0.0482,
-          "naive_fixed_order_at2": 0.0482
+          "rank_preserving_at1": 0.725,
+          "rank_preserving_at2": 0.925,
+          "naive_fixed_order_at1": 0.075,
+          "naive_fixed_order_at2": 0.075
         },
         "table5": {
-          "alerts": 83,
-          "within_160": 83,
+          "alerts": 40,
+          "within_160": 40,
           "len_min": 70,
           "len_max": 146,
-          "len_mean": 86.7,
+          "len_mean": 89.9,
           "factors_min": 1,
           "factors_max": 5,
-          "factors_mean": 2.06
+          "factors_mean": 2.23
         },
         "example_alerts": [
           "ALERT:S01_2025 risk. Factors: male student, fees unpaid. Contact guardian.EduTrace.",

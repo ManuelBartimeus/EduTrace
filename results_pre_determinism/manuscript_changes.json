@@ -52,12 +52,12 @@
   {
     "document": "Results",
     "item": "C1 / C2",
-    "change": "R3: ten-seed sign-stability result (2 sign changes) and the leave-one-out result over data sources, both written from the regenerated run"
+    "change": "R3: ten-seed sign-stability result (2 sign changes) and the leave-one-out finding that the real records carry the result and the synthetic supplement is not additive"
   },
   {
     "document": "Results",
     "item": "C3",
-    "change": "R4: paired minimum-detectable-effect reported (69 discordant pairs, observed split 0.551 against a detectable 0.68), written from the regenerated run, with the reference frames labelled"
+    "change": "R4: paired minimum-detectable-effect reported with the required discordant-pair count (786 against 69 available), and the seed-42 versus five-seed reference frames labelled"
   },
   {
     "document": "Results",
@@ -118,35 +118,5 @@
     "document": "Results",
     "item": "Q2",
     "change": "R12: records the site count's change of status and what it does and does not close"
-  },
-  {
-    "document": "Results",
-    "item": "Table 3",
-    "change": "TabTransformer row regenerated from the artefact: AUC-PR 0.2533 \u00b1 0.0790, AUC-ROC 0.6964 \u00b1 0.0584, F2 0.2039 \u00b1 0.0433, precision 0.1499 \u00b1 0.1758, recall 0.4857 \u00b1 0.1714"
-  },
-  {
-    "document": "Results",
-    "item": "Table 4",
-    "change": "TabTransformer row: p 0.0214, b 53, c 31, BH p 0.0428, Reject H\u2080, Direction \"Favours proposed XGBoost\""
-  },
-  {
-    "document": "Results",
-    "item": "R2",
-    "change": "TabTransformer AUC-PR and recall updated to the regenerated values"
-  },
-  {
-    "document": "Results",
-    "item": "R4",
-    "change": "McNemar TabTransformer row updated and the \"every comparison favours the comparator\" claim replaced with the actual split (3 comparator / 1 proposed), with the direction change disclosed"
-  },
-  {
-    "document": "Results",
-    "item": "R5",
-    "change": "cross-model sensitivity population updated to 83 records (was 40): the TabTransformer threshold moved when its non-determinism was repaired, so a different number of records clear it"
-  },
-  {
-    "document": "Results",
-    "item": "R10",
-    "change": "DEPARTURE FROM FF6, minimal and reasoned: two sentences corrected because the regenerated run made them false. TabTransformer AUC-PR updated, and the \"every comparison favours the comparator\" claim replaced with the actual split."
   }
 ]

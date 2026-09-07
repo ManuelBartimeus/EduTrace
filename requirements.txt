@@ -21,7 +21,3 @@ shap==0.51.0
 torch==2.14.0
 tab-transformer-pytorch==0.6.1
 matplotlib==3.10.9
-
-# Required by verify.py, consistency_pass.py and the docs_out edit scripts,
-# which read and check the manuscript .docx files.
-python-docx==1.2.0

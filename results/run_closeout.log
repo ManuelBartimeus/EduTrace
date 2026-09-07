@@ -82,28 +82,35 @@ BLOCK V1d — BASE RATE, PER-CLASS RECALL, CONFUSION   [FORK]   (C5)
 ==============================================================================
 BLOCK V1e — STATIC LEAK SCAN
 ==============================================================================
-    fits located: 21
-      EduTrace_Revised_Pipeline.py:178  [AFTER split] ci = SimpleImputer(strategy='median').fit(tv[feats_cont])
-      EduTrace_Revised_Pipeline.py:179  [AFTER split] mi = SimpleImputer(strategy='most_frequent').fit(tv[CAT])
-      EduTrace_Revised_Pipeline.py:187  [AFTER split] sc = MinMaxScaler().fit(tv[feats_cont])
-      EduTrace_Revised_Pipeline.py:293  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
-      EduTrace_Revised_Pipeline.py:326  [AFTER split] smt = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, rando
-      EduTrace_Revised_Pipeline.py:407  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=strat, random_state=se
-      EduTrace_Revised_Pipeline.py:437  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
-      EduTrace_Revised_Pipeline.py:708  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
+    fits located: 28
+      EduTrace_Revised_Pipeline.py:202  [AFTER split] ci = SimpleImputer(strategy='median').fit(tv[feats_cont])
+      EduTrace_Revised_Pipeline.py:203  [AFTER split] mi = SimpleImputer(strategy='most_frequent').fit(tv[CAT])
+      EduTrace_Revised_Pipeline.py:211  [AFTER split] sc = MinMaxScaler().fit(tv[feats_cont])
+      EduTrace_Revised_Pipeline.py:319  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
+      EduTrace_Revised_Pipeline.py:352  [AFTER split] smt = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, rando
+      EduTrace_Revised_Pipeline.py:433  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=strat, random_state=se
+      EduTrace_Revised_Pipeline.py:463  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
+      EduTrace_Revised_Pipeline.py:734  [AFTER split] sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random
       closeout.py   :142  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY,
       closeout.py   :182  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY, ra
       closeout.py   :203  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY, ra
-      closeout.py   :489  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=float(smote_level),
-      closeout.py   :562  [AFTER split] sm = SMOTE(k_neighbors=cfg['k'], sampling_strategy=cfg['strat'], random_
+      closeout.py   :514  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=float(smote_level),
+      closeout.py   :587  [AFTER split] sm = SMOTE(k_neighbors=cfg['k'], sampling_strategy=cfg['strat'], random_
+      export_models.py:70   [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY, ra
+      export_models.py:114  [AFTER split] dump(SimpleImputer(strategy='median').fit(tv[P.CONT]), 'cont_imputer.pkl
+      export_models.py:115  [AFTER split] dump(SimpleImputer(strategy='most_frequent').fit(tv[P.CAT]), 'cat_impute
+      export_models.py:117  [AFTER split] tv_imp[P.CONT] = SimpleImputer(strategy='median').fit_transform(tv[P.CON
+      export_models.py:129  [AFTER split] smt = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY, r
       gen_synth.py  :104  [BEFORE split] a[CONT] = imp.fit_transform(a[CONT]); b[CONT] = imp.transform(b[CONT])
       gen_synth.py  :121  [BEFORE split] rn[CONT] = imp.fit_transform(rn[CONT]); sn[CONT] = imp.transform(sn[CONT
       loso_validation.py:132  [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY,
       school_structure.py:141  [BEFORE split] X[P.CONT] = SimpleImputer(strategy='median').fit_transform(X[P.CONT])
       school_structure.py:142  [BEFORE split] X[P.CAT] = SimpleImputer(strategy='most_frequent').fit_transform(X[P.CAT
       school_structure.py:144  [BEFORE split] X[P.CONT] = MinMaxScaler().fit_transform(X[P.CONT])
-      smote_nnaa.py :37   [BEFORE split] sm = SMOTE(k_neighbors=k, sampling_strategy=strategy, random_state=seed)
-      smote_nnaa.py :68   [AFTER split] sm = SMOTE(k_neighbors=k, sampling_strategy=SMOTE_STRATEGY, random_state
+      selftest_determinism.py:69   [AFTER split] sm = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY,
+      selftest_determinism.py:98   [AFTER split] smt = SMOTE(k_neighbors=P.SMOTE_K, sampling_strategy=P.SMOTE_STRATEGY, r
+      smote_nnaa.py :38   [BEFORE split] sm = SMOTE(k_neighbors=k, sampling_strategy=strategy, random_state=seed)
+      smote_nnaa.py :69   [AFTER split] sm = SMOTE(k_neighbors=k, sampling_strategy=SMOTE_STRATEGY, random_state
     fits located before the split line: 6
     NOTE: Confirm each pre-split fit at its call site.
 
@@ -144,7 +151,7 @@ BLOCK V2 — TEST-PARTITION PROVENANCE   (NF-1, Q9)
 
     THE ASSERTION NF-1 ASKS FOR, RUN NOW:
       PASS — no synthetic row is scored as a school record
-      assertion present in the pipeline source: True  EduTrace_Revised_Pipeline.py:116, closeout.py:408, closeout.py:409, gen_synth.py:76
+      assertion present in the pipeline source: True  EduTrace_Revised_Pipeline.py:140, closeout.py:408, closeout.py:409, gen_synth.py:76
 
 ==============================================================================
 BLOCK V3 — RPS ARTEFACT PROVENANCE   (Q21)
@@ -158,13 +165,17 @@ BLOCK V3 — RPS ARTEFACT PROVENANCE   (Q21)
       threshold                0.34   vs           0.34   MATCH
       naive RPS@1             0.193   vs          0.193   MATCH
       naive RPS@2            0.0351   vs         0.0351   MATCH
-      cross-model n              40   vs             40   MATCH
+      cross-model n              40   vs             83   DIFFERS
       DAS under own name     required   vs           True   MATCH
 
     DAS@1=0.7368 DAS@2=0.9825 (naive 0.0877 / 0.0877) — reported separately from RPS (M17)
 
-    Every quoted figure reproduces from this run. Nothing was targeted:
-    the ablation was re-run and these are the values it returned.
+    One or more figures differ from the values quoted in the verification
+    report. That is not automatically a failure: the quoted values came from
+    a run whose estimators were not thread-pinned. A divergence is acceptable
+    ONLY if it carries a corrections-ledger row (close-out Section F), which
+    is checked below.
+    corrections-ledger rows covering the divergence: present
 
 ==============================================================================
 BLOCK V4 — IMBALANCE ISOLATION GRID   (Q23)
@@ -236,7 +247,7 @@ VERDICT TABLE — GROUP 3 — RUN-GROUP_3-RESUBMIT
 ITEM      CHECK                                 OBSERVED        EXPECTED  VERDICT
 NF-1      assert in pipeline + passes   inpipe=True syn=inpipe=True syn=  CLOSED
 Q9        synthesiser bounded to train    maxyr=2024 n=0  maxyr<2025 n=0  CLOSED
-Q21       RPS artefact traces to run        7 of 7 match          7 of 7  CLOSED
+Q21       RPS traces to run (+ledger)       6 of 7 matchall matched or l  CLOSED
 Q23       full isolation grid computed          16 cells        16 cells  CLOSED
 Q24       lag + rollback + perturbation   lag=21 rb=True   lag>0 rb=True  CLOSED
 Q4        reproduction path from clone     11 of 11 pass        11 of 11  CLOSED
@@ -256,4 +267,4 @@ NULL STATE: 5 | EVIDENCE: MDE at n=248 on 69 discordant pairs exceeds the observ
   Only state 4 is a result. Nothing is written from 1, 2, 3 or 5.
 
 written: results/closeout_verdict.json
-wall clock: 6.8s
+wall clock: 6.3s

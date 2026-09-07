@@ -1,7 +1,7 @@
 {
   "owner": "GROUP 3",
   "anchor": "RUN-GROUP_3-RESUBMIT",
-  "generated": "2026-09-07T13:03:29",
+  "generated": "2026-09-07T09:18:27",
   "versions": {
     "python": "3.11.15",
     "numpy": "2.4.4",
@@ -30,9 +30,9 @@
     },
     {
       "item": "Q21",
-      "check": "RPS traces to run (+ledger)",
-      "observed": "6 of 7 match",
-      "expected": "all matched or ledgered",
+      "check": "RPS artefact traces to run",
+      "observed": "7 of 7 match",
+      "expected": "7 of 7",
       "verdict": "CLOSED"
     },
     {
@@ -88,7 +88,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 1.5
+      "secs": 0.3
     },
     {
       "seed": 123,
@@ -98,7 +98,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     },
     {
       "seed": 777,
@@ -108,7 +108,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     },
     {
       "seed": 2024,
@@ -118,7 +118,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     },
     {
       "seed": 9999,
@@ -299,7 +299,7 @@
     "synth_rows_in_test_period": 0,
     "assertion_in_source": true,
     "assertion_sites": [
-      "EduTrace_Revised_Pipeline.py:140",
+      "EduTrace_Revised_Pipeline.py:116",
       "closeout.py:408",
       "closeout.py:409",
       "gen_synth.py:76"
@@ -847,5 +847,5 @@
     "Confirm each pre-split fit at its call site.",
     "C4 is ticked by this table PLUS the M13 parity statement. Counts alone do not tick it."
   ],
-  "wall_clock_secs": 6.3
+  "wall_clock_secs": 6.8
 }

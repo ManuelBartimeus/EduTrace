@@ -61,7 +61,31 @@ R = {}   # results accumulator
 
 
 def set_all_seeds(s):
+    """Seed every source of randomness AND remove thread-order dependence.
+
+    Seeding alone is not enough for reproducibility across machines. XGBoost and
+    torch both accumulate floating-point sums in thread-completion order, so the
+    same seed on a machine with a different core count produces different trees
+    and different weights. The round-2 push confirmed this directly: changing
+    only OMP_NUM_THREADS altered 329 of 858 result leaves and moved two
+    clearance conditions. Every estimator in this pipeline is therefore pinned
+    to a single thread, and torch is put into deterministic mode.
+
+    This costs wall-clock time and buys the property Q4 actually asks for: a
+    reader who clones the repository lands on the reported numbers.
+    """
+    os.environ['PYTHONHASHSEED'] = str(s)
     np.random.seed(s); random.seed(s); torch.manual_seed(s)
+    torch.cuda.manual_seed_all(s)
+    torch.set_num_threads(1)
+    try:                                    # only settable before parallel work starts
+        if torch.get_num_interop_threads() != 1:
+            torch.set_num_interop_threads(1)
+    except RuntimeError:
+        pass
+    torch.use_deterministic_algorithms(True, warn_only=True)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
 
 
 # ---------------------------------------------------------------- evaluation
@@ -247,7 +271,9 @@ def train_tabtransformer(Xc_tr, Xn_tr, y_tr, Xc_vl, Xn_vl, y_vl, seed, alpha,
     yt = torch.tensor(y_tr, dtype=torch.float32)
     cv = torch.tensor(Xc_vl, dtype=torch.long); nv = torch.tensor(Xn_vl, dtype=torch.float32)
     yv = torch.tensor(y_vl, dtype=torch.float32)
-    dl = DataLoader(TensorDataset(ct, nt, yt), batch_size=bs, shuffle=True)
+    _g = torch.Generator(); _g.manual_seed(seed)   # shuffle order must not
+    dl = DataLoader(TensorDataset(ct, nt, yt), batch_size=bs, shuffle=True,
+                    generator=_g, num_workers=0)   # depend on global RNG state
     best, wait, state = float('inf'), 0, None
     for _ in range(max_epochs):
         m.train()
@@ -296,14 +322,14 @@ def run_models(D, tag, with_tabtransformer=True):
 
         # Default XGBoost
         set_all_seeds(seed)
-        md = xgb.XGBClassifier(random_state=seed, eval_metric='logloss', verbosity=0).fit(Xtr, ytr)
+        md = xgb.XGBClassifier(n_jobs=1, random_state=seed, eval_metric='logloss', verbosity=0).fit(Xtr, ytr)
         t, _, _ = f2_threshold_search(yvl, md.predict_proba(Xvl)[:, 1])
         p = md.predict_proba(Xte)[:, 1]
         out['xgb_default'].append(evaluate(yte, p, threshold=t)); proba_by_seed['xgb_default'][seed] = (p, t)
 
         # Proposed (engineered) XGBoost
         set_all_seeds(seed)
-        me = xgb.XGBClassifier(n_estimators=200, max_depth=4, learning_rate=0.05,
+        me = xgb.XGBClassifier(n_jobs=1, n_estimators=200, max_depth=4, learning_rate=0.05,
                                scale_pos_weight=spw, subsample=0.8, colsample_bytree=0.8,
                                random_state=seed, eval_metric='aucpr', verbosity=0).fit(Xtr_s, ytr_s)
         pv = me.predict_proba(Xvl)[:, 1]
@@ -409,7 +435,7 @@ def smote_ablation(D):
             added.append(int(len(ytr_s) - len(ytr)))
             spw = float((ytr == 0).sum()) / max(float((ytr == 1).sum()), 1.0)
             set_all_seeds(seed)
-            m = xgb.XGBClassifier(n_estimators=200, max_depth=4, learning_rate=0.05,
+            m = xgb.XGBClassifier(n_jobs=1, n_estimators=200, max_depth=4, learning_rate=0.05,
                                   scale_pos_weight=spw, subsample=0.8, colsample_bytree=0.8,
                                   random_state=seed, eval_metric='aucpr', verbosity=0).fit(Xtr_s, ytr_s)
             t, _, _ = f2_threshold_search(yvl, m.predict_proba(Xvl)[:, 1])
@@ -439,7 +465,7 @@ def layer2_ablation(D):
             spw = (float((ytr == 0).sum()) / max(float((ytr == 1).sum()), 1.0)
                    if spw_mode == 'full' else 1.0)
             set_all_seeds(seed)
-            m = xgb.XGBClassifier(n_estimators=200, max_depth=4, learning_rate=0.05,
+            m = xgb.XGBClassifier(n_jobs=1, n_estimators=200, max_depth=4, learning_rate=0.05,
                                   scale_pos_weight=spw, subsample=0.8, colsample_bytree=0.8,
                                   random_state=seed, eval_metric='aucpr', verbosity=0).fit(Xtr_s, ytr_s)
             t = (f2_threshold_search(yvl, m.predict_proba(Xvl)[:, 1])[0]
@@ -708,11 +734,11 @@ def cv_diagnostic(D):
                 sm = SMOTE(k_neighbors=SMOTE_K, sampling_strategy=SMOTE_STRATEGY, random_state=42)
                 Xs, ys = sm.fit_resample(Xtv[tr], ytv[tr])
                 spw = float((ytv[tr] == 0).sum()) / max(float((ytv[tr] == 1).sum()), 1.0)
-                m = xgb.XGBClassifier(n_estimators=200, max_depth=4, learning_rate=0.05,
+                m = xgb.XGBClassifier(n_jobs=1, n_estimators=200, max_depth=4, learning_rate=0.05,
                                       scale_pos_weight=spw, subsample=0.8, colsample_bytree=0.8,
                                       random_state=42, eval_metric='aucpr', verbosity=0).fit(Xs, ys)
             else:
-                m = xgb.XGBClassifier(random_state=42, eval_metric='logloss',
+                m = xgb.XGBClassifier(n_jobs=1, random_state=42, eval_metric='logloss',
                                       verbosity=0).fit(Xtv[tr], ytv[tr])
             folds.append(round(float(average_precision_score(ytv[va], m.predict_proba(Xtv[va])[:, 1])), 4))
         out[name] = {'per_fold': folds, 'mean': round(float(np.mean(folds)), 4),
@@ -805,8 +831,8 @@ def error_analysis(D, M):
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--real', default='data/real_student_data_CLEANED_school.csv')
-    ap.add_argument('--synth', default='repro/synth_ctgan_s42.csv')
-    ap.add_argument('--out', default='repro/results.json')
+    ap.add_argument('--synth', default='data/synth_ctgan_s42.csv')
+    ap.add_argument('--out', default='results/results.json')
     ap.add_argument('--no-tt', action='store_true')
     ARGS = ap.parse_args()
     globals()['ARGS'] = ARGS
