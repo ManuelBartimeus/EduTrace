@@ -193,8 +193,11 @@ replace_sub(rd, 'The engineered contribution (SHAPtoSMS) was isolated by the abl
             'holds (RPS@1 1.0000 versus 0.1750; DAS@1 0.7250 versus 0.0750)',
             'On the earlier cross-model population (%d records) the same ordering conclusion '
             'holds (RPS@1 %.4f versus %.4f; DAS@1 %.4f versus %.4f)'
-            % (xm['n_evaluated'], xm['rps_at_1'], xm['naive_fixed_order_at_1'],
-               xm['das_at_1'], xm['naive_fixed_order_at_1']))
+            # Each figure takes the naive baseline of its OWN quantity. Reusing the
+            # rank-preservation baseline for the directional-agreement comparison was
+            # the round-3 defect this line carried into R5.
+            % (xm['n_evaluated'], xm['rps_at_1'], xm['rps_naive_fixed_order_at_1'],
+               xm['das_at_1'], xm['das_naive_fixed_order_at_1']))
 log('R5', 'cross-model sensitivity population updated to %d records (was 40): the '
           'TabTransformer threshold moved when its non-determinism was repaired, so a '
           'different number of records clear it' % xm['n_evaluated'])

@@ -1,6 +1,10 @@
-### Ledger scope
+# Corrections ledger (close-out Section F)
 
-Leaf-level differences across all regenerated artefacts: **58**.
+Two rounds of correction, each against its own committed baseline and each with its own cause. The complete leaf-by-leaf diff for both is committed as `results/corrections_ledger.json`. The tables below are not samples of it: each is every quantity that appears in the Methods or Results sections, which is the set a reader can check against the manuscript.
+
+## Round 3 — determinism repair
+
+Baseline `results_pre_determinism/` against `results_pre_round4/`. Leaf-level differences across all regenerated artefacts: **58**.
 
 - `closeout_verdict.json`: 10 changed leaves
 - `loso_validation.json`: 0 changed leaves
@@ -9,29 +13,63 @@ Leaf-level differences across all regenerated artefacts: **58**.
 - `school_structure.json`: 0 changed leaves
 - `smote_nnaa.json`: 0 changed leaves
 
-The complete leaf-by-leaf diff is committed as `results/corrections_ledger.json`. The table below is not a sample of it: it is every quantity that appears in the Methods or Results sections, which is the set a reader can check against the manuscript.
-
-**14 of 45 manuscript-facing quantities moved; 31 held.**
+**14 of 46 manuscript-facing quantities moved; 32 held.**
 
 | WHERE | QUANTITY | CAUSE | CONFIRMED BY | FIX APPLIED | BEFORE | AFTER |
 |---|---|---|---|---|---|---|
-| R2 / Table 3 | TabTransformer AUC-PR | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.2387` | `0.2533` |
-| R2 / Table 3 | TabTransformer recall | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.5143` | `0.4857` |
-| R5 | Cross-model sensitivity population n | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `40` | `83` |
-| R4 / Table 4 | McNemar vs TabTransformer: discordant b | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `22` | `53` |
-| R4 / Table 4 | McNemar vs TabTransformer: discordant c | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `41` | `31` |
-| R4 / Table 4 | McNemar vs TabTransformer: BH-adjusted p | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.0451` | `0.0428` |
-| R4 / Table 4 / R10 | McNemar vs TabTransformer: DIRECTION | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `Favours comparator` | `Favours proposed` |
-| Table 3 | TabTransformer AUC-ROC | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.7248` | `0.6964` |
-| Table 3 | TabTransformer F2 | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.2572` | `0.2039` |
-| Table 3 | TabTransformer precision | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.0901` | `0.1499` |
-| R7 / Figure 7 | TabTransformer seed-42 threshold | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.5` | `0.49` |
-| R5 | TabTransformer seed-42 flagged count | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `40` | `83` |
-| M19 | TabTransformer checkpoint size (MB) | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `1.25` | `1.19` |
-| M19 | Proposed XGBoost checkpoint size (MB) | Unpinned estimator thread count (non-deterministic reduction order) | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | `0.29` | `0.27` |
+| R2 / Table 3 | TabTransformer AUC-PR | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.2387` | `0.2533` |
+| R2 / Table 3 | TabTransformer recall | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.5143` | `0.4857` |
+| R5 | Cross-model sensitivity population n | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `40` | `83` |
+| R4 / Table 4 | McNemar vs TabTransformer: discordant b | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `22` | `53` |
+| R4 / Table 4 | McNemar vs TabTransformer: discordant c | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `41` | `31` |
+| R4 / Table 4 | McNemar vs TabTransformer: BH-adjusted p | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.0451` | `0.0428` |
+| R4 / Table 4 / R10 | McNemar vs TabTransformer: DIRECTION | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `Favours comparator` | `Favours proposed` |
+| Table 3 | TabTransformer AUC-ROC | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.7248` | `0.6964` |
+| Table 3 | TabTransformer F2 | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.2572` | `0.2039` |
+| Table 3 | TabTransformer precision | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.0901` | `0.1499` |
+| R7 / Figure 7 | TabTransformer seed-42 threshold | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.5` | `0.49` |
+| R5 | TabTransformer seed-42 flagged count | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `40` | `83` |
+| M19 | TabTransformer checkpoint size (MB) | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `1.25` | `1.19` |
+| M19 | Proposed XGBoost checkpoint size (MB) | Unpinned estimator thread count (non-deterministic reduction order) | n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once | OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped | `0.29` | `0.27` |
+
+### Cause (round 3)
+
+Estimator thread count was not pinned. XGBoost and torch accumulate floating-point sums in thread-completion order, so the same seed on a machine with a different core count produced different trees, weights and metrics. Confirmed by changing only OMP_NUM_THREADS: 329 of 858 leaves moved and two clearance conditions changed verdict.
+
+### Fix (round 3)
+
+n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one thread with deterministic algorithms enabled and a seeded DataLoader generator; the run regenerated once under the pinned settings. selftest_determinism.py verifies thread-count independence on any machine.
+
+## Round 4 — post-audit corrections
+
+Baseline `results_pre_round4/` against `results/`. Leaf-level differences across all regenerated artefacts: **18**.
+
+- `closeout_verdict.json`: 12 changed leaves
+- `loso_validation.json`: 0 changed leaves
+- `results.json`: 0 changed leaves
+- `rps_results.json`: 6 changed leaves
+- `school_structure.json`: 0 changed leaves
+- `smote_nnaa.json`: 0 changed leaves
+
+**4 of 48 manuscript-facing quantities moved; 44 held.**
+
+| WHERE | QUANTITY | CAUSE | CONFIRMED BY | FIX APPLIED | BEFORE | AFTER |
+|---|---|---|---|---|---|---|
+| R5 | Cross-model DAS@1 naive baseline (artefact key) | C2 decided on the sign of an unstable mean delta; RPS artefact wrote one naive baseline under an unqualified name | C2 returns UNVERIFIABLE when C1 fails; both naive baselines written and read from their own keys; no refit | Clean-clone re-run under the round-3 pins: 859/859 leaves of results.json bit-identical, so nothing model-derived moved | `None` | `0.0482` |
+| R12 | C2 verdict | C2 decided on the sign of an unstable mean delta; RPS artefact wrote one naive baseline under an unqualified name | C2 returns UNVERIFIABLE when C1 fails; both naive baselines written and read from their own keys; no refit | Clean-clone re-run under the round-3 pins: 859/859 leaves of results.json bit-identical, so nothing model-derived moved | `FAIL` | `UNVERIFIABLE — C1 failed, so there is no stable effect sign for a leave-one-out to preserve` |
+| R5 | Cross-model DAS@1 comparison baseline AS QUOTED IN R5 | C2 decided on the sign of an unstable mean delta; RPS artefact wrote one naive baseline under an unqualified name | C2 returns UNVERIFIABLE when C1 fails; both naive baselines written and read from their own keys; no refit | Clean-clone re-run under the round-3 pins: 859/859 leaves of results.json bit-identical, so nothing model-derived moved | `0.1807` | `0.0482` |
+| R11 / Table 7 | McNemar directions row | C2 decided on the sign of an unstable mean delta; RPS artefact wrote one naive baseline under an unqualified name | C2 returns UNVERIFIABLE when C1 fails; both naive baselines written and read from their own keys; no refit | Clean-clone re-run under the round-3 pins: 859/859 leaves of results.json bit-identical, so nothing model-derived moved | `All four favour the comparator` | `3 favour the comparator, 1 favours the proposed model` |
+
+### Cause (round 4)
+
+Two defects found by an independent audit of the round-3 push. (a) C2 was decided by comparing each leave-one-out fold against the sign of a mean delta that C1 had already shown to be unstable, so its PASS/FAIL turned on which side of zero a quantity indistinguishable from zero fell. (b) The RPS artefact wrote only the rank-preservation naive baseline for the cross-model population, under an unqualified name, so R5 quoted that baseline beside a directional-agreement figure.
+
+### Fix (round 4)
+
+(a) closeout.py returns UNVERIFIABLE for C2 when C1 has failed, leaving C2_PASS and therefore the null state and the certificate count untouched. (b) rps_results.json carries both naive baselines for the cross-model population, each named for the quantity it belongs to, and the generator that writes the R5 sentence reads each figure from its own key. No model was refitted and no estimator setting changed.
 
 
-### Quantities that did NOT move
+### Quantities that did NOT move across either round
 
 - R2 / Table 3 — Proposed XGBoost AUC-PR (5-seed mean): `0.1167`
 - R2 / Table 3 — Proposed XGBoost AUC-PR (SD): `0.0444`
@@ -52,7 +90,7 @@ The complete leaf-by-leaf diff is committed as `results/corrections_ledger.json`
 - R10 — Layer 2 spw=1 arm AUC-PR: `0.1302`
 - R10 — SMOTE k=3 NNAA at seed 42: `0.9118`
 - R3 — Ten-seed delta vs attendance ranker (mean): `-0.0047`
-- R3 — Ten-seed delta sign changes: `2`
+- R3 / R12 — Ten-seed delta, seeds carrying the minority sign: `2`
 - R3 — Leave-one-out, synthetic dropped (AUC-PR): `0.1447`
 - R4 — Discordant pairs vs the attendance rule: `69`
 - R4 — Discordant pairs required at 80% power: `786`
@@ -61,14 +99,5 @@ The complete leaf-by-leaf diff is committed as `results/corrections_ledger.json`
 - R4 / Table 4 — McNemar vs Default XGBoost: discordant b/c: `17/20`
 - R4 / Table 4 — McNemar vs Attendance rule: discordant b/c: `31/38`
 - R12 — C1 verdict: `FAIL`
-- R12 — C2 verdict: `FAIL`
 - R12 — C3 verdict: `FAIL — the wording is INCONCLUSIVE at this n`
 - R12 — Null state: `5`
-
-### Cause
-
-Estimator thread count was not pinned. XGBoost and torch accumulate floating-point sums in thread-completion order, so the same seed on a machine with a different core count produced different trees, weights and metrics. Confirmed by changing only OMP_NUM_THREADS: 329 of 858 leaves moved and two clearance conditions changed verdict.
-
-### Fix
-
-n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one thread with deterministic algorithms enabled and a seeded DataLoader generator; the run regenerated once under the pinned settings. selftest_determinism.py verifies thread-count independence on any machine.

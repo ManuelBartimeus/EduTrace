@@ -7,8 +7,21 @@ Section F requires one row per number that moves, with its cause, and warns that
 every model-derived figure, so the ledger has to be produced from the artefacts
 themselves — a hand-typed table of that size would be wrong within a day.
 
-This script compares the artefacts BEFORE the determinism repair (results_prev/)
-against the regenerated ones (results/) and emits two things:
+The ledger now covers TWO rounds of correction, each against its own baseline and
+each with its own cause. Collapsing them into one diff would attribute a round-4
+change to the round-3 repair, which is precisely the misattribution Section F
+exists to prevent.
+
+  round 3  results_pre_determinism/  ->  results_pre_round4/   thread pinning
+  round 4  results_pre_round4/       ->  results/              C2 rule; DAS baseline
+
+Both baselines are committed, so every row in the table below can be recomputed
+from the repository. (The round-3 baseline directory was named `results_prev`
+when the round-3 ledger was first produced and was renamed before the push, which
+left this script unable to find it; the directory names are now the committed
+ones and the script is re-runnable from a clean clone.)
+
+It emits two things:
 
   1. results/corrections_ledger.json — the complete leaf-level diff, every
      changed value, for audit.
@@ -22,7 +35,36 @@ evidence, the table is the readable summary of it. Neither is a sample.
 import json
 import os
 
-PREV, NEW = 'results_prev', 'results'
+# (label, baseline directory, regenerated directory)
+ROUND3 = ('Round 3 — determinism repair', 'results_pre_determinism', 'results_pre_round4')
+ROUND4 = ('Round 4 — post-audit corrections', 'results_pre_round4', 'results')
+
+CAUSE3 = ('Estimator thread count was not pinned. XGBoost and torch accumulate '
+          'floating-point sums in thread-completion order, so the same seed on a '
+          'machine with a different core count produced different trees, weights and '
+          'metrics. Confirmed by changing only OMP_NUM_THREADS: 329 of 858 leaves '
+          'moved and two clearance conditions changed verdict.')
+FIX3 = ('n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one '
+        'thread with deterministic algorithms enabled and a seeded DataLoader '
+        'generator; the run regenerated once under the pinned settings. '
+        'selftest_determinism.py verifies thread-count independence on any machine.')
+CONF3 = ('OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped')
+
+CAUSE4 = ('Two defects found by an independent audit of the round-3 push. (a) C2 was '
+          'decided by comparing each leave-one-out fold against the sign of a mean '
+          'delta that C1 had already shown to be unstable, so its PASS/FAIL turned on '
+          'which side of zero a quantity indistinguishable from zero fell. (b) The RPS '
+          'artefact wrote only the rank-preservation naive baseline for the cross-model '
+          'population, under an unqualified name, so R5 quoted that baseline beside a '
+          'directional-agreement figure.')
+FIX4 = ('(a) closeout.py returns UNVERIFIABLE for C2 when C1 has failed, leaving '
+        'C2_PASS and therefore the null state and the certificate count untouched. '
+        '(b) rps_results.json carries both naive baselines for the cross-model '
+        'population, each named for the quantity it belongs to, and the generator that '
+        'writes the R5 sentence reads each figure from its own key. No model was '
+        'refitted and no estimator setting changed.')
+CONF4 = ('Clean-clone re-run under the round-3 pins: 859/859 leaves of results.json '
+         'bit-identical, so nothing model-derived moved')
 
 
 def load(d, name):
@@ -66,7 +108,7 @@ def g(d, *keys, default=None):
     return default if cur is None else cur
 
 
-def main():
+def build(PREV, NEW, manual_rows=()):
     R0, R1 = load(PREV, 'results.json'), load(NEW, 'results.json')
     V0, V1 = load(PREV, 'closeout_verdict.json'), load(NEW, 'closeout_verdict.json')
     P0, P1 = load(PREV, 'rps_results.json'), load(NEW, 'rps_results.json')
@@ -84,16 +126,6 @@ def main():
 
     total = sum(len(v) for v in diffs.values())
 
-    CAUSE = ('Estimator thread count was not pinned. XGBoost and torch accumulate '
-             'floating-point sums in thread-completion order, so the same seed on a '
-             'machine with a different core count produced different trees, weights and '
-             'metrics. Confirmed by changing only OMP_NUM_THREADS: 329 of 858 leaves '
-             'moved and two clearance conditions changed verdict.')
-    FIX = ('n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one '
-           'thread with deterministic algorithms enabled and a seeded DataLoader '
-           'generator; the run regenerated once under the pinned settings. '
-           'selftest_determinism.py verifies thread-count independence on any machine.')
-
     # ---- the quantities that appear in the manuscript ----------------------
     def t3(R, model, metric, stat='mean'):
         return g(R, 'table3', model, metric, stat)
@@ -105,10 +137,22 @@ def main():
                 return round(v, 4) if isinstance(v, float) else v
         return None
 
-    _MA = load(NEW, 'model_artefacts.json') or {}
+    _MA1 = load(NEW, 'model_artefacts.json') or {}
+    _MA0 = load(PREV, 'model_artefacts.json')
 
-    def _ma(k):
-        return _MA.get(k)
+    def _ma(k, fallback):
+        """Checkpoint sizes, from the baseline's own artefact where it has one.
+
+        The round-3 baseline predates export_models.py, so there is no
+        model_artefacts.json under it and the round-2 figures carried in the
+        manuscript are the honest 'before'. Every later baseline has the file,
+        and reading it is what keeps a size that did not move out of the moved
+        column.
+        """
+        return (_MA0 or {}).get(k, fallback) if _MA0 is not None else fallback
+
+    def _ma_after(k):
+        return _MA1.get(k)
 
     rows = [
         # (manuscript location, quantity, before, after)
@@ -164,8 +208,14 @@ def main():
          g(N0, 'summary', 'SMOTE k=3', 'seed42'), g(N1, 'summary', 'SMOTE k=3', 'seed42')),
         ('R3', 'Ten-seed delta vs attendance ranker (mean)',
          g(V0, 'v1a_summary', 'delta_mean'), g(V1, 'v1a_summary', 'delta_mean')),
-        ('R3', 'Ten-seed delta sign changes',
+        # Named for what the statistic is — min(n_positive, n_negative), the number
+        # of seeds carrying the minority sign — not for "sign changes", which would
+        # be an order-dependent count of a set that has no order.
+        ('R3 / R12', 'Ten-seed delta, seeds carrying the minority sign',
          g(V0, 'v1a_summary', 'sign_flips'), g(V1, 'v1a_summary', 'sign_flips')),
+        ('R5', 'Cross-model DAS@1 naive baseline (artefact key)',
+         g(P0, 'cross_model_sensitivity', 'das_naive_fixed_order_at_1'),
+         g(P1, 'cross_model_sensitivity', 'das_naive_fixed_order_at_1')),
         ('R3', 'Leave-one-out, synthetic dropped (AUC-PR)',
          (V0.get('v1b_leave_one_out') or [{}, {}])[1].get('auc_pr') if V0 else None,
          (V1.get('v1b_leave_one_out') or [{}, {}])[1].get('auc_pr') if V1 else None),
@@ -210,71 +260,139 @@ def main():
          g(R1, 'seed42_thresholds', 'tabtransformer')),
         ('R5', 'TabTransformer seed-42 flagged count',
          g(R0, 'seed42_flags', 'tabtransformer'), g(R1, 'seed42_flags', 'tabtransformer')),
-        ('M19', 'TabTransformer checkpoint size (MB)', 1.25, _ma('tabtransformer_checkpoint_mb')),
-        ('M19', 'Proposed XGBoost checkpoint size (MB)', 0.29, _ma('xgboost_checkpoint_mb')),
+        ('M19', 'TabTransformer checkpoint size (MB)',
+         _ma('tabtransformer_checkpoint_mb', 1.25), _ma_after('tabtransformer_checkpoint_mb')),
+        ('M19', 'Proposed XGBoost checkpoint size (MB)',
+         _ma('xgboost_checkpoint_mb', 0.29), _ma_after('xgboost_checkpoint_mb')),
         ('R12', 'C1 verdict', g(V0, 'clearance', 'C1'), g(V1, 'clearance', 'C1')),
         ('R12', 'C2 verdict', g(V0, 'clearance', 'C2'), g(V1, 'clearance', 'C2')),
         ('R12', 'C3 verdict', g(V0, 'clearance', 'C3'), g(V1, 'clearance', 'C3')),
         ('R12', 'Null state', g(V0, 'null_state'), g(V1, 'null_state')),
     ]
 
+    rows = list(rows) + [tuple(r) for r in manual_rows]
     moved = [r for r in rows if r[2] != r[3]]
     held = [r for r in rows if r[2] == r[3]]
+    return dict(rows=rows, moved=moved, held=held, diffs=diffs, total=total)
 
-    # ---- markdown table ----------------------------------------------------
-    md = []
-    md.append('| WHERE | QUANTITY | CAUSE | CONFIRMED BY | FIX APPLIED | BEFORE | AFTER |')
-    md.append('|---|---|---|---|---|---|---|')
-    short_cause = 'Unpinned estimator thread count (non-deterministic reduction order)'
-    short_conf = 'OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped'
-    short_fix = 'n_jobs=1 everywhere, torch single-thread + deterministic, seeded DataLoader; run regenerated once'
-    for where, what, before, after in moved:
+
+def section(label, prev, new, cause, fix, confirmed, res):
+    """One round's Section F table plus the scope statement that frames it."""
+    md = ['| WHERE | QUANTITY | CAUSE | CONFIRMED BY | FIX APPLIED | BEFORE | AFTER |',
+          '|---|---|---|---|---|---|---|']
+    for where, what, before, after in res['moved']:
         md.append('| %s | %s | %s | %s | %s | `%s` | `%s` |'
-                  % (where, what, short_cause, short_conf, short_fix, before, after))
-    table = '\n'.join(md)
+                  % (where, what, cause, confirmed, fix, before, after))
+    if len(md) == 2:
+        md.append('| — | no manuscript-facing quantity moved | — | — | — | — | — |')
+    b = []
+    b.append('## %s\n' % label)
+    b.append('Baseline `%s/` against `%s/`. Leaf-level differences across all '
+             'regenerated artefacts: **%d**.\n' % (prev, new, res['total']))
+    for k, v in sorted(res['diffs'].items()):
+        b.append('- `%s`: %d changed leaves' % (k, len(v)))
+    b.append('')
+    b.append('**%d of %d manuscript-facing quantities moved; %d held.**\n'
+             % (len(res['moved']), len(res['rows']), len(res['held'])))
+    b.append('\n'.join(md))
+    b.append('')
+    return '\n'.join(b)
+
+
+def main():
+    # Round 4 carries two rows that are not artefact-to-artefact movements: a
+    # figure the manuscript quoted from the wrong key, and a statement in Table 7
+    # that the round-3 ledger corrected in R4 and R10 but did not reach. Section F
+    # asks for one row per number that moves as the reader sees it, so they are
+    # declared here rather than left out because no JSON leaf holds the old value.
+    _p4 = load(ROUND4[2], 'rps_results.json') or {}
+    _xm = _p4.get('cross_model_sensitivity', {})
+    _r4 = load(ROUND4[2], 'results.json') or {}
+    _mcn = _r4.get('stats', {}).get('mcnemar', [])
+    _prop = [r for r in _mcn if 'proposed' in str(r.get('direction', '')).lower()]
+    _comp = [r for r in _mcn if r not in _prop]
+    manual4 = [
+        ('R5', 'Cross-model DAS@1 comparison baseline AS QUOTED IN R5',
+         _xm.get('rps_naive_fixed_order_at_1'), _xm.get('das_naive_fixed_order_at_1')),
+        ('R11 / Table 7', 'McNemar directions row',
+         'All four favour the comparator',
+         '%d favour the comparator, %d favours the proposed model'
+         % (len(_comp), len(_prop))),
+    ]
+
+    l3, p3, n3 = ROUND3
+    l4, p4, n4 = ROUND4
+    r3 = build(p3, n3)
+    r4 = build(p4, n4, manual_rows=manual4)
+
+    short_cause3 = 'Unpinned estimator thread count (non-deterministic reduction order)'
+    short_fix3 = ('n_jobs=1 everywhere, torch single-thread + deterministic, seeded '
+                  'DataLoader; run regenerated once')
+    short_cause4 = ('C2 decided on the sign of an unstable mean delta; RPS artefact wrote '
+                    'one naive baseline under an unqualified name')
+    short_fix4 = ('C2 returns UNVERIFIABLE when C1 fails; both naive baselines written and '
+                  'read from their own keys; no refit')
 
     body = []
-    body.append('### Ledger scope\n')
-    body.append('Leaf-level differences across all regenerated artefacts: **%d**.\n' % total)
-    for k, v in sorted(diffs.items()):
-        body.append('- `%s`: %d changed leaves' % (k, len(v)))
-    body.append('')
-    body.append('The complete leaf-by-leaf diff is committed as '
-                '`results/corrections_ledger.json`. The table below is not a sample of it: '
-                'it is every quantity that appears in the Methods or Results sections, '
+    body.append('# Corrections ledger (close-out Section F)\n')
+    body.append('Two rounds of correction, each against its own committed baseline and each '
+                'with its own cause. The complete leaf-by-leaf diff for both is committed as '
+                '`results/corrections_ledger.json`. The tables below are not samples of it: '
+                'each is every quantity that appears in the Methods or Results sections, '
                 'which is the set a reader can check against the manuscript.\n')
-    body.append('**%d of %d manuscript-facing quantities moved; %d held.**\n'
-                % (len(moved), len(rows), len(held)))
-    body.append(table)
+    body.append(section(l3, p3, n3, short_cause3, CONF3, short_fix3, r3))
+    body.append('### Cause (round 3)\n')
+    body.append(CAUSE3)
+    body.append('\n### Fix (round 3)\n')
+    body.append(FIX3)
     body.append('')
-    if held:
-        body.append('\n### Quantities that did NOT move\n')
-        for where, what, before, _ in held:
-            body.append('- %s — %s: `%s`' % (where, what, before))
-    body.append('\n### Cause\n')
-    body.append(CAUSE)
-    body.append('\n### Fix\n')
-    body.append(FIX)
+    body.append(section(l4, p4, n4, short_cause4, CONF4, short_fix4, r4))
+    body.append('### Cause (round 4)\n')
+    body.append(CAUSE4)
+    body.append('\n### Fix (round 4)\n')
+    body.append(FIX4)
+    body.append('')
+    if r3['held']:
+        body.append('\n### Quantities that did NOT move across either round\n')
+        stayed = {(w, q) for w, q, b_, a_ in r3['held']} & {(w, q) for w, q, b_, a_ in r4['held']}
+        for where, what, before, _ in r3['held']:
+            if (where, what) in stayed:
+                body.append('- %s — %s: `%s`' % (where, what, before))
 
+    merged_moved = r3['moved'] + r4['moved']
     os.makedirs('results', exist_ok=True)
-    json.dump(dict(total_changed_leaves=total,
-                   by_artefact={k: len(v) for k, v in diffs.items()},
-                   cause=CAUSE, fix=FIX,
-                   manuscript_quantities=[dict(where=w, quantity=q, before=b, after=a)
-                                          for w, q, b, a in rows],
-                   moved=[dict(where=w, quantity=q, before=b, after=a)
-                          for w, q, b, a in moved],
-                   full_diff={k: [dict(path=p, before=x, after=y, kind=z)
-                                  for p, x, y, z in v] for k, v in diffs.items()}),
-              open('results/corrections_ledger.json', 'w'), indent=2, default=str)
+    json.dump(dict(
+        total_changed_leaves=r3['total'] + r4['total'],
+        by_artefact={k: len(v) for k, v in r4['diffs'].items()},
+        cause=CAUSE4, fix=FIX4,
+        rounds=[dict(label=l3, baseline=p3, regenerated=n3, cause=CAUSE3, fix=FIX3,
+                     confirmed_by=CONF3, changed_leaves=r3['total'],
+                     by_artefact={k: len(v) for k, v in r3['diffs'].items()},
+                     moved=[dict(where=w, quantity=q, before=b_, after=a_)
+                            for w, q, b_, a_ in r3['moved']],
+                     full_diff={k: [dict(path=p_, before=x, after=y, kind=z)
+                                    for p_, x, y, z in v] for k, v in r3['diffs'].items()}),
+                dict(label=l4, baseline=p4, regenerated=n4, cause=CAUSE4, fix=FIX4,
+                     confirmed_by=CONF4, changed_leaves=r4['total'],
+                     by_artefact={k: len(v) for k, v in r4['diffs'].items()},
+                     moved=[dict(where=w, quantity=q, before=b_, after=a_)
+                            for w, q, b_, a_ in r4['moved']],
+                     full_diff={k: [dict(path=p_, before=x, after=y, kind=z)
+                                    for p_, x, y, z in v] for k, v in r4['diffs'].items()})],
+        manuscript_quantities=[dict(where=w, quantity=q, before=b_, after=a_)
+                               for w, q, b_, a_ in r4['rows']],
+        moved=[dict(where=w, quantity=q, before=b_, after=a_)
+               for w, q, b_, a_ in merged_moved],
+        full_diff={k: [dict(path=p_, before=x, after=y, kind=z)
+                       for p_, x, y, z in v] for k, v in r4['diffs'].items()}),
+        open('results/corrections_ledger.json', 'w'), indent=2, default=str)
     open('results/corrections_ledger.md', 'w').write('\n'.join(body) + '\n')
 
-    print('total changed leaves: %d' % total)
-    for k, v in sorted(diffs.items()):
-        print('  %-28s %d' % (k, len(v)))
-    print('\nmanuscript-facing quantities: %d moved, %d held' % (len(moved), len(held)))
-    for where, what, before, after in moved:
-        print('  %-16s %-46s %s -> %s' % (where, what[:46], before, after))
+    for label, res in ((l3, r3), (l4, r4)):
+        print('%s: %d changed leaves, %d of %d manuscript quantities moved'
+              % (label, res['total'], len(res['moved']), len(res['rows'])))
+        for where, what, before, after in res['moved']:
+            print('  %-16s %-52s %s -> %s' % (where, what[:52], before, after))
     print('\nwritten: results/corrections_ledger.json and .md')
 
 

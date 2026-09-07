@@ -15,6 +15,8 @@ python selftest_nf1.py                  # NF-1 guard self-test         (~10 s)
 python selftest_determinism.py          # thread-count independence    (~6 min)
 python EduTrace_Revised_Pipeline.py     # the locked run               (~40 min CPU)
 python closeout.py                      # C1-C6 certificate + verdict  (~1 min)
+python ledger_generator.py              # corrections ledger, both rounds (~5 s)
+python closeout.py                      # second pass — see below      (~1 min)
 python school_structure.py              # sampling frame + confounding (~10 s)
 python loso_validation.py               # leave-one-site-out           (~1 min)
 python make_figures.py                  # Figures 4-8, S1-S4           (~3 min)
@@ -22,12 +24,29 @@ python smote_nnaa.py                    # SMOTE NNAA privacy ladder    (~1 min)
 python export_models.py                 # fitted artefacts -> models/, app/ (~5 min)
 python verify.py                        # checklist audit
 python consistency_pass.py              # manuscript <-> artefact check
-python ledger_generator.py              # corrections ledger (needs results_pre_determinism/)
 ```
 
 All entry points default to `data/` and write to `results/`. No path needs editing,
 and nothing reads a mounted Drive. `notebooks/EduTrace_Main_3.ipynb` is the same run as a
 notebook, executed top to bottom.
+
+`closeout.py` runs twice, and the reason is worth stating rather than leaving as a
+quirk. Close-out Section F allows a quoted figure that no longer reproduces to be
+closed by a corrections-ledger row, so the Q21 block reads
+`results/corrections_ledger.json` — which `ledger_generator.py` writes from the
+certificate the first pass produced. The second pass therefore closes Q21 against
+the ledger belonging to this run rather than the previous one. The two passes reach
+a fixed point: their output is identical apart from the timestamp, and the first
+pass is not discarded but superseded by a byte-identical one.
+
+The manuscript is edited by script, never by hand, so that every figure in it is
+read from an artefact at edit time:
+
+```bash
+python edit_docs_round4.py              # the round-4 corrections, applied to docs_out/
+python strip_doc_comments.py            # remove Word review comments before submission
+python stamp_release.py <tag> <commit>  # write the release identifier into M21
+```
 
 Regenerating the synthetic supplement is a separate, optional step and is **not** part of
 reproducing the reported numbers — the supplement is committed as a locked data artefact:
@@ -97,7 +116,8 @@ confirming the guard raises.
 | `results/corrections_ledger.md/.json` | Section F ledger and the complete leaf-level diff |
 | `results/superseded_artefacts.json` | What was removed in the cleanup, why, and where to find it |
 | `results/model_artefacts.json` | Exported checkpoint sizes, feeding M19's deployability proxy |
-| `results_pre_determinism/` | The artefacts as they stood before the determinism repair, so the ledger can be recomputed |
+| `results_pre_determinism/` | The artefacts as they stood before the determinism repair, so the round-3 ledger can be recomputed |
+| `results_pre_round4/` | The artefacts as they stood at the round-3 release, so the round-4 ledger can be recomputed |
 | `notebooks/EduTrace_Main_3.ipynb` | The same run as a notebook, executed linearly. Named in M19. |
 | `figs/` | The nine regenerated manuscript figures |
 

@@ -1,15 +1,640 @@
 {
-  "total_changed_leaves": 58,
+  "total_changed_leaves": 76,
   "by_artefact": {
-    "results.json": 42,
-    "closeout_verdict.json": 10,
+    "results.json": 0,
+    "closeout_verdict.json": 12,
     "rps_results.json": 6,
     "loso_validation.json": 0,
     "smote_nnaa.json": 0,
     "school_structure.json": 0
   },
-  "cause": "Estimator thread count was not pinned. XGBoost and torch accumulate floating-point sums in thread-completion order, so the same seed on a machine with a different core count produced different trees, weights and metrics. Confirmed by changing only OMP_NUM_THREADS: 329 of 858 leaves moved and two clearance conditions changed verdict.",
-  "fix": "n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one thread with deterministic algorithms enabled and a seeded DataLoader generator; the run regenerated once under the pinned settings. selftest_determinism.py verifies thread-count independence on any machine.",
+  "cause": "Two defects found by an independent audit of the round-3 push. (a) C2 was decided by comparing each leave-one-out fold against the sign of a mean delta that C1 had already shown to be unstable, so its PASS/FAIL turned on which side of zero a quantity indistinguishable from zero fell. (b) The RPS artefact wrote only the rank-preservation naive baseline for the cross-model population, under an unqualified name, so R5 quoted that baseline beside a directional-agreement figure.",
+  "fix": "(a) closeout.py returns UNVERIFIABLE for C2 when C1 has failed, leaving C2_PASS and therefore the null state and the certificate count untouched. (b) rps_results.json carries both naive baselines for the cross-model population, each named for the quantity it belongs to, and the generator that writes the R5 sentence reads each figure from its own key. No model was refitted and no estimator setting changed.",
+  "rounds": [
+    {
+      "label": "Round 3 \u2014 determinism repair",
+      "baseline": "results_pre_determinism",
+      "regenerated": "results_pre_round4",
+      "cause": "Estimator thread count was not pinned. XGBoost and torch accumulate floating-point sums in thread-completion order, so the same seed on a machine with a different core count produced different trees, weights and metrics. Confirmed by changing only OMP_NUM_THREADS: 329 of 858 leaves moved and two clearance conditions changed verdict.",
+      "fix": "n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one thread with deterministic algorithms enabled and a seeded DataLoader generator; the run regenerated once under the pinned settings. selftest_determinism.py verifies thread-count independence on any machine.",
+      "confirmed_by": "OMP_NUM_THREADS experiment: 329/858 leaves moved, 2 clearance conditions flipped",
+      "changed_leaves": 58,
+      "by_artefact": {
+        "results.json": 42,
+        "closeout_verdict.json": 10,
+        "rps_results.json": 6,
+        "loso_validation.json": 0,
+        "smote_nnaa.json": 0,
+        "school_structure.json": 0
+      },
+      "moved": [
+        {
+          "where": "R2 / Table 3",
+          "quantity": "TabTransformer AUC-PR",
+          "before": 0.2387,
+          "after": 0.2533
+        },
+        {
+          "where": "R2 / Table 3",
+          "quantity": "TabTransformer recall",
+          "before": 0.5143,
+          "after": 0.4857
+        },
+        {
+          "where": "R5",
+          "quantity": "Cross-model sensitivity population n",
+          "before": 40,
+          "after": 83
+        },
+        {
+          "where": "R4 / Table 4",
+          "quantity": "McNemar vs TabTransformer: discordant b",
+          "before": 22,
+          "after": 53
+        },
+        {
+          "where": "R4 / Table 4",
+          "quantity": "McNemar vs TabTransformer: discordant c",
+          "before": 41,
+          "after": 31
+        },
+        {
+          "where": "R4 / Table 4",
+          "quantity": "McNemar vs TabTransformer: BH-adjusted p",
+          "before": 0.0451,
+          "after": 0.0428
+        },
+        {
+          "where": "R4 / Table 4 / R10",
+          "quantity": "McNemar vs TabTransformer: DIRECTION",
+          "before": "Favours comparator",
+          "after": "Favours proposed"
+        },
+        {
+          "where": "Table 3",
+          "quantity": "TabTransformer AUC-ROC",
+          "before": 0.7248,
+          "after": 0.6964
+        },
+        {
+          "where": "Table 3",
+          "quantity": "TabTransformer F2",
+          "before": 0.2572,
+          "after": 0.2039
+        },
+        {
+          "where": "Table 3",
+          "quantity": "TabTransformer precision",
+          "before": 0.0901,
+          "after": 0.1499
+        },
+        {
+          "where": "R7 / Figure 7",
+          "quantity": "TabTransformer seed-42 threshold",
+          "before": 0.5,
+          "after": 0.49
+        },
+        {
+          "where": "R5",
+          "quantity": "TabTransformer seed-42 flagged count",
+          "before": 40,
+          "after": 83
+        },
+        {
+          "where": "M19",
+          "quantity": "TabTransformer checkpoint size (MB)",
+          "before": 1.25,
+          "after": 1.19
+        },
+        {
+          "where": "M19",
+          "quantity": "Proposed XGBoost checkpoint size (MB)",
+          "before": 0.29,
+          "after": 0.27
+        }
+      ],
+      "full_diff": {
+        "results.json": [
+          {
+            "path": "/seed42_confusion/tabtransformer[0][0]",
+            "before": 204,
+            "after": 162,
+            "kind": "changed"
+          },
+          {
+            "path": "/seed42_confusion/tabtransformer[0][1]",
+            "before": 37,
+            "after": 79,
+            "kind": "changed"
+          },
+          {
+            "path": "/seed42_confusion/tabtransformer[1][0]",
+            "before": 4,
+            "after": 3,
+            "kind": "changed"
+          },
+          {
+            "path": "/seed42_confusion/tabtransformer[1][1]",
+            "before": 3,
+            "after": 4,
+            "kind": "changed"
+          },
+          {
+            "path": "/seed42_flags/tabtransformer",
+            "before": 40,
+            "after": 83,
+            "kind": "changed"
+          },
+          {
+            "path": "/seed42_thresholds/tabtransformer",
+            "before": 0.5,
+            "after": 0.49,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/naive_fixed_order_at1",
+            "before": 0.075,
+            "after": 0.0482,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/naive_fixed_order_at2",
+            "before": 0.075,
+            "after": 0.0482,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/rank_preserving_at1",
+            "before": 0.725,
+            "after": 0.8434,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/rank_preserving_at2",
+            "before": 0.925,
+            "after": 0.9518,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/n",
+            "before": 40,
+            "after": 83,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/naive_fixed_order_at1",
+            "before": 0.175,
+            "after": 0.1807,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/naive_fixed_order_at2",
+            "before": 0.025,
+            "after": 0.0241,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/rank_preserving_at2",
+            "before": 0.875,
+            "after": 0.8554,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/alerts",
+            "before": 40,
+            "after": 83,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/factors_mean",
+            "before": 2.23,
+            "after": 2.06,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/len_mean",
+            "before": 89.9,
+            "after": 86.7,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/within_160",
+            "before": 40,
+            "after": 83,
+            "kind": "changed"
+          },
+          {
+            "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/true_dropouts_in_population",
+            "before": 3,
+            "after": 4,
+            "kind": "changed"
+          },
+          {
+            "path": "/stats/mcnemar[2]/b",
+            "before": 22,
+            "after": 53,
+            "kind": "changed"
+          },
+          {
+            "path": "/stats/mcnemar[2]/c",
+            "before": 41,
+            "after": 31,
+            "kind": "changed"
+          },
+          {
+            "path": "/stats/mcnemar[2]/direction",
+            "before": "Favours comparator",
+            "after": "Favours proposed",
+            "kind": "changed"
+          },
+          {
+            "path": "/stats/mcnemar[2]/p",
+            "before": 0.022574972673257185,
+            "after": 0.021383189937144585,
+            "kind": "changed"
+          },
+          {
+            "path": "/stats/mcnemar[2]/p_bh",
+            "before": 0.04514994534651437,
+            "after": 0.04276637987428917,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/auc_pr/mean",
+            "before": 0.2387,
+            "after": 0.2533,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/auc_pr/std",
+            "before": 0.0559,
+            "after": 0.079,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/auc_roc/mean",
+            "before": 0.7248,
+            "after": 0.6964,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/auc_roc/std",
+            "before": 0.0409,
+            "after": 0.0584,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/f2/mean",
+            "before": 0.2572,
+            "after": 0.2039,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/f2/std",
+            "before": 0.0527,
+            "after": 0.0433,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/macro_f1/mean",
+            "before": 0.5254,
+            "after": 0.4984,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/macro_f1/std",
+            "before": 0.0383,
+            "after": 0.0655,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/precision/mean",
+            "before": 0.0901,
+            "after": 0.1499,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/precision/std",
+            "before": 0.03,
+            "after": 0.1758,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/recall/mean",
+            "before": 0.5143,
+            "after": 0.4857,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3/tabtransformer/recall/std",
+            "before": 0.07,
+            "after": 0.1714,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3_seed42/tabtransformer/auc_pr",
+            "before": 0.2688,
+            "after": 0.2016,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3_seed42/tabtransformer/auc_roc",
+            "before": 0.7392,
+            "after": 0.7101,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3_seed42/tabtransformer/f2",
+            "before": 0.2206,
+            "after": 0.1802,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3_seed42/tabtransformer/macro_f1",
+            "before": 0.5182,
+            "after": 0.4435,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3_seed42/tabtransformer/precision",
+            "before": 0.075,
+            "after": 0.0482,
+            "kind": "changed"
+          },
+          {
+            "path": "/table3_seed42/tabtransformer/recall",
+            "before": 0.4286,
+            "after": 0.5714,
+            "kind": "changed"
+          }
+        ],
+        "closeout_verdict.json": [
+          {
+            "path": "/generated",
+            "before": "2026-09-07T09:18:27",
+            "after": "2026-09-07T13:03:29",
+            "kind": "changed"
+          },
+          {
+            "path": "/rows[2]/check",
+            "before": "RPS artefact traces to run",
+            "after": "RPS traces to run (+ledger)",
+            "kind": "changed"
+          },
+          {
+            "path": "/rows[2]/expected",
+            "before": "7 of 7",
+            "after": "all matched or ledgered",
+            "kind": "changed"
+          },
+          {
+            "path": "/rows[2]/observed",
+            "before": "7 of 7 match",
+            "after": "6 of 7 match",
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[0]/secs",
+            "before": 0.3,
+            "after": 1.5,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[1]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[2]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[3]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v2/assertion_sites[0]",
+            "before": "EduTrace_Revised_Pipeline.py:116",
+            "after": "EduTrace_Revised_Pipeline.py:140",
+            "kind": "changed"
+          },
+          {
+            "path": "/wall_clock_secs",
+            "before": 6.8,
+            "after": 6.3,
+            "kind": "changed"
+          }
+        ],
+        "rps_results.json": [
+          {
+            "path": "/cross_model_sensitivity/das_at_1",
+            "before": 0.725,
+            "after": 0.8434,
+            "kind": "changed"
+          },
+          {
+            "path": "/cross_model_sensitivity/das_at_2",
+            "before": 0.925,
+            "after": 0.9518,
+            "kind": "changed"
+          },
+          {
+            "path": "/cross_model_sensitivity/n_evaluated",
+            "before": 40,
+            "after": 83,
+            "kind": "changed"
+          },
+          {
+            "path": "/cross_model_sensitivity/naive_fixed_order_at_1",
+            "before": 0.175,
+            "after": 0.1807,
+            "kind": "changed"
+          },
+          {
+            "path": "/cross_model_sensitivity/naive_fixed_order_at_2",
+            "before": 0.025,
+            "after": 0.0241,
+            "kind": "changed"
+          },
+          {
+            "path": "/cross_model_sensitivity/rps_at_2",
+            "before": 0.875,
+            "after": 0.8554,
+            "kind": "changed"
+          }
+        ],
+        "loso_validation.json": [],
+        "smote_nnaa.json": [],
+        "school_structure.json": []
+      }
+    },
+    {
+      "label": "Round 4 \u2014 post-audit corrections",
+      "baseline": "results_pre_round4",
+      "regenerated": "results",
+      "cause": "Two defects found by an independent audit of the round-3 push. (a) C2 was decided by comparing each leave-one-out fold against the sign of a mean delta that C1 had already shown to be unstable, so its PASS/FAIL turned on which side of zero a quantity indistinguishable from zero fell. (b) The RPS artefact wrote only the rank-preservation naive baseline for the cross-model population, under an unqualified name, so R5 quoted that baseline beside a directional-agreement figure.",
+      "fix": "(a) closeout.py returns UNVERIFIABLE for C2 when C1 has failed, leaving C2_PASS and therefore the null state and the certificate count untouched. (b) rps_results.json carries both naive baselines for the cross-model population, each named for the quantity it belongs to, and the generator that writes the R5 sentence reads each figure from its own key. No model was refitted and no estimator setting changed.",
+      "confirmed_by": "Clean-clone re-run under the round-3 pins: 859/859 leaves of results.json bit-identical, so nothing model-derived moved",
+      "changed_leaves": 18,
+      "by_artefact": {
+        "results.json": 0,
+        "closeout_verdict.json": 12,
+        "rps_results.json": 6,
+        "loso_validation.json": 0,
+        "smote_nnaa.json": 0,
+        "school_structure.json": 0
+      },
+      "moved": [
+        {
+          "where": "R5",
+          "quantity": "Cross-model DAS@1 naive baseline (artefact key)",
+          "before": null,
+          "after": 0.0482
+        },
+        {
+          "where": "R12",
+          "quantity": "C2 verdict",
+          "before": "FAIL",
+          "after": "UNVERIFIABLE \u2014 C1 failed, so there is no stable effect sign for a leave-one-out to preserve"
+        },
+        {
+          "where": "R5",
+          "quantity": "Cross-model DAS@1 comparison baseline AS QUOTED IN R5",
+          "before": 0.1807,
+          "after": 0.0482
+        },
+        {
+          "where": "R11 / Table 7",
+          "quantity": "McNemar directions row",
+          "before": "All four favour the comparator",
+          "after": "3 favour the comparator, 1 favours the proposed model"
+        }
+      ],
+      "full_diff": {
+        "results.json": [],
+        "closeout_verdict.json": [
+          {
+            "path": "/clearance/C2",
+            "before": "FAIL",
+            "after": "UNVERIFIABLE \u2014 C1 failed, so there is no stable effect sign for a leave-one-out to preserve",
+            "kind": "changed"
+          },
+          {
+            "path": "/generated",
+            "before": "2026-09-07T13:03:29",
+            "after": "2026-09-07T19:18:45",
+            "kind": "changed"
+          },
+          {
+            "path": "/notes",
+            "before": "len 4",
+            "after": "len 5",
+            "kind": "length"
+          },
+          {
+            "path": "/v1a_seed_rows[0]/secs",
+            "before": 1.5,
+            "after": 1.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[4]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[5]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[7]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[8]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v1a_seed_rows[9]/secs",
+            "before": 0.2,
+            "after": 0.1,
+            "kind": "changed"
+          },
+          {
+            "path": "/v2/assertion_sites[1]",
+            "before": "closeout.py:408",
+            "after": "closeout.py:427",
+            "kind": "changed"
+          },
+          {
+            "path": "/v2/assertion_sites[2]",
+            "before": "closeout.py:409",
+            "after": "closeout.py:428",
+            "kind": "changed"
+          },
+          {
+            "path": "/wall_clock_secs",
+            "before": 6.3,
+            "after": 4.4,
+            "kind": "changed"
+          }
+        ],
+        "rps_results.json": [
+          {
+            "path": "/cross_model_sensitivity/das_naive_fixed_order_at_1",
+            "before": null,
+            "after": 0.0482,
+            "kind": "added"
+          },
+          {
+            "path": "/cross_model_sensitivity/das_naive_fixed_order_at_2",
+            "before": null,
+            "after": 0.0482,
+            "kind": "added"
+          },
+          {
+            "path": "/cross_model_sensitivity/naive_fixed_order_at_1",
+            "before": 0.1807,
+            "after": null,
+            "kind": "removed"
+          },
+          {
+            "path": "/cross_model_sensitivity/naive_fixed_order_at_2",
+            "before": 0.0241,
+            "after": null,
+            "kind": "removed"
+          },
+          {
+            "path": "/cross_model_sensitivity/rps_naive_fixed_order_at_1",
+            "before": null,
+            "after": 0.1807,
+            "kind": "added"
+          },
+          {
+            "path": "/cross_model_sensitivity/rps_naive_fixed_order_at_2",
+            "before": null,
+            "after": 0.0241,
+            "kind": "added"
+          }
+        ],
+        "loso_validation.json": [],
+        "smote_nnaa.json": [],
+        "school_structure.json": []
+      }
+    }
+  ],
   "manuscript_quantities": [
     {
       "where": "R2 / Table 3",
@@ -32,7 +657,7 @@
     {
       "where": "R2 / Table 3",
       "quantity": "TabTransformer AUC-PR",
-      "before": 0.2387,
+      "before": 0.2533,
       "after": 0.2533
     },
     {
@@ -50,7 +675,7 @@
     {
       "where": "R2 / Table 3",
       "quantity": "TabTransformer recall",
-      "before": 0.5143,
+      "before": 0.4857,
       "after": 0.4857
     },
     {
@@ -116,7 +741,7 @@
     {
       "where": "R5",
       "quantity": "Cross-model sensitivity population n",
-      "before": 40,
+      "before": 83,
       "after": 83
     },
     {
@@ -144,10 +769,16 @@
       "after": -0.0047
     },
     {
-      "where": "R3",
-      "quantity": "Ten-seed delta sign changes",
+      "where": "R3 / R12",
+      "quantity": "Ten-seed delta, seeds carrying the minority sign",
       "before": 2,
       "after": 2
+    },
+    {
+      "where": "R5",
+      "quantity": "Cross-model DAS@1 naive baseline (artefact key)",
+      "before": null,
+      "after": 0.0482
     },
     {
       "where": "R3",
@@ -182,25 +813,25 @@
     {
       "where": "R4 / Table 4",
       "quantity": "McNemar vs TabTransformer: discordant b",
-      "before": 22,
+      "before": 53,
       "after": 53
     },
     {
       "where": "R4 / Table 4",
       "quantity": "McNemar vs TabTransformer: discordant c",
-      "before": 41,
+      "before": 31,
       "after": 31
     },
     {
       "where": "R4 / Table 4",
       "quantity": "McNemar vs TabTransformer: BH-adjusted p",
-      "before": 0.0451,
+      "before": 0.0428,
       "after": 0.0428
     },
     {
       "where": "R4 / Table 4 / R10",
       "quantity": "McNemar vs TabTransformer: DIRECTION",
-      "before": "Favours comparator",
+      "before": "Favours proposed",
       "after": "Favours proposed"
     },
     {
@@ -218,43 +849,43 @@
     {
       "where": "Table 3",
       "quantity": "TabTransformer AUC-ROC",
-      "before": 0.7248,
+      "before": 0.6964,
       "after": 0.6964
     },
     {
       "where": "Table 3",
       "quantity": "TabTransformer F2",
-      "before": 0.2572,
+      "before": 0.2039,
       "after": 0.2039
     },
     {
       "where": "Table 3",
       "quantity": "TabTransformer precision",
-      "before": 0.0901,
+      "before": 0.1499,
       "after": 0.1499
     },
     {
       "where": "R7 / Figure 7",
       "quantity": "TabTransformer seed-42 threshold",
-      "before": 0.5,
+      "before": 0.49,
       "after": 0.49
     },
     {
       "where": "R5",
       "quantity": "TabTransformer seed-42 flagged count",
-      "before": 40,
+      "before": 83,
       "after": 83
     },
     {
       "where": "M19",
       "quantity": "TabTransformer checkpoint size (MB)",
-      "before": 1.25,
+      "before": 1.19,
       "after": 1.19
     },
     {
       "where": "M19",
       "quantity": "Proposed XGBoost checkpoint size (MB)",
-      "before": 0.29,
+      "before": 0.27,
       "after": 0.27
     },
     {
@@ -267,7 +898,7 @@
       "where": "R12",
       "quantity": "C2 verdict",
       "before": "FAIL",
-      "after": "FAIL"
+      "after": "UNVERIFIABLE \u2014 C1 failed, so there is no stable effect sign for a leave-one-out to preserve"
     },
     {
       "where": "R12",
@@ -280,6 +911,18 @@
       "quantity": "Null state",
       "before": 5,
       "after": 5
+    },
+    {
+      "where": "R5",
+      "quantity": "Cross-model DAS@1 comparison baseline AS QUOTED IN R5",
+      "before": 0.1807,
+      "after": 0.0482
+    },
+    {
+      "where": "R11 / Table 7",
+      "quantity": "McNemar directions row",
+      "before": "All four favour the comparator",
+      "after": "3 favour the comparator, 1 favours the proposed model"
     }
   ],
   "moved": [
@@ -366,361 +1009,144 @@
       "quantity": "Proposed XGBoost checkpoint size (MB)",
       "before": 0.29,
       "after": 0.27
+    },
+    {
+      "where": "R5",
+      "quantity": "Cross-model DAS@1 naive baseline (artefact key)",
+      "before": null,
+      "after": 0.0482
+    },
+    {
+      "where": "R12",
+      "quantity": "C2 verdict",
+      "before": "FAIL",
+      "after": "UNVERIFIABLE \u2014 C1 failed, so there is no stable effect sign for a leave-one-out to preserve"
+    },
+    {
+      "where": "R5",
+      "quantity": "Cross-model DAS@1 comparison baseline AS QUOTED IN R5",
+      "before": 0.1807,
+      "after": 0.0482
+    },
+    {
+      "where": "R11 / Table 7",
+      "quantity": "McNemar directions row",
+      "before": "All four favour the comparator",
+      "after": "3 favour the comparator, 1 favours the proposed model"
     }
   ],
   "full_diff": {
-    "results.json": [
-      {
-        "path": "/seed42_confusion/tabtransformer[0][0]",
-        "before": 204,
-        "after": 162,
-        "kind": "changed"
-      },
-      {
-        "path": "/seed42_confusion/tabtransformer[0][1]",
-        "before": 37,
-        "after": 79,
-        "kind": "changed"
-      },
-      {
-        "path": "/seed42_confusion/tabtransformer[1][0]",
-        "before": 4,
-        "after": 3,
-        "kind": "changed"
-      },
-      {
-        "path": "/seed42_confusion/tabtransformer[1][1]",
-        "before": 3,
-        "after": 4,
-        "kind": "changed"
-      },
-      {
-        "path": "/seed42_flags/tabtransformer",
-        "before": 40,
-        "after": 83,
-        "kind": "changed"
-      },
-      {
-        "path": "/seed42_thresholds/tabtransformer",
-        "before": 0.5,
-        "after": 0.49,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/naive_fixed_order_at1",
-        "before": 0.075,
-        "after": 0.0482,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/naive_fixed_order_at2",
-        "before": 0.075,
-        "after": 0.0482,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/rank_preserving_at1",
-        "before": 0.725,
-        "after": 0.8434,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/rank_preserving_at2",
-        "before": 0.925,
-        "after": 0.9518,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/n",
-        "before": 40,
-        "after": 83,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/naive_fixed_order_at1",
-        "before": 0.175,
-        "after": 0.1807,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/naive_fixed_order_at2",
-        "before": 0.025,
-        "after": 0.0241,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/rank_preserving_at2",
-        "before": 0.875,
-        "after": 0.8554,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/alerts",
-        "before": 40,
-        "after": 83,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/factors_mean",
-        "before": 2.23,
-        "after": 2.06,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/len_mean",
-        "before": 89.9,
-        "after": 86.7,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/within_160",
-        "before": 40,
-        "after": 83,
-        "kind": "changed"
-      },
-      {
-        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/true_dropouts_in_population",
-        "before": 3,
-        "after": 4,
-        "kind": "changed"
-      },
-      {
-        "path": "/stats/mcnemar[2]/b",
-        "before": 22,
-        "after": 53,
-        "kind": "changed"
-      },
-      {
-        "path": "/stats/mcnemar[2]/c",
-        "before": 41,
-        "after": 31,
-        "kind": "changed"
-      },
-      {
-        "path": "/stats/mcnemar[2]/direction",
-        "before": "Favours comparator",
-        "after": "Favours proposed",
-        "kind": "changed"
-      },
-      {
-        "path": "/stats/mcnemar[2]/p",
-        "before": 0.022574972673257185,
-        "after": 0.021383189937144585,
-        "kind": "changed"
-      },
-      {
-        "path": "/stats/mcnemar[2]/p_bh",
-        "before": 0.04514994534651437,
-        "after": 0.04276637987428917,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/auc_pr/mean",
-        "before": 0.2387,
-        "after": 0.2533,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/auc_pr/std",
-        "before": 0.0559,
-        "after": 0.079,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/auc_roc/mean",
-        "before": 0.7248,
-        "after": 0.6964,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/auc_roc/std",
-        "before": 0.0409,
-        "after": 0.0584,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/f2/mean",
-        "before": 0.2572,
-        "after": 0.2039,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/f2/std",
-        "before": 0.0527,
-        "after": 0.0433,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/macro_f1/mean",
-        "before": 0.5254,
-        "after": 0.4984,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/macro_f1/std",
-        "before": 0.0383,
-        "after": 0.0655,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/precision/mean",
-        "before": 0.0901,
-        "after": 0.1499,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/precision/std",
-        "before": 0.03,
-        "after": 0.1758,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/recall/mean",
-        "before": 0.5143,
-        "after": 0.4857,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3/tabtransformer/recall/std",
-        "before": 0.07,
-        "after": 0.1714,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3_seed42/tabtransformer/auc_pr",
-        "before": 0.2688,
-        "after": 0.2016,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3_seed42/tabtransformer/auc_roc",
-        "before": 0.7392,
-        "after": 0.7101,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3_seed42/tabtransformer/f2",
-        "before": 0.2206,
-        "after": 0.1802,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3_seed42/tabtransformer/macro_f1",
-        "before": 0.5182,
-        "after": 0.4435,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3_seed42/tabtransformer/precision",
-        "before": 0.075,
-        "after": 0.0482,
-        "kind": "changed"
-      },
-      {
-        "path": "/table3_seed42/tabtransformer/recall",
-        "before": 0.4286,
-        "after": 0.5714,
-        "kind": "changed"
-      }
-    ],
+    "results.json": [],
     "closeout_verdict.json": [
       {
+        "path": "/clearance/C2",
+        "before": "FAIL",
+        "after": "UNVERIFIABLE \u2014 C1 failed, so there is no stable effect sign for a leave-one-out to preserve",
+        "kind": "changed"
+      },
+      {
         "path": "/generated",
-        "before": "2026-09-07T09:18:27",
-        "after": "2026-09-07T13:03:29",
+        "before": "2026-09-07T13:03:29",
+        "after": "2026-09-07T19:18:45",
         "kind": "changed"
       },
       {
-        "path": "/rows[2]/check",
-        "before": "RPS artefact traces to run",
-        "after": "RPS traces to run (+ledger)",
-        "kind": "changed"
-      },
-      {
-        "path": "/rows[2]/expected",
-        "before": "7 of 7",
-        "after": "all matched or ledgered",
-        "kind": "changed"
-      },
-      {
-        "path": "/rows[2]/observed",
-        "before": "7 of 7 match",
-        "after": "6 of 7 match",
-        "kind": "changed"
+        "path": "/notes",
+        "before": "len 4",
+        "after": "len 5",
+        "kind": "length"
       },
       {
         "path": "/v1a_seed_rows[0]/secs",
-        "before": 0.3,
-        "after": 1.5,
+        "before": 1.5,
+        "after": 1.1,
         "kind": "changed"
       },
       {
-        "path": "/v1a_seed_rows[1]/secs",
+        "path": "/v1a_seed_rows[4]/secs",
         "before": 0.2,
         "after": 0.1,
         "kind": "changed"
       },
       {
-        "path": "/v1a_seed_rows[2]/secs",
+        "path": "/v1a_seed_rows[5]/secs",
         "before": 0.2,
         "after": 0.1,
         "kind": "changed"
       },
       {
-        "path": "/v1a_seed_rows[3]/secs",
+        "path": "/v1a_seed_rows[7]/secs",
         "before": 0.2,
         "after": 0.1,
         "kind": "changed"
       },
       {
-        "path": "/v2/assertion_sites[0]",
-        "before": "EduTrace_Revised_Pipeline.py:116",
-        "after": "EduTrace_Revised_Pipeline.py:140",
+        "path": "/v1a_seed_rows[8]/secs",
+        "before": 0.2,
+        "after": 0.1,
+        "kind": "changed"
+      },
+      {
+        "path": "/v1a_seed_rows[9]/secs",
+        "before": 0.2,
+        "after": 0.1,
+        "kind": "changed"
+      },
+      {
+        "path": "/v2/assertion_sites[1]",
+        "before": "closeout.py:408",
+        "after": "closeout.py:427",
+        "kind": "changed"
+      },
+      {
+        "path": "/v2/assertion_sites[2]",
+        "before": "closeout.py:409",
+        "after": "closeout.py:428",
         "kind": "changed"
       },
       {
         "path": "/wall_clock_secs",
-        "before": 6.8,
-        "after": 6.3,
+        "before": 6.3,
+        "after": 4.4,
         "kind": "changed"
       }
     ],
     "rps_results.json": [
       {
-        "path": "/cross_model_sensitivity/das_at_1",
-        "before": 0.725,
-        "after": 0.8434,
-        "kind": "changed"
+        "path": "/cross_model_sensitivity/das_naive_fixed_order_at_1",
+        "before": null,
+        "after": 0.0482,
+        "kind": "added"
       },
       {
-        "path": "/cross_model_sensitivity/das_at_2",
-        "before": 0.925,
-        "after": 0.9518,
-        "kind": "changed"
-      },
-      {
-        "path": "/cross_model_sensitivity/n_evaluated",
-        "before": 40,
-        "after": 83,
-        "kind": "changed"
+        "path": "/cross_model_sensitivity/das_naive_fixed_order_at_2",
+        "before": null,
+        "after": 0.0482,
+        "kind": "added"
       },
       {
         "path": "/cross_model_sensitivity/naive_fixed_order_at_1",
-        "before": 0.175,
-        "after": 0.1807,
-        "kind": "changed"
+        "before": 0.1807,
+        "after": null,
+        "kind": "removed"
       },
       {
         "path": "/cross_model_sensitivity/naive_fixed_order_at_2",
-        "before": 0.025,
-        "after": 0.0241,
-        "kind": "changed"
+        "before": 0.0241,
+        "after": null,
+        "kind": "removed"
       },
       {
-        "path": "/cross_model_sensitivity/rps_at_2",
-        "before": 0.875,
-        "after": 0.8554,
-        "kind": "changed"
+        "path": "/cross_model_sensitivity/rps_naive_fixed_order_at_1",
+        "before": null,
+        "after": 0.1807,
+        "kind": "added"
+      },
+      {
+        "path": "/cross_model_sensitivity/rps_naive_fixed_order_at_2",
+        "before": null,
+        "after": 0.0241,
+        "kind": "added"
       }
     ],
     "loso_validation.json": [],

@@ -1,7 +1,7 @@
 {
   "owner": "GROUP 3",
   "anchor": "RUN-GROUP_3-RESUBMIT",
-  "generated": "2026-09-07T19:18:45",
+  "generated": "2026-09-07T13:03:29",
   "versions": {
     "python": "3.11.15",
     "numpy": "2.4.4",
@@ -59,7 +59,7 @@
   ],
   "clearance": {
     "C1": "FAIL",
-    "C2": "UNVERIFIABLE \u2014 C1 failed, so there is no stable effect sign for a leave-one-out to preserve",
+    "C2": "FAIL",
     "C3": "FAIL \u2014 the wording is INCONCLUSIVE at this n",
     "C4": "PASS \u2014 parity table written and budgets equal among the tunable arms",
     "C5": "PASS",
@@ -88,7 +88,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 1.1
+      "secs": 1.5
     },
     {
       "seed": 123,
@@ -128,7 +128,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     },
     {
       "seed": 1,
@@ -138,7 +138,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     },
     {
       "seed": 7,
@@ -158,7 +158,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     },
     {
       "seed": 31337,
@@ -168,7 +168,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     },
     {
       "seed": 555,
@@ -178,7 +178,7 @@
       "n_train_before_smote": 450,
       "n_train_after_smote": 476,
       "spw": 7.49,
-      "secs": 0.1
+      "secs": 0.2
     }
   ],
   "v1a_summary": {
@@ -300,8 +300,8 @@
     "assertion_in_source": true,
     "assertion_sites": [
       "EduTrace_Revised_Pipeline.py:140",
-      "closeout.py:427",
-      "closeout.py:428",
+      "closeout.py:408",
+      "closeout.py:409",
       "gen_synth.py:76"
     ],
     "assertion_passes": true,
@@ -843,10 +843,9 @@
   },
   "notes": [
     "The sign flips across seeds. That is instability at this n, not an absence of effect. No stability wording is available.",
-    "C2 is not decided at this n. The leave-one-out measurements are reported in full and are unchanged; what is withheld is a verdict that would rest on the sign of a mean delta C1 has just shown to be unstable.",
     "This design could not have detected an effect of the observed size. That is a statement about the testbed, not about dropout. Discordant pairs required at the observed split: 786 (have 69).",
     "Confirm each pre-split fit at its call site.",
     "C4 is ticked by this table PLUS the M13 parity statement. Counts alone do not tick it."
   ],
-  "wall_clock_secs": 4.4
+  "wall_clock_secs": 6.3
 }

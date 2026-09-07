@@ -190,3 +190,42 @@ Exact bit-level reproduction still assumes the pinned library versions in
 `requirements.txt`. Floating-point results can differ across CPU architectures and
 BLAS builds even single-threaded; the pins narrow that, and the evidence above
 shows they do not close it.
+
+## An independent reproduction, and what it does and does not show
+
+An audit of the round-3 push re-ran this repository from a clean anonymous clone on a
+separate machine — two cores, Linux x86-64, under the pins in `requirements.txt` — and
+reproduced the locked run exactly:
+
+| Artefact | Leaves | Differing |
+|---|---|---|
+| `results.json` | 859 | **0** |
+| `closeout_verdict.json` | 707 | 6, all wall-clock timings |
+| `rps_results.json` | 35 | 0 |
+| `school_structure.json` | 130 | 0 |
+| `loso_validation.json` | 194 | 0 |
+| `smote_nnaa.json` | 104 | 0 |
+
+The clearance certificate and the null state came back identical. Loading
+`models/xgboost.pkl` and scoring the committed test partition returned AUC-PR 0.1033 and
+AUC-ROC 0.5969 directly, and every data-level claim — 180 students, 428 records, 155 test
+students of which 0 are unseen in training, the four site counts, the attendance rule's 56
+flags and its 0.7513 single-point area — recomputed from the CSV independently of the
+pipeline.
+
+**This does not overturn the platform boundary recorded above.** The auditing machine has
+the same two-core Linux profile and the same library pins as the machine that produced the
+locked run, so what it tests is determinism, not portability: it shows that the run is real
+and repeatable in the recorded environment, and it says nothing about the 12-core Windows
+result of 343 differing leaves. Both findings stand, and they are answers to different
+questions. The honest summary remains the one this document already gives: a reader lands on
+the reported numbers on the platform that produced them, and elsewhere lands on the reported
+partition and data exactly, with model-derived quantities that differ.
+
+The round-4 corrections that followed that audit changed no model and no estimator setting.
+The only artefact value they moved is the C2 verdict, which `closeout.py` now reports as
+UNVERIFIABLE rather than deciding on the sign of a mean delta C1 has already found unstable;
+`C2_PASS` is unchanged, so the null state and the certificate count are unchanged with it.
+Both movements carry rows in `results/corrections_ledger.md`, which now runs two baselines —
+`results_pre_determinism/` for round 3 and `results_pre_round4/` for round 4 — so no round-4
+change is attributed to the determinism repair.

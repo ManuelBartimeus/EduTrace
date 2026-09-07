@@ -1,0 +1,19 @@
+========================================================================
+EduTrace remediation run
+========================================================================
+NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) — PASS
+pool n=530 pos=62 | test n=248 pos=7
+  attendance ranker AUC-ROC=0.8678 | binary single-point=0.7513
+  student-disjoint test records: 0
+  NF-1 real-only re-score: subsets identical = True (0 synthetic rows removed)
+
+--- lag-feature arm ---
+NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) — PASS
+
+--- lag feasibility arm: temporal cut moved to 2026 ---
+NF-1 GUARD: test partition n=151 | synthetic rows=0 | real rows=151 | positives=3 (1.99%) — PASS
+NF-1 GUARD: test partition n=151 | synthetic rows=0 | real rows=151 | positives=3 (1.99%) — PASS
+
+Wrote results/results.json
+Wrote results/rps_results.json
+Wrote results/nf1_guard_log.txt

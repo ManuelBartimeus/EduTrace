@@ -1,0 +1,730 @@
+{
+  "total_changed_leaves": 58,
+  "by_artefact": {
+    "results.json": 42,
+    "closeout_verdict.json": 10,
+    "rps_results.json": 6,
+    "loso_validation.json": 0,
+    "smote_nnaa.json": 0,
+    "school_structure.json": 0
+  },
+  "cause": "Estimator thread count was not pinned. XGBoost and torch accumulate floating-point sums in thread-completion order, so the same seed on a machine with a different core count produced different trees, weights and metrics. Confirmed by changing only OMP_NUM_THREADS: 329 of 858 leaves moved and two clearance conditions changed verdict.",
+  "fix": "n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one thread with deterministic algorithms enabled and a seeded DataLoader generator; the run regenerated once under the pinned settings. selftest_determinism.py verifies thread-count independence on any machine.",
+  "manuscript_quantities": [
+    {
+      "where": "R2 / Table 3",
+      "quantity": "Proposed XGBoost AUC-PR (5-seed mean)",
+      "before": 0.1167,
+      "after": 0.1167
+    },
+    {
+      "where": "R2 / Table 3",
+      "quantity": "Proposed XGBoost AUC-PR (SD)",
+      "before": 0.0444,
+      "after": 0.0444
+    },
+    {
+      "where": "R2 / Table 3",
+      "quantity": "Default XGBoost AUC-PR",
+      "before": 0.1469,
+      "after": 0.1469
+    },
+    {
+      "where": "R2 / Table 3",
+      "quantity": "TabTransformer AUC-PR",
+      "before": 0.2387,
+      "after": 0.2533
+    },
+    {
+      "where": "R2 / Table 3",
+      "quantity": "Decision Tree AUC-PR",
+      "before": 0.0774,
+      "after": 0.0774
+    },
+    {
+      "where": "R2 / Table 3",
+      "quantity": "Proposed XGBoost recall",
+      "before": 0.4,
+      "after": 0.4
+    },
+    {
+      "where": "R2 / Table 3",
+      "quantity": "TabTransformer recall",
+      "before": 0.5143,
+      "after": 0.4857
+    },
+    {
+      "where": "R2 / R4 / R10",
+      "quantity": "Proposed seed-42 AUC-PR",
+      "before": 0.1033,
+      "after": 0.1033
+    },
+    {
+      "where": "R2 / R10",
+      "quantity": "Proposed seed-42 AUC-ROC",
+      "before": 0.5969,
+      "after": 0.5969
+    },
+    {
+      "where": "R5 / R7 / Table 6",
+      "quantity": "Seed-42 operating threshold (proposed)",
+      "before": 0.34,
+      "after": 0.34
+    },
+    {
+      "where": "R5 / Table 5",
+      "quantity": "Records flagged at the seed-42 threshold",
+      "before": 57,
+      "after": 57
+    },
+    {
+      "where": "M8 / M12",
+      "quantity": "scale_pos_weight at seed 42",
+      "before": 7.49,
+      "after": 7.49
+    },
+    {
+      "where": "R5 / Figure 8",
+      "quantity": "RPS@1 (rank-preserving)",
+      "before": 1.0,
+      "after": 1.0
+    },
+    {
+      "where": "R5 / Figure 8",
+      "quantity": "RPS@2 (rank-preserving)",
+      "before": 0.8596,
+      "after": 0.8596
+    },
+    {
+      "where": "R5 / Figure 8",
+      "quantity": "RPS@1 (naive fixed order)",
+      "before": 0.193,
+      "after": 0.193
+    },
+    {
+      "where": "R5 / Figure 8",
+      "quantity": "DAS@1 (rank-preserving)",
+      "before": 0.7368,
+      "after": 0.7368
+    },
+    {
+      "where": "R5 / Table 5",
+      "quantity": "Ablation population n (proposed own threshold)",
+      "before": 57,
+      "after": 57
+    },
+    {
+      "where": "R5",
+      "quantity": "Cross-model sensitivity population n",
+      "before": 40,
+      "after": 83
+    },
+    {
+      "where": "R10",
+      "quantity": "SMOTE 0.50 arm AUC-PR",
+      "before": 0.1343,
+      "after": 0.1343
+    },
+    {
+      "where": "R10",
+      "quantity": "Layer 2 spw=1 arm AUC-PR",
+      "before": 0.1302,
+      "after": 0.1302
+    },
+    {
+      "where": "R10",
+      "quantity": "SMOTE k=3 NNAA at seed 42",
+      "before": 0.9118,
+      "after": 0.9118
+    },
+    {
+      "where": "R3",
+      "quantity": "Ten-seed delta vs attendance ranker (mean)",
+      "before": -0.0047,
+      "after": -0.0047
+    },
+    {
+      "where": "R3",
+      "quantity": "Ten-seed delta sign changes",
+      "before": 2,
+      "after": 2
+    },
+    {
+      "where": "R3",
+      "quantity": "Leave-one-out, synthetic dropped (AUC-PR)",
+      "before": 0.1447,
+      "after": 0.1447
+    },
+    {
+      "where": "R4",
+      "quantity": "Discordant pairs vs the attendance rule",
+      "before": 69,
+      "after": 69
+    },
+    {
+      "where": "R4",
+      "quantity": "Discordant pairs required at 80% power",
+      "before": 786,
+      "after": 786
+    },
+    {
+      "where": "R8",
+      "quantity": "LOSO SCH01 AUC-PR",
+      "before": 0.1016,
+      "after": 0.1016
+    },
+    {
+      "where": "R8",
+      "quantity": "LOSO SCH02 AUC-PR",
+      "before": 0.4172,
+      "after": 0.4172
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs TabTransformer: discordant b",
+      "before": 22,
+      "after": 53
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs TabTransformer: discordant c",
+      "before": 41,
+      "after": 31
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs TabTransformer: BH-adjusted p",
+      "before": 0.0451,
+      "after": 0.0428
+    },
+    {
+      "where": "R4 / Table 4 / R10",
+      "quantity": "McNemar vs TabTransformer: DIRECTION",
+      "before": "Favours comparator",
+      "after": "Favours proposed"
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs Default XGBoost: discordant b/c",
+      "before": "17/20",
+      "after": "17/20"
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs Attendance rule: discordant b/c",
+      "before": "31/38",
+      "after": "31/38"
+    },
+    {
+      "where": "Table 3",
+      "quantity": "TabTransformer AUC-ROC",
+      "before": 0.7248,
+      "after": 0.6964
+    },
+    {
+      "where": "Table 3",
+      "quantity": "TabTransformer F2",
+      "before": 0.2572,
+      "after": 0.2039
+    },
+    {
+      "where": "Table 3",
+      "quantity": "TabTransformer precision",
+      "before": 0.0901,
+      "after": 0.1499
+    },
+    {
+      "where": "R7 / Figure 7",
+      "quantity": "TabTransformer seed-42 threshold",
+      "before": 0.5,
+      "after": 0.49
+    },
+    {
+      "where": "R5",
+      "quantity": "TabTransformer seed-42 flagged count",
+      "before": 40,
+      "after": 83
+    },
+    {
+      "where": "M19",
+      "quantity": "TabTransformer checkpoint size (MB)",
+      "before": 1.25,
+      "after": 1.19
+    },
+    {
+      "where": "M19",
+      "quantity": "Proposed XGBoost checkpoint size (MB)",
+      "before": 0.29,
+      "after": 0.27
+    },
+    {
+      "where": "R12",
+      "quantity": "C1 verdict",
+      "before": "FAIL",
+      "after": "FAIL"
+    },
+    {
+      "where": "R12",
+      "quantity": "C2 verdict",
+      "before": "FAIL",
+      "after": "FAIL"
+    },
+    {
+      "where": "R12",
+      "quantity": "C3 verdict",
+      "before": "FAIL \u2014 the wording is INCONCLUSIVE at this n",
+      "after": "FAIL \u2014 the wording is INCONCLUSIVE at this n"
+    },
+    {
+      "where": "R12",
+      "quantity": "Null state",
+      "before": 5,
+      "after": 5
+    }
+  ],
+  "moved": [
+    {
+      "where": "R2 / Table 3",
+      "quantity": "TabTransformer AUC-PR",
+      "before": 0.2387,
+      "after": 0.2533
+    },
+    {
+      "where": "R2 / Table 3",
+      "quantity": "TabTransformer recall",
+      "before": 0.5143,
+      "after": 0.4857
+    },
+    {
+      "where": "R5",
+      "quantity": "Cross-model sensitivity population n",
+      "before": 40,
+      "after": 83
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs TabTransformer: discordant b",
+      "before": 22,
+      "after": 53
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs TabTransformer: discordant c",
+      "before": 41,
+      "after": 31
+    },
+    {
+      "where": "R4 / Table 4",
+      "quantity": "McNemar vs TabTransformer: BH-adjusted p",
+      "before": 0.0451,
+      "after": 0.0428
+    },
+    {
+      "where": "R4 / Table 4 / R10",
+      "quantity": "McNemar vs TabTransformer: DIRECTION",
+      "before": "Favours comparator",
+      "after": "Favours proposed"
+    },
+    {
+      "where": "Table 3",
+      "quantity": "TabTransformer AUC-ROC",
+      "before": 0.7248,
+      "after": 0.6964
+    },
+    {
+      "where": "Table 3",
+      "quantity": "TabTransformer F2",
+      "before": 0.2572,
+      "after": 0.2039
+    },
+    {
+      "where": "Table 3",
+      "quantity": "TabTransformer precision",
+      "before": 0.0901,
+      "after": 0.1499
+    },
+    {
+      "where": "R7 / Figure 7",
+      "quantity": "TabTransformer seed-42 threshold",
+      "before": 0.5,
+      "after": 0.49
+    },
+    {
+      "where": "R5",
+      "quantity": "TabTransformer seed-42 flagged count",
+      "before": 40,
+      "after": 83
+    },
+    {
+      "where": "M19",
+      "quantity": "TabTransformer checkpoint size (MB)",
+      "before": 1.25,
+      "after": 1.19
+    },
+    {
+      "where": "M19",
+      "quantity": "Proposed XGBoost checkpoint size (MB)",
+      "before": 0.29,
+      "after": 0.27
+    }
+  ],
+  "full_diff": {
+    "results.json": [
+      {
+        "path": "/seed42_confusion/tabtransformer[0][0]",
+        "before": 204,
+        "after": 162,
+        "kind": "changed"
+      },
+      {
+        "path": "/seed42_confusion/tabtransformer[0][1]",
+        "before": 37,
+        "after": 79,
+        "kind": "changed"
+      },
+      {
+        "path": "/seed42_confusion/tabtransformer[1][0]",
+        "before": 4,
+        "after": 3,
+        "kind": "changed"
+      },
+      {
+        "path": "/seed42_confusion/tabtransformer[1][1]",
+        "before": 3,
+        "after": 4,
+        "kind": "changed"
+      },
+      {
+        "path": "/seed42_flags/tabtransformer",
+        "before": 40,
+        "after": 83,
+        "kind": "changed"
+      },
+      {
+        "path": "/seed42_thresholds/tabtransformer",
+        "before": 0.5,
+        "after": 0.49,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/naive_fixed_order_at1",
+        "before": 0.075,
+        "after": 0.0482,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/naive_fixed_order_at2",
+        "before": 0.075,
+        "after": 0.0482,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/rank_preserving_at1",
+        "before": 0.725,
+        "after": 0.8434,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/directional_agreement/rank_preserving_at2",
+        "before": 0.925,
+        "after": 0.9518,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/n",
+        "before": 40,
+        "after": 83,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/naive_fixed_order_at1",
+        "before": 0.175,
+        "after": 0.1807,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/naive_fixed_order_at2",
+        "before": 0.025,
+        "after": 0.0241,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/rank_preservation/rank_preserving_at2",
+        "before": 0.875,
+        "after": 0.8554,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/alerts",
+        "before": 40,
+        "after": 83,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/factors_mean",
+        "before": 2.23,
+        "after": 2.06,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/len_mean",
+        "before": 89.9,
+        "after": 86.7,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/table5/within_160",
+        "before": 40,
+        "after": 83,
+        "kind": "changed"
+      },
+      {
+        "path": "/shap_sms/ablation/tabtransformer_threshold_ORIGINAL/true_dropouts_in_population",
+        "before": 3,
+        "after": 4,
+        "kind": "changed"
+      },
+      {
+        "path": "/stats/mcnemar[2]/b",
+        "before": 22,
+        "after": 53,
+        "kind": "changed"
+      },
+      {
+        "path": "/stats/mcnemar[2]/c",
+        "before": 41,
+        "after": 31,
+        "kind": "changed"
+      },
+      {
+        "path": "/stats/mcnemar[2]/direction",
+        "before": "Favours comparator",
+        "after": "Favours proposed",
+        "kind": "changed"
+      },
+      {
+        "path": "/stats/mcnemar[2]/p",
+        "before": 0.022574972673257185,
+        "after": 0.021383189937144585,
+        "kind": "changed"
+      },
+      {
+        "path": "/stats/mcnemar[2]/p_bh",
+        "before": 0.04514994534651437,
+        "after": 0.04276637987428917,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/auc_pr/mean",
+        "before": 0.2387,
+        "after": 0.2533,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/auc_pr/std",
+        "before": 0.0559,
+        "after": 0.079,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/auc_roc/mean",
+        "before": 0.7248,
+        "after": 0.6964,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/auc_roc/std",
+        "before": 0.0409,
+        "after": 0.0584,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/f2/mean",
+        "before": 0.2572,
+        "after": 0.2039,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/f2/std",
+        "before": 0.0527,
+        "after": 0.0433,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/macro_f1/mean",
+        "before": 0.5254,
+        "after": 0.4984,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/macro_f1/std",
+        "before": 0.0383,
+        "after": 0.0655,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/precision/mean",
+        "before": 0.0901,
+        "after": 0.1499,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/precision/std",
+        "before": 0.03,
+        "after": 0.1758,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/recall/mean",
+        "before": 0.5143,
+        "after": 0.4857,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3/tabtransformer/recall/std",
+        "before": 0.07,
+        "after": 0.1714,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3_seed42/tabtransformer/auc_pr",
+        "before": 0.2688,
+        "after": 0.2016,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3_seed42/tabtransformer/auc_roc",
+        "before": 0.7392,
+        "after": 0.7101,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3_seed42/tabtransformer/f2",
+        "before": 0.2206,
+        "after": 0.1802,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3_seed42/tabtransformer/macro_f1",
+        "before": 0.5182,
+        "after": 0.4435,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3_seed42/tabtransformer/precision",
+        "before": 0.075,
+        "after": 0.0482,
+        "kind": "changed"
+      },
+      {
+        "path": "/table3_seed42/tabtransformer/recall",
+        "before": 0.4286,
+        "after": 0.5714,
+        "kind": "changed"
+      }
+    ],
+    "closeout_verdict.json": [
+      {
+        "path": "/generated",
+        "before": "2026-09-07T09:18:27",
+        "after": "2026-09-07T13:03:29",
+        "kind": "changed"
+      },
+      {
+        "path": "/rows[2]/check",
+        "before": "RPS artefact traces to run",
+        "after": "RPS traces to run (+ledger)",
+        "kind": "changed"
+      },
+      {
+        "path": "/rows[2]/expected",
+        "before": "7 of 7",
+        "after": "all matched or ledgered",
+        "kind": "changed"
+      },
+      {
+        "path": "/rows[2]/observed",
+        "before": "7 of 7 match",
+        "after": "6 of 7 match",
+        "kind": "changed"
+      },
+      {
+        "path": "/v1a_seed_rows[0]/secs",
+        "before": 0.3,
+        "after": 1.5,
+        "kind": "changed"
+      },
+      {
+        "path": "/v1a_seed_rows[1]/secs",
+        "before": 0.2,
+        "after": 0.1,
+        "kind": "changed"
+      },
+      {
+        "path": "/v1a_seed_rows[2]/secs",
+        "before": 0.2,
+        "after": 0.1,
+        "kind": "changed"
+      },
+      {
+        "path": "/v1a_seed_rows[3]/secs",
+        "before": 0.2,
+        "after": 0.1,
+        "kind": "changed"
+      },
+      {
+        "path": "/v2/assertion_sites[0]",
+        "before": "EduTrace_Revised_Pipeline.py:116",
+        "after": "EduTrace_Revised_Pipeline.py:140",
+        "kind": "changed"
+      },
+      {
+        "path": "/wall_clock_secs",
+        "before": 6.8,
+        "after": 6.3,
+        "kind": "changed"
+      }
+    ],
+    "rps_results.json": [
+      {
+        "path": "/cross_model_sensitivity/das_at_1",
+        "before": 0.725,
+        "after": 0.8434,
+        "kind": "changed"
+      },
+      {
+        "path": "/cross_model_sensitivity/das_at_2",
+        "before": 0.925,
+        "after": 0.9518,
+        "kind": "changed"
+      },
+      {
+        "path": "/cross_model_sensitivity/n_evaluated",
+        "before": 40,
+        "after": 83,
+        "kind": "changed"
+      },
+      {
+        "path": "/cross_model_sensitivity/naive_fixed_order_at_1",
+        "before": 0.175,
+        "after": 0.1807,
+        "kind": "changed"
+      },
+      {
+        "path": "/cross_model_sensitivity/naive_fixed_order_at_2",
+        "before": 0.025,
+        "after": 0.0241,
+        "kind": "changed"
+      },
+      {
+        "path": "/cross_model_sensitivity/rps_at_2",
+        "before": 0.875,
+        "after": 0.8554,
+        "kind": "changed"
+      }
+    ],
+    "loso_validation.json": [],
+    "smote_nnaa.json": [],
+    "school_structure.json": []
+  }
+}

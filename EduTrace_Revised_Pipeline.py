@@ -652,10 +652,18 @@ def write_rps_artefact(R, path):
             'n_evaluated': cross.get('n'),
             'rps_at_1': cross.get('rank_preservation', {}).get('rank_preserving_at1'),
             'rps_at_2': cross.get('rank_preservation', {}).get('rank_preserving_at2'),
-            'naive_fixed_order_at_1': cross.get('rank_preservation', {}).get('naive_fixed_order_at1'),
-            'naive_fixed_order_at_2': cross.get('rank_preservation', {}).get('naive_fixed_order_at2'),
+            # RPS and DAS have DIFFERENT naive baselines on the same population, and
+            # the round-3 build wrote only the rank-preservation pair here under an
+            # unqualified name. That is how R5 came to quote the RPS baseline beside
+            # a DAS figure. Both pairs are now written, each carrying the name of the
+            # quantity it belongs to, so the sentence cannot be assembled wrongly and
+            # every figure R5 quotes is readable off this file.
+            'rps_naive_fixed_order_at_1': cross.get('rank_preservation', {}).get('naive_fixed_order_at1'),
+            'rps_naive_fixed_order_at_2': cross.get('rank_preservation', {}).get('naive_fixed_order_at2'),
             'das_at_1': cross.get('directional_agreement', {}).get('rank_preserving_at1'),
-            'das_at_2': cross.get('directional_agreement', {}).get('rank_preserving_at2')},
+            'das_at_2': cross.get('directional_agreement', {}).get('rank_preserving_at2'),
+            'das_naive_fixed_order_at_1': cross.get('directional_agreement', {}).get('naive_fixed_order_at1'),
+            'das_naive_fixed_order_at_2': cross.get('directional_agreement', {}).get('naive_fixed_order_at2')},
         'table5_character_compliance': own['table5'],
         'example_alerts': own.get('example_alerts', []),
         'note': ('RPS and DAS are reported under separate names because M17 describes '

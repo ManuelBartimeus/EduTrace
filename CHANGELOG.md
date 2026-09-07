@@ -1,7 +1,8 @@
 # EduTrace — remediation changelog, verification round 2
 
-Checklist item → what changed → where it is reflected. Item numbers refer to `CHECKLIST.md`,
-extracted from `GROUP 3_VERIFICATION 2 FEEDBACK.docx` and the close-out script.
+Checklist item → what changed → where it is reflected. Item numbers are the supervisor's own,
+from `GROUP 3_VERIFICATION 2 FEEDBACK.docx` and the close-out script; `verify.py` checks every one
+of them in code, and is the form of that checklist this repository publishes.
 
 ---
 
@@ -117,7 +118,7 @@ n_jobs=1 on every XGBoost and scikit-learn estimator; torch pinned to one thread
 | 2.4 | DAS reported under its own name: DAS@1 0.7368, DAS@2 0.9825 (naive 0.0877 / 0.0877) | same artefact; **Methods M17** |
 | 2.5 | cross-model sensitivity population, n **40** | same artefact |
 
-> **On the "no result was targeted" tension** (flagged as F1 in `CHECKLIST.md`). Q21 named the
+> **On the "no result was targeted" tension** (checklist finding F1; `verify.py` item A). Q21 named the
 > figures the artefact must report, while Section G item 24 forbids targeting a result. The
 > tension resolved itself: the ablation was re-run honestly, with nothing tuned toward those
 > values, and **all seven quoted figures reproduced exactly**. Had any differed, the difference
@@ -424,12 +425,107 @@ release is pushed — that is the one thing this work cannot do for you.
 
 ---
 
+## D4. Post-implementation audit corrections (round 4)
+
+An independent audit of the round-3 push re-ran the repository from a clean anonymous clone and
+reproduced **859 of 859 leaves of `results.json` bit-identically**, with the same certificate and
+the same null state; loading `models/xgboost.pkl` and scoring the committed partition returned
+AUC-PR 0.1033 and AUC-ROC 0.5969. Nothing in the analysis needed repair. Six defects sat between
+the artefacts and the manuscript, and all six are closed here. **No model was refitted and no
+estimator setting changed.**
+
+### The two that were blocking
+
+**The submitted Methods file was one commit behind the repository.** Round 3's release edit — the
+tag, the hash, and the sentence recording that bit-exact reproduction is bound to the originating
+platform — was applied by hand to `docs_out/` after the push. The copy that went forward for
+submission predated it, so it carried the unfilled placeholder *and* silently dropped the
+reproducibility disclosure. That is a filing accident, and `stamp_release.py` now does the job a
+convention failed to do: it refuses a short hash, refuses to leave a placeholder standing, and
+prints the resulting sentence for reading before the file is sent.
+
+**R12 reported a C2 verdict the certificate could not issue.** The manuscript said `UNVERIFIABLE`;
+`closeout.py` returned only `PASS` or `FAIL`, and `results/closeout_verdict.json` said `FAIL`. The
+objection behind the change was sound — C2 asks whether each leave-one-out fold preserves the sign
+of the effect, and C1 had already found that sign unstable, so a PASS or FAIL there turns on
+floating-point distance from zero rather than on the data. The fix is to make the instrument
+return what the manuscript claims: `closeout.py` now returns `UNVERIFIABLE` for C2 whenever C1 has
+failed. This is the state the close-out instrument already uses for a condition its inputs cannot
+decide ("C1 for the transformer is then UNVERIFIABLE, not passed"), so it is not an invented
+verdict. `C2_PASS` is untouched and stays `False`, so **the null state is still 5, the certificate
+count is unchanged, and no other verdict moves**; the leave-one-out measurements themselves are
+unchanged and R3 still reports them in full. Recorded in the round-4 corrections ledger.
+
+### The other four
+
+- **Table 7's McNemar row still said all four comparisons favour the comparator.** Round 3
+  corrected the reversed direction in R4 and R10 and did not reach R11, so the reconciliation
+  table — whose whole job is to make text, tables and figures agree by inspection — contradicted
+  Table 4 on the study's one favourable statistical result. Corrected to the actual split, and the
+  ledger row's *where* column now names R11.
+- **R5 compared DAS@1 against the rank-preservation naive baseline.** `rps_results.json` wrote only
+  one naive pair for the cross-model population, under an unqualified name, and
+  `edit_docs_tabtransformer.py` read that same key twice. Both baselines are now written under
+  names that say which quantity they belong to, the generator reads each figure from its own key,
+  and R5 quotes 0.0482 — which understated the result, not overstated it.
+- **The Q2 declaration asserted an absolute the captions did not meet.** It stated that no sentence
+  describes the partition as held-out without the qualifier; four did, including the Table 3 and
+  Figure 4 captions, which travel away from the text that qualifies them. R1 now carries a
+  governing definition at first use, the captions carry the qualifier themselves, and the
+  declaration states what the manuscript does.
+- **"2 sign changes" was not what the code counts.** `closeout.py` computes
+  `min(n_positive, n_negative)`, the number of seeds carrying the minority sign; the seeds are
+  unordered, so a count of transitions would not be a quantity. R3 and R12 now describe the
+  statistic they quote. M19 also placed the notebook at the repository root; it is under
+  `notebooks/`, as its own path says.
+
+### Why the gates did not catch any of this
+
+`verify.py` returned 31/31 and `consistency_pass.py` returned 0 failures on the documents carrying
+all six defects. The reasons were structural, and three checks now close them:
+
+| Hole | New check |
+|---|---|
+| Check A compares a hand-curated list of 60 claims, so an unlisted claim is untested | **F** — every 3- and 4-decimal literal in both sections must resolve to an artefact value or to a derivation named with its formula |
+| Nothing compared R12's six verdicts against the file that issues them | **D** — each of C1–C6, and the null state, read from `closeout_verdict.json` and matched against the manuscript |
+| A ledger row could record a correction that never reached the text | **E** — no superseded value may survive in either section, and each corrected statement must be findable |
+| The Q2 check searched for one phrasing (`held-out test performance`) that the manuscript did not use | **C** rewritten — the governing definition must exist, every caption must carry the qualifier, and the declaration may not assert the absolute |
+
+### Also in this round
+
+- `ledger_generator.py` now covers **two rounds against two committed baselines**, each with its own
+  cause. Collapsing them would have attributed a round-4 change to the round-3 repair, which is the
+  misattribution Section F exists to prevent. It also could not run at all as committed: its
+  baseline constant still said `results_prev`, a directory renamed before the push.
+- **Internal remediation documents removed from the published tree** (`cleanup_process_docs.py`).
+  The repository is M21's data-and-code-availability link, and what sat at its root was the
+  remediation process, including a full transcription of the supervisor's verification feedback.
+  Every file stays retrievable at `01b22e3` and is recorded in `results/superseded_artefacts.json`.
+  Nothing that evidences a figure was touched, and `verify.py` still checks every item the removed
+  checklist tracked.
+- One stale Word review comment removed from Methods (`strip_doc_comments.py`). It argued from a
+  site count of UNRECORDED, which has been 4 since the identifier was recovered.
+
+### Still open after this round
+
+The register question. `data/real_student_data*.csv` publishes 428 real student-year records with
+named schools beside gender, grade, distance, fee status and dropout outcome, while M21 states that
+the field institutional records cannot be shared under the Ghana Data Protection Act, 2012 and the
+HuSSREC approval. That is a contradiction a reviewer can check in one click, and a re-identification
+question inside a 20-student school. It is **not** resolved here, because removing the files also
+removes the clean-clone reproduction that currently answers Q4 — a trade-off that belongs to Dr
+Osei and HuSSREC, not to a code change. The options, and what each costs, are set out in a
+decision note delivered to the supervisor rather than published here; `redact_register.py`
+implements whichever he chooses and is inert until run.
+
+---
+
 ## What remains, and who owns it
 
 | Item | Owner | Action |
 |---|---|---|
 | Q2 countersignature | **Dr Osei** | Sign and date the block at the end of Methods |
-| C6 / the push | **You** | `git push` the tagged release; see `PUSH_INSTRUCTIONS.md` |
-| M21 commit hash | **You** | Replace the bracketed slot with the tag and hash once pushed |
+| C6 / the push | **You** | `git push`, then tag the release |
+| M21 commit hash | **You** | `python stamp_release.py <tag> <hash>` once pushed — never by hand, see D4 |
 | Q22 gate | lifts on its own | Once Q10, Q21, Q23 are visible on the pushed commit |
 | School identifier | ~~The group~~ | **DONE** — recovered, attached, and leave-one-site-out validation run (D2) |

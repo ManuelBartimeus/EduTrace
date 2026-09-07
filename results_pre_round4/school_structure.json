@@ -1,0 +1,200 @@
+{
+  "n_sites": 4,
+  "sites": [
+    {
+      "school_id": "SCH01",
+      "school_name": "Al Huda Islamic and JHS",
+      "students": 80,
+      "records": 225,
+      "dropouts": 11,
+      "base_rate": 0.0489,
+      "train_records": 80,
+      "train_positives": 6,
+      "test_records": 145,
+      "test_positives": 5,
+      "share_of_students": 44.4,
+      "share_of_records": 52.6
+    },
+    {
+      "school_id": "SCH02",
+      "school_name": "Tawjeed Islamic and JHS",
+      "students": 50,
+      "records": 109,
+      "dropouts": 9,
+      "base_rate": 0.0826,
+      "train_records": 50,
+      "train_positives": 7,
+      "test_records": 59,
+      "test_positives": 2,
+      "share_of_students": 27.8,
+      "share_of_records": 25.5
+    },
+    {
+      "school_id": "SCH03",
+      "school_name": "Ayaarno M/A Primary and JHS",
+      "students": 20,
+      "records": 37,
+      "dropouts": 3,
+      "base_rate": 0.0811,
+      "train_records": 20,
+      "train_positives": 3,
+      "test_records": 17,
+      "test_positives": 0,
+      "share_of_students": 11.1,
+      "share_of_records": 8.6
+    },
+    {
+      "school_id": "SCH04",
+      "school_name": "Buokrom Block A M/A Primary and JHS",
+      "students": 30,
+      "records": 57,
+      "dropouts": 2,
+      "base_rate": 0.0351,
+      "train_records": 30,
+      "train_positives": 2,
+      "test_records": 27,
+      "test_positives": 0,
+      "share_of_students": 16.7,
+      "share_of_records": 13.3
+    }
+  ],
+  "site_names": {
+    "SCH01": "Al Huda Islamic and JHS",
+    "SCH02": "Tawjeed Islamic and JHS",
+    "SCH03": "Ayaarno M/A Primary and JHS",
+    "SCH04": "Buokrom Block A M/A Primary and JHS"
+  },
+  "base_rate_spread": {
+    "min": 0.0351,
+    "max": 0.0826
+  },
+  "sites_without_test_positives": [
+    "SCH03",
+    "SCH04"
+  ],
+  "categorical_confounding": {
+    "fee_payment_status": {
+      "cramers_v": 0.2132,
+      "chi2": 38.93,
+      "p_value": 7.399692844379358e-07,
+      "table": {
+        "Fully Paid": {
+          "SCH01": 0,
+          "SCH02": 10,
+          "SCH03": 0,
+          "SCH04": 0
+        },
+        "Partially Paid": {
+          "SCH01": 20,
+          "SCH02": 8,
+          "SCH03": 0,
+          "SCH04": 0
+        },
+        "Unpaid": {
+          "SCH01": 205,
+          "SCH02": 91,
+          "SCH03": 37,
+          "SCH04": 57
+        }
+      }
+    },
+    "grade_level": {
+      "cramers_v": 0.221,
+      "chi2": 41.82,
+      "p_value": 1.9980896683190414e-07,
+      "table": {
+        "Grade 7": {
+          "SCH01": 80,
+          "SCH02": 50,
+          "SCH03": 20,
+          "SCH04": 30
+        },
+        "Grade 8": {
+          "SCH01": 74,
+          "SCH02": 23,
+          "SCH03": 0,
+          "SCH04": 0
+        },
+        "Grade 9": {
+          "SCH01": 71,
+          "SCH02": 36,
+          "SCH03": 17,
+          "SCH04": 27
+        }
+      }
+    },
+    "gender": {
+      "cramers_v": 0.4396,
+      "chi2": 82.73,
+      "p_value": 7.9746256418582e-18,
+      "table": {
+        "Female": {
+          "SCH01": 135,
+          "SCH02": 76,
+          "SCH03": 37,
+          "SCH04": 7
+        },
+        "Male": {
+          "SCH01": 90,
+          "SCH02": 33,
+          "SCH03": 0,
+          "SCH04": 50
+        }
+      }
+    }
+  },
+  "distance_km_by_site": {
+    "SCH01": {
+      "min": 2.0,
+      "max": 5.0,
+      "mean": 3.56,
+      "values": [
+        2.0,
+        3.5,
+        4.0,
+        5.0
+      ]
+    },
+    "SCH02": {
+      "min": 2.0,
+      "max": 4.0,
+      "mean": 3.124,
+      "values": [
+        2.0,
+        3.5,
+        4.0
+      ]
+    },
+    "SCH03": {
+      "min": 2.0,
+      "max": 5.0,
+      "mean": 3.419,
+      "values": [
+        2.0,
+        3.5,
+        5.0
+      ]
+    },
+    "SCH04": {
+      "min": 2.0,
+      "max": 5.0,
+      "mean": 3.395,
+      "values": [
+        2.0,
+        3.5,
+        5.0
+      ]
+    }
+  },
+  "distance_kruskal": {
+    "H": 50.22,
+    "p": 7.157433788732313e-11
+  },
+  "site_recoverability": {
+    "cv_accuracy": 0.6707,
+    "cv_std": 0.0402,
+    "majority_baseline": 0.5257,
+    "lift": 1.28,
+    "materially_recoverable": false
+  }
+}

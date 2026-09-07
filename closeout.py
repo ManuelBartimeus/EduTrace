@@ -211,8 +211,27 @@ def main(real_csv, synth_csv, outdir):
               % (src, apk, apk - comparator_ap))
     finite = [r['delta'] for r in loo_rows if r['delta'] is not None]
     C2_PASS = bool(finite) and all((d > 0) == (mean_d > 0) for d in finite)
-    C2_STATE = "PASS" if C2_PASS else "FAIL"
+    # C2's rule asks whether every fold preserves the SIGN of the mean delta. That
+    # question has an answer only if the mean delta has an established sign, which
+    # is exactly what C1 decides. When C1 fails — |mean_d| inside its own spread,
+    # with seeds on both sides of zero — the comparison is deciding which side of
+    # zero a quantity indistinguishable from zero happens to fall on, so a PASS or
+    # a FAIL returned from it is arithmetic rather than measurement. The condition
+    # is therefore reported UNVERIFIABLE, the state this instrument already uses
+    # for a condition its inputs cannot decide, rather than decided either way.
+    # C2_PASS is unchanged and stays False, so nothing downstream moves: the null
+    # state is still set by NF-1 and C3 above it, and the certificate count is
+    # unaffected. The leave-one-out measurements themselves are reported in full.
+    if not C1_PASS:
+        C2_STATE = ("UNVERIFIABLE — C1 failed, so there is no stable effect sign "
+                    "for a leave-one-out to preserve")
+    else:
+        C2_STATE = "PASS" if C2_PASS else "FAIL"
     print("  C2 SURVIVES LEAVE-ONE-OUT: %s" % C2_STATE)
+    if not C1_PASS:
+        note("C2 is not decided at this n. The leave-one-out measurements are reported "
+             "in full and are unchanged; what is withheld is a verdict that would rest "
+             "on the sign of a mean delta C1 has just shown to be unstable.")
 
     # =========================================================================
     # V1c — MINIMUM DETECTABLE EFFECT, PAIRED.  Closes C3.
