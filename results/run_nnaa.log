@@ -1,0 +1,12 @@
+NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) — PASS
+configuration                    seed42          mean±sd              range   rows
+------------------------------------------------------------------------------------
+SMOTE k=5                        0.9181   0.9021±0.0115  [0.8844, 0.9181]     26
+SMOTE k=3                        0.9118   0.8996±0.0084  [0.8928, 0.9118]     26
+SMOTE k=1                        0.8991   0.9033±0.0081  [0.8950, 0.9180]     26
+DP-SMOTE k=1 (epsilon=1.0)       0.9706   0.9769±0.0076  [0.9685, 0.9895]     26
+
+ceiling 0.6; all rungs breach = True
+lowest-NNAA rung at seed 42 = SMOTE k=1  (configured: k=3)
+
+wrote results/smote_nnaa.json

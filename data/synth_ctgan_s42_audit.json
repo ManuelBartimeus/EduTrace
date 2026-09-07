@@ -1,0 +1,70 @@
+{
+  "level_a": {
+    "attendance_rate": {
+      "real_mean": 0.8381,
+      "real_std": 0.2138,
+      "synth_mean": 0.8121,
+      "synth_std": 0.2664
+    },
+    "exam_score": {
+      "real_mean": 52.796,
+      "real_std": 17.4668,
+      "synth_mean": 53.2843,
+      "synth_std": 30.0626
+    },
+    "distance_km": {
+      "real_mean": 3.4306,
+      "real_std": 0.6599,
+      "synth_mean": 3.5129,
+      "synth_std": 0.5958
+    },
+    "fee_payment_status": {
+      "Fully Paid": {
+        "real": 0.0278,
+        "synth": 0.0829
+      },
+      "Unpaid": {
+        "real": 0.9722,
+        "synth": 0.9171
+      }
+    },
+    "grade_level": {
+      "Grade 7": {
+        "real": 1.0,
+        "synth": 1.0
+      }
+    },
+    "gender": {
+      "Female": {
+        "real": 0.5556,
+        "synth": 0.6143
+      },
+      "Male": {
+        "real": 0.4444,
+        "synth": 0.3857
+      }
+    }
+  },
+  "level_b": {
+    "trtr_auc_pr": 0.1314,
+    "tstr_auc_pr": 0.0774,
+    "gap": 0.0541,
+    "pass": true
+  },
+  "level_c": {
+    "nnaa": 0.6642,
+    "ceiling": 0.6,
+    "pass": false
+  },
+  "level_d": {
+    "near_copies_lt_1e-3": 2,
+    "n_synth": 350,
+    "min_nn_dist": 0.0,
+    "mean_nn_dist": 1.2453
+  },
+  "config": {
+    "generator": "CTGAN (SDV, 600 epochs, batch=50, seed=42)",
+    "n_synth": 350,
+    "synth_positives": 44
+  }
+}

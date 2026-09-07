@@ -1,0 +1,1527 @@
+{
+  "pool": {
+    "n": 530,
+    "pos": 62,
+    "neg": 468,
+    "ratio": 7.55,
+    "pct_pos": 11.7
+  },
+  "test": {
+    "n": 248,
+    "pos": 7,
+    "neg": 241,
+    "pct_pos": 2.82
+  },
+  "table3": {
+    "xgb_default": {
+      "auc_pr": {
+        "mean": 0.1469,
+        "std": 0.0896
+      },
+      "auc_roc": {
+        "mean": 0.6816,
+        "std": 0.0422
+      },
+      "f2": {
+        "mean": 0.1747,
+        "std": 0.0422
+      },
+      "macro_f1": {
+        "mean": 0.4947,
+        "std": 0.0241
+      },
+      "precision": {
+        "mean": 0.0586,
+        "std": 0.0173
+      },
+      "recall": {
+        "mean": 0.3714,
+        "std": 0.1143
+      }
+    },
+    "xgb_engineered": {
+      "auc_pr": {
+        "mean": 0.1167,
+        "std": 0.0444
+      },
+      "auc_roc": {
+        "mean": 0.6182,
+        "std": 0.0754
+      },
+      "f2": {
+        "mean": 0.1532,
+        "std": 0.0662
+      },
+      "macro_f1": {
+        "mean": 0.4478,
+        "std": 0.0675
+      },
+      "precision": {
+        "mean": 0.0492,
+        "std": 0.0322
+      },
+      "recall": {
+        "mean": 0.4,
+        "std": 0.1069
+      }
+    },
+    "decision_tree": {
+      "auc_pr": {
+        "mean": 0.0774,
+        "std": 0.0205
+      },
+      "auc_roc": {
+        "mean": 0.5914,
+        "std": 0.0448
+      },
+      "f2": {
+        "mean": 0.1869,
+        "std": 0.056
+      },
+      "macro_f1": {
+        "mean": 0.5186,
+        "std": 0.0402
+      },
+      "precision": {
+        "mean": 0.0763,
+        "std": 0.0309
+      },
+      "recall": {
+        "mean": 0.3143,
+        "std": 0.0571
+      }
+    },
+    "tabtransformer": {
+      "auc_pr": {
+        "mean": 0.2387,
+        "std": 0.0559
+      },
+      "auc_roc": {
+        "mean": 0.7248,
+        "std": 0.0409
+      },
+      "f2": {
+        "mean": 0.2572,
+        "std": 0.0527
+      },
+      "macro_f1": {
+        "mean": 0.5254,
+        "std": 0.0383
+      },
+      "precision": {
+        "mean": 0.0901,
+        "std": 0.03
+      },
+      "recall": {
+        "mean": 0.5143,
+        "std": 0.07
+      }
+    }
+  },
+  "table3_seed42": {
+    "xgb_default": {
+      "auc_pr": 0.0917,
+      "auc_roc": 0.6251,
+      "f2": 0.122,
+      "macro_f1": 0.4673,
+      "precision": 0.037,
+      "recall": 0.2857
+    },
+    "xgb_engineered": {
+      "auc_pr": 0.1033,
+      "auc_roc": 0.5969,
+      "f2": 0.1176,
+      "macro_f1": 0.4618,
+      "precision": 0.0351,
+      "recall": 0.2857
+    },
+    "decision_tree": {
+      "auc_pr": 0.1045,
+      "auc_roc": 0.5999,
+      "f2": 0.2,
+      "macro_f1": 0.5422,
+      "precision": 0.0909,
+      "recall": 0.2857
+    },
+    "tabtransformer": {
+      "auc_pr": 0.2688,
+      "auc_roc": 0.7392,
+      "f2": 0.2206,
+      "macro_f1": 0.5182,
+      "precision": 0.075,
+      "recall": 0.4286
+    }
+  },
+  "seed42_thresholds": {
+    "xgb_engineered": 0.34,
+    "xgb_default": 0.08,
+    "decision_tree": 0.6,
+    "tabtransformer": 0.5
+  },
+  "seed42_flags": {
+    "xgb_engineered": 57,
+    "xgb_default": 54,
+    "decision_tree": 22,
+    "tabtransformer": 40
+  },
+  "seed42_confusion": {
+    "xgb_default": [
+      [
+        189,
+        52
+      ],
+      [
+        5,
+        2
+      ]
+    ],
+    "xgb_engineered": [
+      [
+        186,
+        55
+      ],
+      [
+        5,
+        2
+      ]
+    ],
+    "decision_tree": [
+      [
+        221,
+        20
+      ],
+      [
+        5,
+        2
+      ]
+    ],
+    "tabtransformer": [
+      [
+        204,
+        37
+      ],
+      [
+        4,
+        3
+      ]
+    ]
+  },
+  "scale_pos_weight_seed42": 7.49,
+  "attendance_binary_rule": {
+    "label": "Attendance rule (binary, threshold 0.70)",
+    "precision": 0.08928571428571429,
+    "recall": 0.7142857142857143,
+    "f2": 0.2976190476190476,
+    "macro_f1": 0.5181641555775505,
+    "single_point_auc_roc": 0.7513337285121519,
+    "single_point_auc_pr": 0.07184002609277258,
+    "flagged": 56,
+    "tn": 190,
+    "fp": 51,
+    "fn": 2,
+    "tp": 5,
+    "fpr": 0.21161825726141079,
+    "scaled_cut": 0.7
+  },
+  "attendance_continuous_ranker": {
+    "label": "Attendance ranker (continuous, univariate)",
+    "auc_roc": 0.8678126852400712,
+    "auc_pr": 0.12839438788482593,
+    "score_vector": "1.0 - scaled(attendance_rate)"
+  },
+  "student_disjoint": {
+    "n_test_records": 248,
+    "n_test_students": 155,
+    "n_train_students": 180,
+    "n_overlap_students": 155,
+    "n_disjoint_records": 0,
+    "n_disjoint_positives": 0,
+    "computable": false
+  },
+  "smote_ablation": {
+    "smote_0.20_asconfigured": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1167,
+          "std": 0.0444
+        },
+        "auc_roc": {
+          "mean": 0.6182,
+          "std": 0.0754
+        },
+        "f2": {
+          "mean": 0.1532,
+          "std": 0.0662
+        },
+        "macro_f1": {
+          "mean": 0.4478,
+          "std": 0.0675
+        },
+        "precision": {
+          "mean": 0.0492,
+          "std": 0.0322
+        },
+        "recall": {
+          "mean": 0.4,
+          "std": 0.1069
+        }
+      },
+      "synthetic_rows_added_per_seed": [
+        26,
+        26,
+        26,
+        26,
+        26
+      ],
+      "train_n": 450,
+      "train_pos": 53
+    },
+    "smote_off": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.0779,
+          "std": 0.0243
+        },
+        "auc_roc": {
+          "mean": 0.6217,
+          "std": 0.0751
+        },
+        "f2": {
+          "mean": 0.1437,
+          "std": 0.0289
+        },
+        "macro_f1": {
+          "mean": 0.4509,
+          "std": 0.0738
+        },
+        "precision": {
+          "mean": 0.0533,
+          "std": 0.0235
+        },
+        "recall": {
+          "mean": 0.4,
+          "std": 0.21
+        }
+      },
+      "synthetic_rows_added_per_seed": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "train_n": 450,
+      "train_pos": 53
+    },
+    "smote_0.40": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1253,
+          "std": 0.0273
+        },
+        "auc_roc": {
+          "mean": 0.5724,
+          "std": 0.0493
+        },
+        "f2": {
+          "mean": 0.1248,
+          "std": 0.0233
+        },
+        "macro_f1": {
+          "mean": 0.4206,
+          "std": 0.0716
+        },
+        "precision": {
+          "mean": 0.0364,
+          "std": 0.0079
+        },
+        "recall": {
+          "mean": 0.4,
+          "std": 0.1666
+        }
+      },
+      "synthetic_rows_added_per_seed": [
+        105,
+        105,
+        105,
+        105,
+        105
+      ],
+      "train_n": 450,
+      "train_pos": 53
+    },
+    "smote_0.50": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1343,
+          "std": 0.0387
+        },
+        "auc_roc": {
+          "mean": 0.6229,
+          "std": 0.0316
+        },
+        "f2": {
+          "mean": 0.1536,
+          "std": 0.0259
+        },
+        "macro_f1": {
+          "mean": 0.4256,
+          "std": 0.0754
+        },
+        "precision": {
+          "mean": 0.0483,
+          "std": 0.0218
+        },
+        "recall": {
+          "mean": 0.4857,
+          "std": 0.1714
+        }
+      },
+      "synthetic_rows_added_per_seed": [
+        145,
+        145,
+        145,
+        145,
+        145
+      ],
+      "train_n": 450,
+      "train_pos": 53
+    }
+  },
+  "layer2_ablation": {
+    "spw_full__f2_threshold": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1167,
+          "std": 0.0444
+        },
+        "auc_roc": {
+          "mean": 0.6182,
+          "std": 0.0754
+        },
+        "f2": {
+          "mean": 0.1532,
+          "std": 0.0662
+        },
+        "macro_f1": {
+          "mean": 0.4478,
+          "std": 0.0675
+        },
+        "precision": {
+          "mean": 0.0492,
+          "std": 0.0322
+        },
+        "recall": {
+          "mean": 0.4,
+          "std": 0.1069
+        }
+      },
+      "thresholds": [
+        0.34,
+        0.16,
+        0.34,
+        0.5,
+        0.18
+      ]
+    },
+    "spw_1__f2_threshold": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1302,
+          "std": 0.0363
+        },
+        "auc_roc": {
+          "mean": 0.6546,
+          "std": 0.0448
+        },
+        "f2": {
+          "mean": 0.1606,
+          "std": 0.0467
+        },
+        "macro_f1": {
+          "mean": 0.4523,
+          "std": 0.0717
+        },
+        "precision": {
+          "mean": 0.0557,
+          "std": 0.0284
+        },
+        "recall": {
+          "mean": 0.4286,
+          "std": 0.1807
+        }
+      },
+      "thresholds": [
+        0.31,
+        0.07,
+        0.06,
+        0.21,
+        0.06
+      ]
+    },
+    "spw_full__fixed_0.5": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1167,
+          "std": 0.0444
+        },
+        "auc_roc": {
+          "mean": 0.6182,
+          "std": 0.0754
+        },
+        "f2": {
+          "mean": 0.1973,
+          "std": 0.0424
+        },
+        "macro_f1": {
+          "mean": 0.5299,
+          "std": 0.0225
+        },
+        "precision": {
+          "mean": 0.0808,
+          "std": 0.0209
+        },
+        "recall": {
+          "mean": 0.3143,
+          "std": 0.0571
+        }
+      },
+      "thresholds": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "spw_1__fixed_0.5": {
+      "summary": {
+        "auc_pr": {
+          "mean": 0.1302,
+          "std": 0.0363
+        },
+        "auc_roc": {
+          "mean": 0.6546,
+          "std": 0.0448
+        },
+        "f2": {
+          "mean": 0.2003,
+          "std": 0.0595
+        },
+        "macro_f1": {
+          "mean": 0.5685,
+          "std": 0.0258
+        },
+        "precision": {
+          "mean": 0.136,
+          "std": 0.0413
+        },
+        "recall": {
+          "mean": 0.2286,
+          "std": 0.07
+        }
+      },
+      "thresholds": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  },
+  "stats": {
+    "mcnemar": [
+      {
+        "comparison": "Default XGBoost",
+        "p": 0.7428293587290682,
+        "b": 17,
+        "c": 20,
+        "direction": "Favours comparator",
+        "p_bh": 0.7428293587290682,
+        "decision": "Retain H\u2080"
+      },
+      {
+        "comparison": "Decision Tree",
+        "p": 7.878384167270269e-08,
+        "b": 5,
+        "c": 40,
+        "direction": "Favours comparator",
+        "p_bh": 3.1513536669081077e-07,
+        "decision": "Reject H\u2080"
+      },
+      {
+        "comparison": "TabTransformer",
+        "p": 0.022574972673257185,
+        "b": 22,
+        "c": 41,
+        "direction": "Favours comparator",
+        "p_bh": 0.04514994534651437,
+        "decision": "Reject H\u2080"
+      },
+      {
+        "comparison": "Attendance rule (binary)",
+        "p": 0.47036853185814453,
+        "b": 31,
+        "c": 38,
+        "direction": "Favours comparator",
+        "p_bh": 0.627158042477526,
+        "decision": "Retain H\u2080"
+      }
+    ],
+    "bootstrap": {
+      "ci_lo": -0.0409,
+      "ci_hi": 0.1227,
+      "mean_delta": 0.017,
+      "spans_zero": true,
+      "n_resamples": 10000
+    },
+    "cohens_h_recall": 0.0,
+    "recall_proposed": 0.2857,
+    "recall_default": 0.2857
+  },
+  "cv": {
+    "proposed": {
+      "per_fold": [
+        0.2523,
+        0.1332,
+        0.3286,
+        0.1235,
+        0.2348
+      ],
+      "mean": 0.2145,
+      "sd": 0.0771
+    },
+    "default": {
+      "per_fold": [
+        0.2471,
+        0.1682,
+        0.3824,
+        0.1202,
+        0.2195
+      ],
+      "mean": 0.2275,
+      "sd": 0.0889
+    },
+    "pool_prevalence": 0.117
+  },
+  "isotonic": {
+    "seed42_uncalibrated": {
+      "auc_roc": 0.5969176052163604,
+      "auc_pr": 0.10331478594429484,
+      "f2": 0.11764705882352941,
+      "macro_f1": 0.4618055555555556,
+      "precision": 0.03508771929824561,
+      "recall": 0.2857142857142857,
+      "cm": [
+        [
+          186,
+          55
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "threshold": 0.34
+    },
+    "seed42_isotonic": {
+      "auc_roc": 0.6164789567279193,
+      "auc_pr": 0.09331120007811737,
+      "f2": 0.12195121951219512,
+      "macro_f1": 0.46726964386659126,
+      "precision": 0.037037037037037035,
+      "recall": 0.2857142857142857,
+      "cm": [
+        [
+          189,
+          52
+        ],
+        [
+          5,
+          2
+        ]
+      ],
+      "threshold": 0.09
+    },
+    "delta_auc_pr": -0.01,
+    "delta_auc_roc": 0.0196,
+    "auc_roc_rose": true,
+    "note": "isotonic is a monotone transform: AUC-ROC can fall through tie creation but cannot rise; a rise indicates a scoring error"
+  },
+  "shap_sms": {
+    "global_importance": [
+      {
+        "feature": "attendance_rate",
+        "mean_abs_shap": 1.2985
+      },
+      {
+        "feature": "exam_score",
+        "mean_abs_shap": 1.0218
+      },
+      {
+        "feature": "distance_km",
+        "mean_abs_shap": 0.4369
+      },
+      {
+        "feature": "gender_Female",
+        "mean_abs_shap": 0.3219
+      },
+      {
+        "feature": "gender_Male",
+        "mean_abs_shap": 0.0541
+      },
+      {
+        "feature": "fee_payment_status_Fully Paid",
+        "mean_abs_shap": 0.0251
+      },
+      {
+        "feature": "fee_payment_status_Unpaid",
+        "mean_abs_shap": 0.0185
+      },
+      {
+        "feature": "grade_level_Grade 7",
+        "mean_abs_shap": 0.0
+      }
+    ],
+    "signed_top3": [
+      {
+        "feature": "attendance_rate",
+        "mean_abs_shap": 1.2985,
+        "mean_signed_shap": -1.0876,
+        "pct_positive_attribution": 10.9,
+        "corr_feature_value_vs_shap": -0.6934,
+        "direction_high_value_raises_risk": false,
+        "mean_shap_when_true_dropout": -0.193,
+        "mean_shap_when_non_dropout": -1.1136
+      },
+      {
+        "feature": "exam_score",
+        "mean_abs_shap": 1.0218,
+        "mean_signed_shap": -0.9696,
+        "pct_positive_attribution": 6.0,
+        "corr_feature_value_vs_shap": -0.1558,
+        "direction_high_value_raises_risk": false,
+        "mean_shap_when_true_dropout": -0.9693,
+        "mean_shap_when_non_dropout": -0.9696
+      },
+      {
+        "feature": "distance_km",
+        "mean_abs_shap": 0.4369,
+        "mean_signed_shap": -0.389,
+        "pct_positive_attribution": 9.7,
+        "corr_feature_value_vs_shap": 0.554,
+        "direction_high_value_raises_risk": true,
+        "mean_shap_when_true_dropout": -0.5964,
+        "mean_shap_when_non_dropout": -0.383
+      }
+    ],
+    "ablation": {
+      "proposed_own_threshold": {
+        "n": 57,
+        "true_dropouts_in_population": 2,
+        "rank_preservation": {
+          "rank_preserving_at1": 1.0,
+          "rank_preserving_at2": 0.8596,
+          "naive_fixed_order_at1": 0.193,
+          "naive_fixed_order_at2": 0.0351
+        },
+        "directional_agreement": {
+          "rank_preserving_at1": 0.7368,
+          "rank_preserving_at2": 0.9825,
+          "naive_fixed_order_at1": 0.0877,
+          "naive_fixed_order_at2": 0.0877
+        },
+        "table5": {
+          "alerts": 57,
+          "within_160": 57,
+          "len_min": 70,
+          "len_max": 155,
+          "len_mean": 96.0,
+          "factors_min": 1,
+          "factors_max": 6,
+          "factors_mean": 2.46
+        },
+        "example_alerts": [
+          "ALERT:S01_2026 risk. Factors: lives far, male student, fees part-paid. Contact guardian.EduTrace.",
+          "ALERT:S03_2025 risk. Factors: male student, long trip to school, exam score slipping. Contact guardian.EduTrace.",
+          "ALERT:S04_2025 risk. Factors: lives far, male student, fees unpaid. Contact guardian.EduTrace."
+        ]
+      },
+      "tabtransformer_threshold_ORIGINAL": {
+        "n": 40,
+        "true_dropouts_in_population": 3,
+        "rank_preservation": {
+          "rank_preserving_at1": 1.0,
+          "rank_preserving_at2": 0.875,
+          "naive_fixed_order_at1": 0.175,
+          "naive_fixed_order_at2": 0.025
+        },
+        "directional_agreement": {
+          "rank_preserving_at1": 0.725,
+          "rank_preserving_at2": 0.925,
+          "naive_fixed_order_at1": 0.075,
+          "naive_fixed_order_at2": 0.075
+        },
+        "table5": {
+          "alerts": 40,
+          "within_160": 40,
+          "len_min": 70,
+          "len_max": 146,
+          "len_mean": 89.9,
+          "factors_min": 1,
+          "factors_max": 5,
+          "factors_mean": 2.23
+        },
+        "example_alerts": [
+          "ALERT:S01_2025 risk. Factors: male student, fees unpaid. Contact guardian.EduTrace.",
+          "ALERT:S03_2025 risk. Factors: male student, long trip to school, exam score slipping. Contact guardian.EduTrace.",
+          "ALERT:S04_2025 risk. Factors: lives far, male student, fees unpaid. Contact guardian.EduTrace."
+        ]
+      }
+    },
+    "seed42_threshold": 0.34
+  },
+  "perturbation_base": {
+    "trials": 100,
+    "mean_abs_delta": 0.1265,
+    "max_abs_delta": 0.8758,
+    "dropout_cases": 7,
+    "dropout_cases_ever_flipped": 7,
+    "max_dropout_flips_in_a_single_trial": 3,
+    "mean_dropout_flips_per_trial": 0.72,
+    "mean_abs_delta_dropouts": 0.1124
+  },
+  "error_analysis": {
+    "per_case": [
+      {
+        "student_id": "S17_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 5,
+        "attendance_rate_scaled": 0.773,
+        "exam_score_scaled": 0.6375,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      },
+      {
+        "student_id": "S57_2026",
+        "year": 2026,
+        "seeds_missed_of_5": 5,
+        "attendance_rate_scaled": 0.6389,
+        "exam_score_scaled": 0.5258,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 9"
+      },
+      {
+        "student_id": "S122_2026",
+        "year": 2026,
+        "seeds_missed_of_5": 5,
+        "attendance_rate_scaled": 0.8167,
+        "exam_score_scaled": 0.3139,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 9"
+      },
+      {
+        "student_id": "S43_2026",
+        "year": 2026,
+        "seeds_missed_of_5": 4,
+        "attendance_rate_scaled": 0.6389,
+        "exam_score_scaled": 0.5174,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 9"
+      },
+      {
+        "student_id": "S10_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 2,
+        "attendance_rate_scaled": 0.6731,
+        "exam_score_scaled": 0.2683,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      },
+      {
+        "student_id": "S06_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 0,
+        "attendance_rate_scaled": 0.5474,
+        "exam_score_scaled": 0.515,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      },
+      {
+        "student_id": "S88_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 0,
+        "attendance_rate_scaled": 0.5161,
+        "exam_score_scaled": 0.3533,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      }
+    ],
+    "missed_by_all_5": [
+      "S17_2025",
+      "S57_2026",
+      "S122_2026"
+    ],
+    "caught_by_all_5": [
+      "S06_2025",
+      "S88_2025"
+    ]
+  },
+  "nf1_real_only_rescore": {
+    "rows": {
+      "full_test_partition": {
+        "n": 248,
+        "positives": 7,
+        "base_rate": 0.0282,
+        "auc_pr": 0.1033,
+        "auc_roc": 0.5969,
+        "precision": 0.0351,
+        "recall": 0.2857,
+        "f2": 0.1176,
+        "cm": [
+          [
+            186,
+            55
+          ],
+          [
+            5,
+            2
+          ]
+        ],
+        "threshold": 0.34
+      },
+      "real_only_subset": {
+        "n": 248,
+        "positives": 7,
+        "base_rate": 0.0282,
+        "auc_pr": 0.1033,
+        "auc_roc": 0.5969,
+        "precision": 0.0351,
+        "recall": 0.2857,
+        "f2": 0.1176,
+        "cm": [
+          [
+            186,
+            55
+          ],
+          [
+            5,
+            2
+          ]
+        ],
+        "threshold": 0.34
+      }
+    },
+    "subsets_identical": true,
+    "n_synthetic_removed": 0,
+    "interpretation": "The real-only subset is the whole evaluation partition; removing synthetic rows removes 0 records, so every reported figure is already a real-records-only figure. Computed, not asserted."
+  },
+  "table3_with_lag": {
+    "xgb_default": {
+      "auc_pr": {
+        "mean": 0.1469,
+        "std": 0.0896
+      },
+      "auc_roc": {
+        "mean": 0.6816,
+        "std": 0.0422
+      },
+      "f2": {
+        "mean": 0.1747,
+        "std": 0.0422
+      },
+      "macro_f1": {
+        "mean": 0.4947,
+        "std": 0.0241
+      },
+      "precision": {
+        "mean": 0.0586,
+        "std": 0.0173
+      },
+      "recall": {
+        "mean": 0.3714,
+        "std": 0.1143
+      }
+    },
+    "xgb_engineered": {
+      "auc_pr": {
+        "mean": 0.1061,
+        "std": 0.015
+      },
+      "auc_roc": {
+        "mean": 0.6141,
+        "std": 0.0577
+      },
+      "f2": {
+        "mean": 0.1576,
+        "std": 0.0553
+      },
+      "macro_f1": {
+        "mean": 0.4514,
+        "std": 0.058
+      },
+      "precision": {
+        "mean": 0.0487,
+        "std": 0.0251
+      },
+      "recall": {
+        "mean": 0.4286,
+        "std": 0.1565
+      }
+    },
+    "decision_tree": {
+      "auc_pr": {
+        "mean": 0.0821,
+        "std": 0.0242
+      },
+      "auc_roc": {
+        "mean": 0.5918,
+        "std": 0.0442
+      },
+      "f2": {
+        "mean": 0.1869,
+        "std": 0.056
+      },
+      "macro_f1": {
+        "mean": 0.5186,
+        "std": 0.0402
+      },
+      "precision": {
+        "mean": 0.0763,
+        "std": 0.0309
+      },
+      "recall": {
+        "mean": 0.3143,
+        "std": 0.0571
+      }
+    }
+  },
+  "perturbation_with_lag": {
+    "trials": 100,
+    "mean_abs_delta": 0.124,
+    "max_abs_delta": 0.8672,
+    "dropout_cases": 7,
+    "dropout_cases_ever_flipped": 7,
+    "max_dropout_flips_in_a_single_trial": 2,
+    "mean_dropout_flips_per_trial": 0.62,
+    "mean_abs_delta_dropouts": 0.1028
+  },
+  "error_analysis_with_lag": {
+    "per_case": [
+      {
+        "student_id": "S17_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 5,
+        "attendance_rate_scaled": 0.773,
+        "exam_score_scaled": 0.6375,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      },
+      {
+        "student_id": "S57_2026",
+        "year": 2026,
+        "seeds_missed_of_5": 5,
+        "attendance_rate_scaled": 0.6389,
+        "exam_score_scaled": 0.5258,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 9"
+      },
+      {
+        "student_id": "S43_2026",
+        "year": 2026,
+        "seeds_missed_of_5": 4,
+        "attendance_rate_scaled": 0.6389,
+        "exam_score_scaled": 0.5174,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 9"
+      },
+      {
+        "student_id": "S122_2026",
+        "year": 2026,
+        "seeds_missed_of_5": 4,
+        "attendance_rate_scaled": 0.8167,
+        "exam_score_scaled": 0.3139,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 9"
+      },
+      {
+        "student_id": "S10_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 2,
+        "attendance_rate_scaled": 0.6731,
+        "exam_score_scaled": 0.2683,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      },
+      {
+        "student_id": "S06_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 0,
+        "attendance_rate_scaled": 0.5474,
+        "exam_score_scaled": 0.515,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      },
+      {
+        "student_id": "S88_2025",
+        "year": 2025,
+        "seeds_missed_of_5": 0,
+        "attendance_rate_scaled": 0.5161,
+        "exam_score_scaled": 0.3533,
+        "fee_payment_status": "Unpaid",
+        "grade_level": "Grade 8"
+      }
+    ],
+    "missed_by_all_5": [
+      "S17_2025",
+      "S57_2026"
+    ],
+    "caught_by_all_5": [
+      "S06_2025",
+      "S88_2025"
+    ]
+  },
+  "lag_coverage": {
+    "n_test_records_with_prior_year": 248,
+    "n_test_records": 248,
+    "features": [
+      "att_delta",
+      "exam_delta",
+      "prior_risk_flag",
+      "terms_observed"
+    ]
+  },
+  "shap_with_lag": [
+    {
+      "feature": "attendance_rate",
+      "mean_abs_shap": 1.2458
+    },
+    {
+      "feature": "exam_score",
+      "mean_abs_shap": 1.0251
+    },
+    {
+      "feature": "distance_km",
+      "mean_abs_shap": 0.4551
+    },
+    {
+      "feature": "gender_Female",
+      "mean_abs_shap": 0.275
+    },
+    {
+      "feature": "gender_Male",
+      "mean_abs_shap": 0.0758
+    },
+    {
+      "feature": "fee_payment_status_Unpaid",
+      "mean_abs_shap": 0.0252
+    },
+    {
+      "feature": "fee_payment_status_Fully Paid",
+      "mean_abs_shap": 0.0245
+    },
+    {
+      "feature": "grade_level_Grade 7",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "exam_delta",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "prior_risk_flag",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "terms_observed",
+      "mean_abs_shap": 0.0
+    },
+    {
+      "feature": "att_delta",
+      "mean_abs_shap": 0.0
+    }
+  ],
+  "lag_feasibility": {
+    "train_partition_years": [
+      2024
+    ],
+    "train_variance": {
+      "att_delta": {
+        "nunique": 1,
+        "std": 0.0
+      },
+      "exam_delta": {
+        "nunique": 1,
+        "std": 0.0
+      },
+      "prior_risk_flag": {
+        "nunique": 1,
+        "std": 0.0
+      },
+      "terms_observed": {
+        "nunique": 1,
+        "std": 0.0
+      }
+    },
+    "test_variance": {
+      "att_delta": {
+        "nunique": 163,
+        "std": 0.1692
+      },
+      "exam_delta": {
+        "nunique": 161,
+        "std": 7.7874
+      },
+      "prior_risk_flag": {
+        "nunique": 2,
+        "std": 0.0635
+      },
+      "terms_observed": {
+        "nunique": 2,
+        "std": 0.4851
+      }
+    },
+    "learnable_under_2025_cut": false,
+    "reason": "training pool is academic year 2024 only, which is every student's first panel observation; all lag/delta features are identically zero there"
+  },
+  "lag_sensitivity_cut2026": {
+    "train_n": 627,
+    "train_pos": 66,
+    "test_n": 151,
+    "test_pos": 3,
+    "lag_std_in_training": {
+      "att_delta": 0.055,
+      "exam_delta": 0.0711,
+      "prior_risk_flag": 0.0,
+      "terms_observed": 0.3619
+    },
+    "without_lag": {
+      "xgb_default": {
+        "auc_pr": {
+          "mean": 0.0736,
+          "std": 0.0245
+        },
+        "auc_roc": {
+          "mean": 0.6732,
+          "std": 0.0599
+        },
+        "f2": {
+          "mean": 0.1141,
+          "std": 0.0933
+        },
+        "macro_f1": {
+          "mean": 0.5131,
+          "std": 0.0226
+        },
+        "precision": {
+          "mean": 0.0421,
+          "std": 0.0345
+        },
+        "recall": {
+          "mean": 0.2,
+          "std": 0.1633
+        }
+      },
+      "xgb_engineered": {
+        "auc_pr": {
+          "mean": 0.035,
+          "std": 0.0088
+        },
+        "auc_roc": {
+          "mean": 0.609,
+          "std": 0.1077
+        },
+        "f2": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "macro_f1": {
+          "mean": 0.468,
+          "std": 0.0133
+        },
+        "precision": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "std": 0.0
+        }
+      },
+      "decision_tree": {
+        "auc_pr": {
+          "mean": 0.0729,
+          "std": 0.0538
+        },
+        "auc_roc": {
+          "mean": 0.6108,
+          "std": 0.1829
+        },
+        "f2": {
+          "mean": 0.1401,
+          "std": 0.1299
+        },
+        "macro_f1": {
+          "mean": 0.4921,
+          "std": 0.0311
+        },
+        "precision": {
+          "mean": 0.0405,
+          "std": 0.0388
+        },
+        "recall": {
+          "mean": 0.4,
+          "std": 0.3887
+        }
+      }
+    },
+    "with_lag": {
+      "xgb_default": {
+        "auc_pr": {
+          "mean": 0.0871,
+          "std": 0.0165
+        },
+        "auc_roc": {
+          "mean": 0.7876,
+          "std": 0.0457
+        },
+        "f2": {
+          "mean": 0.1781,
+          "std": 0.0942
+        },
+        "macro_f1": {
+          "mean": 0.5423,
+          "std": 0.0349
+        },
+        "precision": {
+          "mean": 0.0812,
+          "std": 0.0502
+        },
+        "recall": {
+          "mean": 0.2667,
+          "std": 0.1333
+        }
+      },
+      "xgb_engineered": {
+        "auc_pr": {
+          "mean": 0.0615,
+          "std": 0.0144
+        },
+        "auc_roc": {
+          "mean": 0.7572,
+          "std": 0.051
+        },
+        "f2": {
+          "mean": 0.04,
+          "std": 0.08
+        },
+        "macro_f1": {
+          "mean": 0.4907,
+          "std": 0.024
+        },
+        "precision": {
+          "mean": 0.0154,
+          "std": 0.0308
+        },
+        "recall": {
+          "mean": 0.0667,
+          "std": 0.1333
+        }
+      },
+      "decision_tree": {
+        "auc_pr": {
+          "mean": 0.103,
+          "std": 0.123
+        },
+        "auc_roc": {
+          "mean": 0.5986,
+          "std": 0.1659
+        },
+        "f2": {
+          "mean": 0.1119,
+          "std": 0.1025
+        },
+        "macro_f1": {
+          "mean": 0.4854,
+          "std": 0.0156
+        },
+        "precision": {
+          "mean": 0.0319,
+          "std": 0.028
+        },
+        "recall": {
+          "mean": 0.3333,
+          "std": 0.3651
+        }
+      }
+    },
+    "perturbation_without_lag": {
+      "trials": 100,
+      "mean_abs_delta": 0.0928,
+      "max_abs_delta": 0.8185,
+      "dropout_cases": 3,
+      "dropout_cases_ever_flipped": 3,
+      "max_dropout_flips_in_a_single_trial": 1,
+      "mean_dropout_flips_per_trial": 0.31,
+      "mean_abs_delta_dropouts": 0.1165
+    },
+    "perturbation_with_lag": {
+      "trials": 100,
+      "mean_abs_delta": 0.0803,
+      "max_abs_delta": 0.9025,
+      "dropout_cases": 3,
+      "dropout_cases_ever_flipped": 2,
+      "max_dropout_flips_in_a_single_trial": 2,
+      "mean_dropout_flips_per_trial": 1.06,
+      "mean_abs_delta_dropouts": 0.1293
+    },
+    "error_without_lag": {
+      "per_case": [
+        {
+          "student_id": "S43_2026",
+          "year": 2026,
+          "seeds_missed_of_5": 5,
+          "attendance_rate_scaled": 0.6389,
+          "exam_score_scaled": 0.513,
+          "fee_payment_status": "Unpaid",
+          "grade_level": "Grade 9"
+        },
+        {
+          "student_id": "S57_2026",
+          "year": 2026,
+          "seeds_missed_of_5": 5,
+          "attendance_rate_scaled": 0.6389,
+          "exam_score_scaled": 0.5214,
+          "fee_payment_status": "Unpaid",
+          "grade_level": "Grade 9"
+        },
+        {
+          "student_id": "S122_2026",
+          "year": 2026,
+          "seeds_missed_of_5": 5,
+          "attendance_rate_scaled": 0.8167,
+          "exam_score_scaled": 0.3112,
+          "fee_payment_status": "Unpaid",
+          "grade_level": "Grade 9"
+        }
+      ],
+      "missed_by_all_5": [
+        "S43_2026",
+        "S57_2026",
+        "S122_2026"
+      ],
+      "caught_by_all_5": []
+    },
+    "error_with_lag": {
+      "per_case": [
+        {
+          "student_id": "S43_2026",
+          "year": 2026,
+          "seeds_missed_of_5": 5,
+          "attendance_rate_scaled": 0.6389,
+          "exam_score_scaled": 0.513,
+          "fee_payment_status": "Unpaid",
+          "grade_level": "Grade 9"
+        },
+        {
+          "student_id": "S122_2026",
+          "year": 2026,
+          "seeds_missed_of_5": 5,
+          "attendance_rate_scaled": 0.8167,
+          "exam_score_scaled": 0.3112,
+          "fee_payment_status": "Unpaid",
+          "grade_level": "Grade 9"
+        },
+        {
+          "student_id": "S57_2026",
+          "year": 2026,
+          "seeds_missed_of_5": 4,
+          "attendance_rate_scaled": 0.6389,
+          "exam_score_scaled": 0.5214,
+          "fee_payment_status": "Unpaid",
+          "grade_level": "Grade 9"
+        }
+      ],
+      "missed_by_all_5": [
+        "S43_2026",
+        "S122_2026"
+      ],
+      "caught_by_all_5": []
+    }
+  },
+  "data_properties": {
+    "grade_by_year": {
+      "Grade 7": {
+        "2024": 180,
+        "2025": 0,
+        "2026": 0
+      },
+      "Grade 8": {
+        "2024": 0,
+        "2025": 97,
+        "2026": 0
+      },
+      "Grade 9": {
+        "2024": 0,
+        "2025": 0,
+        "2026": 151
+      }
+    },
+    "fee_by_year": {
+      "Fully Paid": {
+        "2024": 5,
+        "2025": 5,
+        "2026": 0
+      },
+      "Partially Paid": {
+        "2024": 0,
+        "2025": 0,
+        "2026": 28
+      },
+      "Unpaid": {
+        "2024": 175,
+        "2025": 92,
+        "2026": 123
+      }
+    },
+    "dropout_by_year": {
+      "0": {
+        "2024": 162,
+        "2025": 93,
+        "2026": 148
+      },
+      "1": {
+        "2024": 18,
+        "2025": 4,
+        "2026": 3
+      }
+    },
+    "n_unique_students": 180,
+    "records_per_student": {
+      "3": 93,
+      "2": 62,
+      "1": 25
+    },
+    "missing": {
+      "student_id": 0,
+      "school_id": 0,
+      "school_name": 0,
+      "academic_year": 0,
+      "attendance_rate": 10,
+      "exam_score": 22,
+      "fee_payment_status": 0,
+      "distance_km": 0,
+      "grade_level": 0,
+      "gender": 0,
+      "dropout": 0
+    },
+    "school_identifier_present": true
+  },
+  "nf1_guard_log": [
+    "NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) \u2014 PASS",
+    "NF-1 GUARD: test partition n=248 | synthetic rows=0 | real rows=248 | positives=7 (2.82%) \u2014 PASS",
+    "NF-1 GUARD: test partition n=151 | synthetic rows=0 | real rows=151 | positives=3 (1.99%) \u2014 PASS",
+    "NF-1 GUARD: test partition n=151 | synthetic rows=0 | real rows=151 | positives=3 (1.99%) \u2014 PASS"
+  ]
+}

@@ -1,18 +1,27 @@
-# Runtime dependencies for the Flask app and the research notebook
+# EduTrace — reproduction environment for the locked run.
+# Q4: every requirement is pinned with ==. Nothing here uses >=.
+#
+# This is the environment in which results/results.json and
+# results/closeout_verdict.json were produced. It is sufficient to reproduce
+# every number reported in the Methods and Results sections from the committed
+# data artefacts.
+#
+# Regenerating the synthetic supplement is a separate, optional step with its
+# own pinned environment: see requirements-synthesis.txt. It is not needed to
+# reproduce any reported figure, because the supplement is committed.
 
-# Web app
-flask>=2.3.0
-flask-cors>=4.0.0
-numpy>=1.24.0
-scikit-learn>=1.3.0
-xgboost>=1.7.0
+numpy==2.4.4
+pandas==3.0.2
+scikit-learn==1.8.0
+scipy==1.17.1
+xgboost==3.2.0
+imbalanced-learn==0.14.2
+statsmodels==0.15.0
+shap==0.51.0
+torch==2.14.0
+tab-transformer-pytorch==0.6.1
+matplotlib==3.10.9
 
-# Notebook and model engineering
-pandas>=2.2.0
-matplotlib>=3.8.0
-seaborn>=0.13.0
-imbalanced-learn>=0.12.0
-joblib>=1.3.0
-statsmodels>=0.14.0
-torch>=2.2.0
-tab-transformer-pytorch>=0.3.0
+# Required by verify.py, consistency_pass.py and the docs_out edit scripts,
+# which read and check the manuscript .docx files.
+python-docx==1.2.0

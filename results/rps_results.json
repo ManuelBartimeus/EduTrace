@@ -1,10 +1,47 @@
 {
-  "rps_at_1": 1.0,
-  "rps_at_2": 1.0,
-  "n_evaluated": 5,
-  "threshold_used": 0.6200000000000001,
-  "char_min": 109,
-  "char_max": 131,
-  "char_mean": 113.4,
-  "all_within_limit": true
+  "artefact": "SHAPtoSMS ablation \u2014 contribution evidence anchor (Q21)",
+  "population": "proposed model's own seed-42 flagged records",
+  "threshold_used": 0.34,
+  "n_evaluated": 57,
+  "true_dropouts_in_population": 2,
+  "rank_preservation_RPS": {
+    "rps_at_1": 1.0,
+    "rps_at_2": 0.8596,
+    "naive_fixed_order_at_1": 0.193,
+    "naive_fixed_order_at_2": 0.0351,
+    "definition": "does the packed alert name the model's own top-k SHAP features, in order (M17)"
+  },
+  "directional_agreement_DAS": {
+    "das_at_1": 0.7368,
+    "das_at_2": 0.9825,
+    "naive_fixed_order_at_1": 0.0877,
+    "naive_fixed_order_at_2": 0.0877,
+    "definition": "does a top-k attribution carry a sign agreeing with the record's true label \u2014 a DIFFERENT quantity from RPS, and the one the original pipeline mislabelled as RPS"
+  },
+  "cross_model_sensitivity": {
+    "population": "TabTransformer-threshold flagged records (the earlier, cross-model definition)",
+    "n_evaluated": 40,
+    "rps_at_1": 1.0,
+    "rps_at_2": 0.875,
+    "naive_fixed_order_at_1": 0.175,
+    "naive_fixed_order_at_2": 0.025,
+    "das_at_1": 0.725,
+    "das_at_2": 0.925
+  },
+  "table5_character_compliance": {
+    "alerts": 57,
+    "within_160": 57,
+    "len_min": 70,
+    "len_max": 155,
+    "len_mean": 96.0,
+    "factors_min": 1,
+    "factors_max": 6,
+    "factors_mean": 2.46
+  },
+  "example_alerts": [
+    "ALERT:S01_2026 risk. Factors: lives far, male student, fees part-paid. Contact guardian.EduTrace.",
+    "ALERT:S03_2025 risk. Factors: male student, long trip to school, exam score slipping. Contact guardian.EduTrace.",
+    "ALERT:S04_2025 risk. Factors: lives far, male student, fees unpaid. Contact guardian.EduTrace."
+  ],
+  "note": "RPS and DAS are reported under separate names because M17 describes rank preservation while the original implementation computed directional agreement. Neither is 1.0 by construction."
 }

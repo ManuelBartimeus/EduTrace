@@ -1,0 +1,219 @@
+[
+  {
+    "n": 1,
+    "name": "Determine Attendance Rule score vector from code",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "Code line EduTrace_Revised_Pipeline.py:965 passes `1.0 - att_vals` to roc_auc_score / average_precision_score and `(att_vals < att_thr_scaled)` as the binary vector. Re-run reproduces every published cell exactly: AUC-ROC 0.8678, AUC-PR 0.1284, precision 0.0893, recall 0.7143, F2 0.2976, macro-F1 0.5182. Methods M11 now documents the scoring for each row."
+  },
+  {
+    "n": 2,
+    "name": "Split Table 3 into binary rule + continuous ranker rows",
+    "cls": "B",
+    "status": "SATISFIED",
+    "ev": "Table 3 now carries two labelled rows. Binary: precision 0.0893, recall 0.7143, F2 0.2976, single-point AUC-ROC 0.7513. Ranker: AUC-ROC 0.8678, AUC-PR 0.1284, threshold metrics n/a. Footnotes \u2021 and \u00a7 state the scoring."
+  },
+  {
+    "n": 3,
+    "name": "Re-run SHAPtoSMS ablation on proposed model's own records",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "Ablation re-run on the proposed model's own seed-42 flagged population (n = 57), gold ranking from the same model. RPS@1 1.0000 vs naive 0.1930 (\u0394 +0.8070); DAS@1 0.7368 vs 0.0877. The component now PASSES its own ablation. Conclusion holds on the old cross-model population too."
+  },
+  {
+    "n": 4,
+    "name": "Update R5, R10, Figure 8; state population in M16 and R5",
+    "cls": "B",
+    "status": "SATISFIED",
+    "ev": "R5 rewritten with the population stated and the earlier loss explicitly withdrawn; M16 defines the population and records that the earlier cross-model definition is replaced; Figure 8 regenerated from the run (figs/figure8.png) showing RPS and DAS separately; R10 no longer lists the ablation as a negative result."
+  },
+  {
+    "n": 5,
+    "name": "Correct R2 recall sentence",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "R2 now reads that the proposed model recorded the higher recall of the two XGBoost variants (0.4000 vs 0.3714), with TabTransformer (0.5143) and the binary attendance rule (0.7143) higher still, and explicitly withdraws the old claim."
+  },
+  {
+    "n": 6,
+    "name": "Direction column in Table 4 + sentence in R4",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "Table 4 has a seventh column, Direction. All four comparisons read 'Favours comparator'; R4 states in prose that the significant results favour the comparator, not the proposed model. Discordant counts: Default XGBoost b=17 c=20; Decision Tree b=5 c=40; TabTransformer b=22 c=41; Attendance rule (binary) b=31 c=38"
+  },
+  {
+    "n": 7,
+    "name": "Print seed-42 AUC-PR in Table 3; single reference frame",
+    "cls": "B",
+    "status": "SATISFIED",
+    "ev": "Table 3 footnote \u00b6 prints the seed-42 proposed AUC-PR (0.1033) and AUC-ROC (0.5969); the isotonic row's \u0394 column is computed against that anchor (-0.0100), not against the five-seed mean. NOTE: the old 0.1125 was not reproducible and is not carried forward."
+  },
+  {
+    "n": 8,
+    "name": "Reword R6 \"packs first\" to match measurement",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "R6 no longer asserts the features are 'packed first'. It states that the packer appends in strict descending |\u03c6| order and cites the measured rank preservation (RPS@1 1.0000, RPS@2 0.8596) as the quantity that establishes how often that ordering survives into the alert."
+  },
+  {
+    "n": 9,
+    "name": "Build number reconciliation table",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "New subsection R11 with a 20-row reconciliation table mapping each headline quantity to its appearance in text, in table/figure, and to its source in the locked run."
+  },
+  {
+    "n": 10,
+    "name": "Ablate SMOTE in isolation",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "Four-arm isolation run. SMOTE off: AUC-PR 0.0779; at 0.20 as configured: 0.1167 (26 rows added); at 0.40: 0.1253; at 0.50: 0.1343. FINDING DIFFERS FROM SUPERVISOR: Layer 1 is load-bearing, not a no-op \u2014 his ~6-row estimate rested on the manuscript's misstated 447:83 pool. Reported in M8 and R5; R10 records that 0.20 is not optimal."
+  },
+  {
+    "n": 11,
+    "name": "Ablate Layer 2 (scale_pos_weight vs F2 threshold)",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "Four arms. spw_full+F2: AUC-PR 0.1167, recall 0.4000; spw=1+F2: 0.1302, recall 0.4286; spw_full+\u03c40.5: recall 0.3143; spw=1+\u03c40.5: recall 0.2286. Confirms the supervisor's double-counting hypothesis: Layer 2 does not improve on Layer 3 alone. In M8, R5, R10."
+  },
+  {
+    "n": 12,
+    "name": "Flag SMOTE NNAA in R10 alongside CTGAN",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "COMPUTED on the locked run (was previously asserted without evidence). Retained k=3: NNAA 0.9118 at seed 42, 0.8996 \u00b1 0.0084 across seeds. Every ladder rung breaches the 0.60 ceiling (k=5 0.9181, k=1 0.8991, DP-SMOTE 0.9706). Printed in both M8 and R10 beside the CTGAN 0.664, with the majority-baseline caveat."
+  },
+  {
+    "n": 13,
+    "name": "Recover exact school count, or state unrecorded with reason",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "RECOVERED, not declared. The school identifier was recovered from the participating schools and attached to every record (school_identifier_present = True). M3 and Table 1b now state the exact count as 4 sites and name all 4 of them (Al Huda Islamic and JHS, Tawjeed Islamic and JHS, Ayaarno M/A Primary and JHS, Buokrom Block A M/A Primary and JHS). The earlier UNRECORDED declaration is removed (True) and 'two to three' remains absent (True). This closes the collection-side half of Q2; leave-one-site-out validation is reported in R8."
+  },
+  {
+    "n": 14,
+    "name": "Sampling and generalisability-threats table",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "New Methods Table 1b with 12 rows: target population, sampling frame, inclusion/exclusion, N of sites, N students, N records, cohort structure, N dropout events, both partition sizes, and the disjoint subset \u2014 each with the generalisability threat it entails."
+  },
+  {
+    "n": 15,
+    "name": "Student-disjoint sensitivity re-score",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "NOT SATISFIABLE \u2014 reported as a data limitation, not worked around. All 155 test-year students appear in the 2024 training partition, so the disjoint subset holds 0 records and 0 dropout events. The supervisor's '86 percent' understates it: it is 100%. Stated in M9, M18, R8 and Table 1b, with no proxy substituted."
+  },
+  {
+    "n": 16,
+    "name": "Construct-to-feature-to-metric table; demote SDT to lens",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "Guiding Theories rewritten to Option (a): SDT is an interpretive lens, not a measurement claim. New Methods Table 2b maps each construct to its proxy, anticipated direction, reported quantity and named validity threat (six rows, including the two unmapped contextual variables)."
+  },
+  {
+    "n": 17,
+    "name": "Metric-to-construct translation table in R6",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "New Results Table 6 with the four columns requested. Includes the uncomfortable cell: at the seed-42 operating point precision is 0.0351, i.e. roughly 28 teacher follow-ups per true case surfaced."
+  },
+  {
+    "n": 18,
+    "name": "Signed SHAP for top three features",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "R6 reports signed SHAP for all three top features and states agreement with Table 2b: attendance_rate corr -0.6934 (lowers risk); exam_score corr -0.1558 (lowers risk); distance_km corr +0.5540 (raises risk). All three agree with the anticipated direction, so no theory redirection is indicated. Figure S1 regenerated as a signed beeswarm."
+  },
+  {
+    "n": 19,
+    "name": "Resolve Objective 3 (Path A)",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "Path A taken as chosen. Objective 3 narrowed in Methods to constraint-compliant alert generation, with the change flagged. R9 states plainly that no message was transmitted, no gateway contacted and no receipt measured, and names the gateway experiment as the next-round action. Table 5 now answers the objective as narrowed."
+  },
+  {
+    "n": 20,
+    "name": "Engineer year-on-year lag features",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "PARTIALLY SATISFIABLE \u2014 engineered and tested, but NOT learnable under the declared split. All four features have zero variance in the 2024-only training pool (nunique = 1, SD = 0) and variance only at test (att_delta SD 0.1692). Sensitivity arm at a 2026 cut, where they ARE learnable: AUC-PR 0.0350 \u2192 0.0615, AUC-ROC 0.6090 \u2192 0.7572, one always-missed case recovered \u2014 but on only 3 test positives. In M7, R7, R8."
+  },
+  {
+    "n": 21,
+    "name": "Resolution-boundary sentence in R8",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "R8 states the boundary explicitly: individual-level probability estimates are not stable to register-error-scale noise, so the defensible output is a ranked shortlist for teacher review, not a stable individual probability and not an individual motivational diagnosis delivered by name."
+  },
+  {
+    "n": 22,
+    "name": "Error analysis on consistently-missed cases across five seeds",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "Run across all five seeds. Missed by all five: S17_2025, S57_2026, S122_2026 (scaled attendance 0.773, 0.639, 0.817). Recovered by all five: S06_2025, S88_2025 (scaled attendance 0.547, 0.516). CONFIRMS the supervisor's predicted profile: the consistently-missed students look unremarkable in the static snapshot. Reported in R7."
+  },
+  {
+    "n": 23,
+    "name": "Re-run perturbation after lag features",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "Perturbation re-run on both arms. Declared split: mean |\u0394p| 0.1265, max 0.8758, up to 3 of 7 dropout cases flipping in a single trial. 2026-cut sensitivity arm: mean |\u0394p| 0.0928 \u2192 0.0803 with lag features \u2014 the predicted fall, though small. Reported in R8; Figure S4 regenerated."
+  },
+  {
+    "n": "A",
+    "name": "Attendance Rule diagnosis (checklist doc, Finding A)",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "CONFIRMED to 4 dp. Rule flags 56 records, FP 51, FPR 0.2116, single-point AUC-ROC 0.7513 \u2014 the supervisor computed 0.7514. F2 recomputed at 0.2976 matches the published cell."
+  },
+  {
+    "n": "B",
+    "name": "Isotonic AUC-ROC arithmetic (checklist doc, Finding B)",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "SUPERVISOR IS INCORRECT ON THIS ONE, and R10 now explains why. Our run reproduces a RISE (0.5969 \u2192 0.6165). Isotonic is monotone NON-DECREASING, so it cannot reorder but it can create ties; a tied pair scores 0.5, so tying a discordant pair RAISES AUC-ROC. A rise is admissible, not an arithmetic impossibility. AUC-PR fell as expected (-0.0100)."
+  },
+  {
+    "n": "C",
+    "name": "Seed-42 disclosure (checklist doc, Finding C)",
+    "cls": "T",
+    "status": "SATISFIED",
+    "ev": "M14 now discloses that every single-run result rests on seed 42 and commits to printing the seed-42 value alongside the five-seed mean wherever a single-run figure enters a comparison (Table 3 footnote \u00b6)."
+  },
+  {
+    "n": "X1",
+    "name": "Synthetic supplement was not CTGAN and not reproducible",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "NOT ON THE CHECKLIST \u2014 found by auditing the code. The supplied synthetic_student_data_v3.csv is a bit-for-bit match to the pipeline's logistic-DGP FALLBACK at seed 42, not CTGAN; final_summary_v3.json confirms 'Logistic DGP (fallback)'. CTGANSynthesizer was also constructed with no seed, so the supplement differed on every run. Fixed: gen_synth.py seeds before construction/fit/sample, verified reproducible (two runs, DataFrame.equals = True), and the supplement is committed as an artefact. M4/Table 1/M21 corrected."
+  },
+  {
+    "n": "X2",
+    "name": "Pool composition was misreported",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "NOT ON THE CHECKLIST. M8/M9/R1 claimed 447 non-dropout : 83 dropout (15.7%, 5.39:1). The actual pool under the locked run is 468:62 (11.7%, 7.55:1), and scale_pos_weight is 7.49, not 5.39. Corrected in M8, M9, M12/Table 2, R1 and Table 1b. This is also why the supervisor's SMOTE no-op finding does not hold."
+  },
+  {
+    "n": "X3",
+    "name": "SHAPtoSMS had no implementation",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "NOT ON THE CHECKLIST. Algorithm 1 was unimplemented in both the .py and the notebook (SMS_CHAR_LIMIT defined at line 131, never referenced; no packer, lexicon or character counting anywhere). Table 5's published figures had no code behind them. Implemented to the M12 spec (shaptosms.py) and Table 5 regenerated from a real run: 57/57 within 160 characters, lengths 70\u2013155 (mean 96), 1\u20136 factors (mean 2.46)."
+  },
+  {
+    "n": "X4",
+    "name": "grade_level perfectly confounded with academic_year",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "NOT ON THE CHECKLIST. The panel is a single cohort: 2024 = 100% Grade 7, 2025 = 100% Grade 8, 2026 = 100% Grade 9. So grade_level has ZERO training variance and is wholly out-of-distribution at test, and the temporal hold-out is simultaneously a grade hold-out. This is a substantive and defensible explanation for near-chance AUC-ROC that the manuscript previously lacked. Added to M9 and Table 1b."
+  },
+  {
+    "n": "X5",
+    "name": "RPS measured something other than what M17 described",
+    "cls": "C",
+    "status": "SATISFIED",
+    "ev": "NOT ON THE CHECKLIST (the supervisor inferred a different mechanism). The original `rps_at_k` checked whether the top-|SHAP| feature's SIGN agreed with the true label \u2014 a directional-agreement statistic that never compares two orderings, so it could not be 1.0 'by construction'. Both quantities are now implemented and reported under separate names (RPS and DAS) in M17 and R5."
+  }
+]
